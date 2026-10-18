@@ -100,7 +100,7 @@ public sealed class LauncherConfig
     public Io4Config Io4 { get; set; } = new();
     public ScreenConfig Screen { get; set; } = new();
     public bool Startup { get; set; } = true;
-    public string Ui { get; set; } = "v1";
+    public string Ui { get; set; } = "v2";
 
     [JsonIgnore]
     public GameConfig CurrentGame => Games.Count > 0
