@@ -1,0 +1,1520 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>舞萌手台启动器</title>
+<style>
+  :root{
+    --bg:#04060b;
+    --line:rgba(34,211,238,.28);
+    --cyan:#22d3ee;
+    --cyan-dim:rgba(34,211,238,.55);
+    --text:#e8f0fb;
+    --muted:#7f93ad;
+    --amber:#fbbf24;
+    --violet:#a78bfa;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:#000;overflow:hidden;
+    font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;color:var(--text)}
+  #screen{position:absolute;left:0;top:0;width:1080px;height:1920px;transform-origin:top left;
+    background:
+      radial-gradient(760px 560px at 50% 42%, rgba(34,211,238,.10), transparent 65%),
+      radial-gradient(900px 700px at 50% 85%, rgba(139,92,246,.10), transparent 70%),
+      linear-gradient(180deg,#03050a 0%,#060b16 45%,#04060c 100%);
+    overflow:hidden}
+
+  /* ---------- 上半屏 ---------- */
+  .top{position:absolute;left:0;top:0;width:1080px;height:469px;padding:26px 38px 18px;
+    display:flex;flex-direction:column;
+    background:linear-gradient(180deg,rgba(3,7,14,.25),rgba(3,7,14,.75) 78%,rgba(4,6,12,1) 100%)}
+  .top::after{content:"";position:absolute;left:38px;right:38px;bottom:0;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(34,211,238,.35),transparent)}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:24px}
+  .brand{display:flex;align-items:center;gap:13px}
+  .logo{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;
+    font-weight:900;font-size:11px;line-height:1;color:#041016;
+    background:linear-gradient(135deg,#67e8f9,#22d3ee 50%,#0ea5e9);
+    box-shadow:0 0 26px rgba(34,211,238,.35),inset 0 1px 0 rgba(255,255,255,.6)}
+  .brand-title{font-size:22px;font-weight:800;letter-spacing:.5px}
+  .brand-sub{font-size:10px;color:var(--muted);letter-spacing:2px;margin-top:2px}
+  .clock{font-family:ui-monospace,Consolas,monospace;font-size:34px;font-weight:700;
+    color:#cbd5e1;letter-spacing:1px}
+
+  .hero{margin-top:40px}
+  .kicker{font-size:12px;letter-spacing:6px;color:var(--cyan-dim);font-weight:700}
+  .title{font-size:52px;font-weight:900;letter-spacing:1px;margin-top:8px;
+    background:linear-gradient(90deg,#f8fafc,#a5f3fc);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .desc{font-size:16px;color:#9fb2c8;margin-top:8px;max-width:900px;line-height:1.45}
+
+  .status-row{position:absolute;left:38px;right:38px;bottom:22px;display:flex;
+    align-items:center;justify-content:space-between;gap:20px}
+  .status{font-size:15px;color:#8ba0b8;padding:7px 16px;border-radius:999px;
+    border:1px solid rgba(148,163,184,.22);background:rgba(15,23,42,.55)}
+  .status.live{color:#67e8f9;border-color:rgba(34,211,238,.45)}
+  .hint{font-size:14px;color:#64748b;letter-spacing:1px}
+
+  /* ---------- 圆屏 ---------- */
+  .stage{position:absolute;left:0;top:840px;width:1080px;height:1080px}
+  #ring{width:1080px;height:1080px;display:block;overflow:visible}
+
+  .btn{stroke-width:12;stroke-linejoin:round;paint-order:stroke;
+    filter:drop-shadow(0 8px 22px rgba(0,0,0,.55));transition:fill .12s,stroke .12s}
+  .zone-line{fill:none;stroke:rgba(34,211,238,.16);stroke-width:1.2}
+  .btn.active{fill:rgba(34,211,238,.28);stroke:rgba(34,211,238,.95)}
+  .btn.ok{fill:url(#okGrad);stroke:#b45309}
+  .btn.ok.active{fill:rgba(251,191,36,.45)}
+  .btn.back{fill:url(#backGrad);stroke:#1d4ed8}
+  .btn.back.active{fill:rgba(96,165,250,.4)}
+  .btn.cat{fill:url(#catGrad);stroke:#b45309}
+  .btn.cat.active{fill:rgba(251,191,36,.35)}
+  .btn.card{fill:url(#baseGrad);stroke:rgba(34,211,238,.6)}
+  .btn.card.active{fill:rgba(34,211,238,.3)}
+  .btn.off{opacity:.16;pointer-events:none}
+
+  .btn-num{font-size:22px;font-weight:900;fill:#67e8f9;text-anchor:middle;dominant-baseline:middle;filter:drop-shadow(0 0 6px rgba(34,211,238,.5))}
+  .btn.ok .btn-num{fill:#fff;opacity:.95}
+  .btn.back .btn-num{fill:#fff;opacity:.95}
+  .btn-label{font-size:14px;font-weight:800;fill:#cfe6f5;text-anchor:middle;dominant-baseline:middle;letter-spacing:1px;filter:drop-shadow(0 0 6px rgba(0,0,0,.6))}
+  .btn.ok .btn-label{fill:#fff;font-size:18px;filter:drop-shadow(0 0 8px rgba(255,255,255,.55))}
+  .btn.back .btn-label{fill:#fff;font-size:18px;filter:drop-shadow(0 0 8px rgba(255,255,255,.55))}
+  .btn.cat .btn-label{fill:#fcd34d}
+  .btn.card .btn-label{fill:#67e8f9}
+
+  .ring-base{fill:none;stroke:rgba(34,211,238,.30);stroke-width:2}
+  .ring-glow{fill:none;stroke:rgba(34,211,238,.08);stroke-width:14}
+
+  /* ---------- 分类页签 ---------- */
+  .tab-frame{position:absolute;left:236px;top:250px;width:608px;height:132px;
+    border:1.6px solid rgba(34,211,238,.28);border-radius:66px;
+    background:rgba(8,16,28,.55);z-index:1;
+    box-shadow:0 0 30px rgba(34,211,238,.10) inset,0 0 24px rgba(0,0,0,.45)}
+  .tabs{position:absolute;left:60px;top:268px;width:960px;height:96px;overflow:hidden;z-index:2;
+    pointer-events:auto;
+    mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
+  .tab-track{display:flex;align-items:center;justify-content:flex-start;height:100%;
+    white-space:nowrap;will-change:transform;
+    transition:transform .38s cubic-bezier(.22,.8,.24,1)}
+  .tab{flex:0 0 auto;font-size:16px;font-weight:700;letter-spacing:1px;color:#6b7f99;
+    padding:0 18px;cursor:pointer;opacity:.65;
+    transition:font-size .3s,color .3s,opacity .3s,text-shadow .3s}
+  .tab.on{font-size:36px;font-weight:900;color:#fff;opacity:1;
+    text-shadow:0 0 22px rgba(251,191,36,.45),0 2px 0 rgba(0,0,0,.4)}
+
+  .adjust-btns{display:none}
+  .adjust-btns.hidden{display:none}
+  .adjust{position:absolute;width:78px;height:78px;border-radius:50%;
+    display:grid;place-items:center;font-size:34px;font-weight:900;
+    pointer-events:auto;cursor:pointer;transition:background .12s,transform .1s}
+  .adjust:active{transform:scale(.94)}
+  .adjust.minus{color:#f87171;border:3px solid rgba(248,113,113,.75);background:rgba(248,113,113,.12)}
+  .adjust.minus:hover{background:rgba(248,113,113,.26)}
+  .adjust.plus{color:#60a5fa;border:3px solid rgba(96,165,250,.75);background:rgba(96,165,250,.12)}
+  .adjust.plus:hover{background:rgba(96,165,250,.26)}
+
+  .arrow-btns{position:absolute;inset:0;pointer-events:none;z-index:6}
+  .arrow-btn{position:absolute;width:88px;height:88px;border-radius:50%;
+    display:grid;place-items:center;font-size:36px;font-weight:900;
+    pointer-events:auto;cursor:pointer;transition:transform .12s,fill .12s}
+  .arrow-btn:active{transform:scale(.94)}
+  .arrow-btn.cat{color:#fbbf24;border:2.5px solid rgba(251,191,36,.7);
+    background:rgba(251,191,36,.12)}
+  .arrow-btn.cat:hover{background:rgba(251,191,36,.24)}
+  .arrow-btn.card{color:#67e8f9;border:2.5px solid rgba(34,211,238,.65);
+    background:rgba(34,211,238,.10)}
+  .arrow-btn.card:hover{background:rgba(34,211,238,.22)}
+
+  /* ---------- 中央卡片 ---------- */
+  @keyframes cardInLeft {
+    from { opacity: .2; transform: translateX(-90px) scale(.97); }
+    to   { opacity: 1;  transform: translateX(0)     scale(1); }
+  }
+  @keyframes cardInRight {
+    from { opacity: .2; transform: translateX(90px) scale(.97); }
+    to   { opacity: 1;  transform: translateX(0)    scale(1); }
+  }
+  .content.enter-left { animation: cardInLeft .26s cubic-bezier(.22,.8,.24,1); }
+  .content.enter-right { animation: cardInRight .26s cubic-bezier(.22,.8,.24,1); }
+
+  @keyframes cardIn {
+    from { opacity: .25; transform: translateY(18px) scale(.965); }
+    to   { opacity: 1;   transform: translateY(0)   scale(1); }
+  }
+  @keyframes valuePop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.12); }
+    100% { transform: scale(1); }
+  }
+  @keyframes bgDrift {
+    0%   { transform: translate3d(-1.5%, -1%, 0) scale(1.04); }
+    50%  { transform: translate3d(1.5%, 1%, 0) scale(1.07); }
+    100% { transform: translate3d(-1.5%, -1%, 0) scale(1.04); }
+  }
+  .content.enter { animation: cardIn .26s cubic-bezier(.22,.8,.24,1); }
+  .bg-glow{position:absolute;inset:-8%;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(620px 460px at 38% 40%, rgba(34,211,238,.10), transparent 62%),
+      radial-gradient(720px 520px at 64% 62%, rgba(139,92,246,.09), transparent 66%);
+    animation: bgDrift 20s ease-in-out infinite;}
+  .opt-value.pop { animation: valuePop .24s ease-out; }
+
+  .content{position:absolute;left:326px;top:404px;width:392px;height:420px;
+    display:flex;align-items:center;justify-content:center;pointer-events:none}
+
+  .dialog{position:absolute;left:0;top:0;width:1080px;height:1080px;z-index:200;
+    display:flex;align-items:center;justify-content:center;background:rgba(2,8,16,.72)}
+  .dialog.hidden{display:none}
+  .dlg-box{width:620px;border-radius:24px;border:2px solid rgba(34,211,238,.45);
+    background:#0a1626;padding:28px;box-shadow:0 0 40px rgba(0,0,0,.6)}
+  .dlg-title{font-size:20px;font-weight:800;color:#e2f3ff;margin-bottom:14px}
+  .dlg-input{width:100%;height:64px;border-radius:14px;border:2px solid rgba(34,211,238,.35);
+    background:#071322;color:#fff;font-size:22px;padding:0 16px;outline:none}
+  .dlg-actions{display:flex;justify-content:flex-end;gap:14px;margin-top:20px}
+  .dlg-btn{padding:12px 26px;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer;
+    border:2px solid rgba(34,211,238,.4);color:#cfe6f5}
+  .dlg-btn.ok{background:#0e7490;border-color:transparent;color:#fff}
+
+  .dlg-hint{font-size:13px;color:#8ba0b8;margin-top:10px;text-align:center}
+  .kb{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin-top:18px}
+  .kb.hidden{display:none}
+  .kb-key{height:52px;border-radius:10px;display:grid;place-items:center;
+    font-size:20px;font-weight:800;color:#cfe6f5;
+    border:1.5px solid rgba(34,211,238,.25);background:rgba(10,24,40,.9)}
+  .kb-key.on{border-color:#fbbf24;background:rgba(251,191,36,.22);color:#fff;
+    box-shadow:0 0 16px rgba(251,191,36,.35)}
+  .kb-key.wide{grid-column:span 2;font-size:15px}
+
+  .content.plain{left:246px;width:588px;background:transparent !important;
+    border:none !important;box-shadow:none !important}
+  .fx-layer{position:absolute;left:0;top:0;width:1080px;height:1080px;
+    pointer-events:none;z-index:120}
+  .dash{display:flex;flex-direction:column;gap:6px;width:100%;height:100%;
+    padding:10px 4px;overflow:hidden}
+  .dash-title{font-size:12px;font-weight:800;color:#7f93a8;letter-spacing:2px;margin-top:6px}
+  .dash-row{display:flex;justify-content:space-between;gap:10px;padding:4px 2px;
+    border-bottom:1px solid rgba(120,150,175,.12);font-size:13px}
+  .dash-label{color:#9fb3c8}
+  .dash-value{color:#e2f3ff;font-weight:700;text-align:right;word-break:break-all}
+  .dash-value.ok{color:#4ade80}
+  .dash-value.bad{color:#f87171}
+
+  .opt-list.hidden{display:none}
+  .opt-list{position:absolute;left:736px;top:392px;width:150px;z-index:99;height:392px;
+    border:1.5px solid rgba(34,211,238,.22);border-radius:18px;
+    background:rgba(8,16,28,.55);overflow:hidden;padding:10px 0;z-index:3}
+  .opt-list .list-inner{position:absolute;left:0;top:0;width:100%;
+    transition:transform .28s cubic-bezier(.22,.8,.24,1)}
+  .list-row{height:34px;line-height:34px;padding:0 14px;font-size:13px;color:#8ba0b8;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .list-row.on{color:#fff;font-weight:800}
+  .list-hl{position:absolute;left:6px;right:6px;height:34px;border-radius:10px;
+    border:2px solid rgba(251,191,36,.85);background:rgba(251,191,36,.10);
+    transition:transform .28s cubic-bezier(.22,.8,.24,1);pointer-events:none}
+
+  .card-adjust{position:absolute;left:0;right:0;bottom:20px;display:flex;justify-content:center;gap:52px}
+  .opt.main{position:relative;padding-bottom:96px}
+  .adj{width:66px;height:66px;border-radius:50%;display:grid;place-items:center;
+    font-size:30px;font-weight:900;cursor:pointer;transition:transform .1s,background .12s}
+  .adj:active{transform:scale(.93)}
+  .adj.minus{color:#f87171;border:3px solid rgba(248,113,113,.75);background:rgba(248,113,113,.12)}
+  .adj.plus{color:#60a5fa;border:3px solid rgba(96,165,250,.75);background:rgba(96,165,250,.12)}
+
+  .opt-strip{display:flex;align-items:stretch;justify-content:center;gap:10px;width:100%;height:100%}
+  .opt{display:flex;flex-direction:column;justify-content:center;border-radius:20px;
+    border:1px solid rgba(148,163,184,.14);background:rgba(8,15,28,.62);
+    padding:14px;pointer-events:auto;overflow:hidden}
+  .opt.side{width:62px;opacity:.5;align-items:center;text-align:center;padding:10px 8px;gap:6px}
+  .opt-side-title{font-size:11px;font-weight:700;color:#9fb3c8;line-height:1.3;
+    overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .opt.main{width:330px;border-color:rgba(251,191,36,.45);
+    background:linear-gradient(160deg,rgba(13,23,40,.97),rgba(5,10,20,.99));
+    box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  .opt-kicker{font-size:10px;letter-spacing:3px;color:var(--cyan-dim);font-weight:700}
+  .opt-title{font-size:19px;font-weight:800;margin-top:8px;line-height:1.3;
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .opt-value{font-size:28px;font-weight:900;color:#fcd34d;margin-top:12px}
+  .opt-key{font-size:10px;color:#64748b;margin-top:8px;word-break:break-all}
+  .opt.side .opt-title{font-size:11px}
+  .opt.side .opt-value{font-size:15px;margin-top:6px}
+
+  .arrow{cursor:pointer;transition:fill .12s}
+  .arrow.cat{fill:rgba(251,191,36,.12);stroke:rgba(251,191,36,.7);stroke-width:2.5}
+  .arrow.cat:hover{fill:rgba(251,191,36,.25)}
+  .arrow.card{fill:rgba(34,211,238,.10);stroke:rgba(34,211,238,.65);stroke-width:2.5}
+  .arrow.card:hover{fill:rgba(34,211,238,.22)}
+  .arrow-txt{font-size:34px;font-weight:900;text-anchor:middle;
+    dominant-baseline:middle;pointer-events:none}
+  .arrow-txt.cat{fill:#fbbf24}
+  .arrow-txt.card{fill:#67e8f9}
+  .card{width:100%;height:100%;border-radius:24px;padding:22px 26px;
+    background:linear-gradient(160deg,rgba(13,23,40,.94),rgba(5,10,20,.97));
+    border:1px solid var(--line);box-shadow:0 30px 90px rgba(0,0,0,.55),0 0 40px rgba(34,211,238,.06);
+    display:flex;flex-direction:column;pointer-events:auto;overflow:hidden}
+  .card-kicker{font-size:12px;letter-spacing:4px;color:var(--cyan-dim);font-weight:700}
+  .card-title{font-size:28px;font-weight:900;margin-top:6px;line-height:1.15}
+  .card-doc{font-size:14px;color:#93a7bd;margin-top:10px;line-height:1.5;
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .card-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;
+    gap:16px;padding-top:14px;border-top:1px solid rgba(148,163,184,.12)}
+  .card-foot .hint{font-size:12px;color:#64748b;letter-spacing:1px}
+  .big-key{font-size:18px;font-weight:900;color:#fbbf24;letter-spacing:2px}
+
+  .hero-glyph{position:absolute;right:30px;top:22px;font-size:58px;font-weight:900;
+    color:rgba(34,211,238,.14)}
+
+  .rows{display:flex;flex-direction:column;gap:6px;margin-top:12px;overflow:hidden;flex:1}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:8px 12px;border-radius:10px;border:1px solid rgba(148,163,184,.10);
+    background:rgba(15,23,42,.45)}
+  .row.sel{border-color:rgba(251,191,36,.65);background:rgba(251,191,36,.10)}
+  .row-label{font-size:14px;color:#cbd5e1;font-weight:600;overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap;max-width:470px}
+  .row-key{font-size:10px;color:#64748b;margin-top:1px;letter-spacing:.5px}
+  .chip{font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;
+    border:1px solid rgba(148,163,184,.25);color:#94a3b8;background:rgba(8,15,28,.7);white-space:nowrap}
+  .chip.on{color:#041016;background:linear-gradient(135deg,#67e8f9,#22d3ee);border-color:transparent}
+  .chip.num{color:#fcd34d;border-color:rgba(251,191,36,.4)}
+  .chip.str{color:#c4b5fd;border-color:rgba(167,139,250,.4)}
+
+  .empty{color:#64748b;font-size:14px;margin-top:16px}
+
+  .toast{position:absolute;left:50%;top:700px;transform:translateX(-50%);
+    padding:10px 20px;border-radius:999px;border:1px solid var(--line);
+    background:rgba(8,15,28,.92);color:#a5f3fc;font-size:15px;font-weight:600;
+    opacity:0;transition:opacity .18s;pointer-events:none;z-index:50}
+  .toast.show{opacity:1}
+
+  /* ---- 扁平化覆盖 ---- */
+  .screen{background:#0b1017 !important}
+  .bg-glow{display:none !important}
+  .card,.opt,.opt-list,.tab-frame,.dlg-box{
+    background:#0f1720 !important; box-shadow:none !important;
+    border:1px solid #24303d !important}
+  .btn{filter:none !important}
+  .btn.ok{fill:#e08a2e !important;stroke:#e08a2e !important}
+  .btn.back{fill:#3b6fd4 !important;stroke:#3b6fd4 !important}
+  .btn.cat{fill:#5a4a1e !important;stroke:#7a6420 !important}
+  .btn.card{fill:#16324a !important;stroke:#2a4a66 !important}
+  .btn-num,.btn-label,.tab.on{text-shadow:none !important;filter:none !important}
+  .arrow-btn{box-shadow:none !important}
+  .tab.on{color:#fff !important;text-shadow:none !important}
+  .card-adjust .adj{box-shadow:none !important}
+  .zone-line{stroke:rgba(120,150,175,.25) !important}
+  .kicker,.card-kicker{color:#7f93a8 !important}
+  .title,.card-title{text-shadow:none !important}
+</style>
+</head>
+<body>
+<div id="screen">
+  <section class="top">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">mai<br>mai</div>
+        <div>
+          <div class="brand-title">手台启动器</div>
+          <div class="brand-sub">MAIMAI LAUNCHER · TV UI · BY 123456776543</div>
+        </div>
+      </div>
+      <div class="clock" id="clock">--:--</div>
+    </div>
+    <div class="hero">
+      <div class="kicker" id="kicker">HOME</div>
+      <div class="title" id="title">主页</div>
+      <div class="desc" id="desc">A4 确认 · A5 返回</div>
+    </div>
+    <div class="status-row">
+      <span id="status" class="status">正在连接…</span>
+      <span class="hint">A4 OK · A5 BACK · A7/A2 分类 · A6/A3 翻页</span>
+    </div>
+  </section>
+
+  <section class="stage">
+    <svg id="ring" viewBox="-540 -540 1080 1080">
+      <defs>
+        <mask id="bandMask" maskUnits="userSpaceOnUse" x="-600" y="-600" width="1200" height="1200">
+          <rect x="-600" y="-600" width="1200" height="1200" fill="black"/>
+          <circle r="299" fill="white"/>
+          <circle r="233" fill="black"/>
+        </mask>
+        <radialGradient id="okGrad" cx="50%" cy="38%" r="68%">
+          <stop offset="0%" stop-color="#fbbf24"/>
+          <stop offset="55%" stop-color="#f59e0b"/>
+          <stop offset="100%" stop-color="#b45309"/>
+        </radialGradient>
+        <radialGradient id="backGrad" cx="50%" cy="38%" r="68%">
+          <stop offset="0%" stop-color="#93c5fd"/>
+          <stop offset="55%" stop-color="#3b82f6"/>
+          <stop offset="100%" stop-color="#1d4ed8"/>
+        </radialGradient>
+        <radialGradient id="catGrad" cx="50%" cy="40%" r="70%">
+          <stop offset="0%" stop-color="#4a3410"/>
+          <stop offset="60%" stop-color="#2a1d09"/>
+          <stop offset="100%" stop-color="#150e04"/>
+        </radialGradient>
+        <radialGradient id="baseGrad" cx="50%" cy="38%" r="72%">
+          <stop offset="0%" stop-color="#1d4f7a"/>
+          <stop offset="55%" stop-color="#12324f"/>
+          <stop offset="100%" stop-color="#0a1a2d"/>
+        </radialGradient>
+      </defs>
+      <circle class="ring-glow" r="538"/>
+      <circle class="ring-base" r="538"/>
+
+      <g id="btnPaths"></g>
+      <g id="btnLabels"></g>
+      <g id="tabMarks"></g>
+      <g id="arrows"></g>
+    </svg>
+    <div class="tab-frame"></div>
+    <div class="tabs" id="tabs"></div>
+    <div class="arrow-btns" id="arrowBtns"></div>
+    <div class="adjust-btns hidden" id="adjustBtns"></div>
+    <div class="dialog hidden" id="inputDlg">
+      <div class="dlg-box">
+        <div class="dlg-title" id="dlgTitle">输入</div>
+        <input class="dlg-input" id="inputBox" spellcheck="false">
+        <div class="dlg-hint">物理键盘输入 · Enter 保存 · Esc 取消 · A4 保存 · A5 取消</div>
+        <div class="kb hidden" id="kb" style="display:none"><div class="kb-key" data-i="0" data-ch="a">a</div><div class="kb-key" data-i="1" data-ch="b">b</div><div class="kb-key" data-i="2" data-ch="c">c</div><div class="kb-key" data-i="3" data-ch="d">d</div><div class="kb-key" data-i="4" data-ch="e">e</div><div class="kb-key" data-i="5" data-ch="f">f</div><div class="kb-key" data-i="6" data-ch="g">g</div><div class="kb-key" data-i="7" data-ch="h">h</div><div class="kb-key" data-i="8" data-ch="i">i</div><div class="kb-key" data-i="9" data-ch="j">j</div><div class="kb-key" data-i="10" data-ch="k">k</div><div class="kb-key" data-i="11" data-ch="l">l</div><div class="kb-key" data-i="12" data-ch="m">m</div><div class="kb-key" data-i="13" data-ch="n">n</div><div class="kb-key" data-i="14" data-ch="o">o</div><div class="kb-key" data-i="15" data-ch="p">p</div><div class="kb-key" data-i="16" data-ch="q">q</div><div class="kb-key" data-i="17" data-ch="r">r</div><div class="kb-key" data-i="18" data-ch="s">s</div><div class="kb-key" data-i="19" data-ch="t">t</div><div class="kb-key" data-i="20" data-ch="u">u</div><div class="kb-key" data-i="21" data-ch="v">v</div><div class="kb-key" data-i="22" data-ch="w">w</div><div class="kb-key" data-i="23" data-ch="x">x</div><div class="kb-key" data-i="24" data-ch="y">y</div><div class="kb-key" data-i="25" data-ch="z">z</div><div class="kb-key" data-i="26" data-ch="0">0</div><div class="kb-key" data-i="27" data-ch="1">1</div><div class="kb-key" data-i="28" data-ch="2">2</div><div class="kb-key" data-i="29" data-ch="3">3</div><div class="kb-key" data-i="30" data-ch="4">4</div><div class="kb-key" data-i="31" data-ch="5">5</div><div class="kb-key" data-i="32" data-ch="6">6</div><div class="kb-key" data-i="33" data-ch="7">7</div><div class="kb-key" data-i="34" data-ch="8">8</div><div class="kb-key" data-i="35" data-ch="9">9</div><div class="kb-key" data-i="36" data-ch="-">-</div><div class="kb-key" data-i="37" data-ch="_">_</div><div class="kb-key" data-i="38" data-ch=".">.</div><div class="kb-key" data-i="39" data-ch="@">@</div><div class="kb-key" data-i="40" data-ch="#">#</div><div class="kb-key" data-i="41" data-ch="%">%</div><div class="kb-key" data-i="42" data-ch="&">&</div><div class="kb-key" data-i="43" data-ch="+">+</div><div class="kb-key" data-i="44" data-ch="=">=</div><div class="kb-key" data-i="45" data-ch=":">:</div><div class="kb-key" data-i="46" data-ch="/">/</div><div class="kb-key" data-i="47" data-ch="?">?</div><div class="kb-key wide" id="kbDel">⌫ 删除</div><div class="kb-key wide" id="kbSave">保存</div></div>
+        <div class="dlg-actions">
+          <div class="dlg-btn" id="dlgCancel">取消 (A5)</div>
+          <div class="dlg-btn ok" id="dlgOk">保存 (A4)</div>
+        </div>
+      </div>
+    </div>
+    <svg id="fx" viewBox="-540 -540 1080 1080" class="fx-layer"></svg>
+    <div class="opt-list hidden" id="optList"><div class="list-hl" id="listHl"></div><div class="list-inner" id="listInner"></div></div>
+    <div class="content" id="content"></div>
+    <div class="toast" id="toast"></div>
+  </section>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  let AQUAMAI = /*__AQUAMAI_DATA__*/{groups:[]};
+  const ZONES = /*__ZONES_DATA__*/{};
+
+  const NS = 'http://www.w3.org/2000/svg';
+  const $ = (id) => document.getElementById(id);
+  const btnPaths = $('btnPaths');
+  const btnLabels = $('btnLabels');
+  const tabsEl = $('tabs');
+  const content = $('content');
+  const toastEl = $('toast');
+
+  const state = {
+    cat: 0,
+    card: 0,
+    detail: false,
+    row: 0,
+    rowOffset: 0,
+    native: false,
+    writable: false,
+    prevButtons: new Set(),
+    prevTouch: new Set(),
+    dir: 0,
+  };
+
+  const ACTIONS = [
+    { id: 'launch', title: '启动 sinmai', desc: '运行当前版本的启动脚本，进入舞萌', glyph: '▶', action: 'launch' },
+    { id: 'majplay', title: 'MajPlay', desc: '启动 MajdataPlay（Simai 播放器）', glyph: '♪', action: 'majplay' },
+    { id: 'majplay-path', title: 'MajPlay 路径', desc: '选择 MajdataPlay.exe 的位置', glyph: '⌘', action: 'majplay-path' },
+    { id: 'mcm', title: 'MaiChartManager', desc: '启动 MCM，并放到下方圆内 898×599', glyph: '◈', action: 'mcm' },
+    { id: 'update-aquamai', title: '更新 AquaMai', desc: '检查 GitHub 最新版并替换 AquaMai.dll（保留 toml）', glyph: '⟳', action: 'update-aquamai' },
+    { id: 'reboot', title: '重启电脑', desc: '重新启动这台电脑', glyph: '↻', action: 'reboot' },
+    { id: 'shutdown', title: '关机', desc: '关闭这台游戏电脑', glyph: '⏻', action: 'shutdown' },
+    { id: 'exit', title: '退出启动器', desc: '关闭启动器，回到桌面', glyph: '×', action: 'exit' },
+    { id: 'dashboard', title: '状态', desc: '硬件连接 · 配置 · 关于', glyph: '▤', action: 'dashboard' },
+  ];
+
+  const ACT = {
+    volUp: { label: '音量 +', fn: () => { send({ type: 'action', action: 'volume-up' }); toast('音量 +'); } },
+    volDown: { label: '音量 −', fn: () => { send({ type: 'action', action: 'volume-down' }); toast('音量 −'); } },
+    catPrev: { label: '◀ 上一分类', fn: () => prevCat() },
+    catNext: { label: '下一分类 ▶', fn: () => nextCat() },
+    itemPrev: { label: '◀ 上一项', fn: () => prevCard() },
+    itemNext: { label: '下一项 ▶', fn: () => nextCard() },
+    ok: { label: 'OK', fn: () => ok() },
+    back: { label: 'BACK', fn: () => back() },
+  };
+
+  // 不同场景显示不同按键；null = 该位置不显示
+  const SCHEMA = {
+    home: [ACT.volUp, null, ACT.itemNext, ACT.ok, ACT.back, ACT.itemPrev, null, ACT.volDown],
+    list: [ACT.volUp, null, ACT.itemNext, ACT.ok, ACT.back, ACT.itemPrev, null, ACT.volDown],
+    detail: [null, null, ACT.itemNext, ACT.ok, ACT.back, ACT.itemPrev, null, null],
+  };
+
+  const BUTTONS = [
+    { n: 1, label: '音量 +', cls: 'card' },
+    { n: 2, label: '下一页 ▶', cls: 'cat' },
+    { n: 3, label: '下一张 ▶', cls: 'card' },
+    { n: 4, label: 'OK', cls: 'ok' },
+    { n: 5, label: 'BACK', cls: 'back' },
+    { n: 6, label: '◀ 上一张', cls: 'card' },
+    { n: 7, label: '◀ 上一页', cls: 'cat' },
+    { n: 8, label: '音量 −', cls: 'card' },
+  ];
+
+  const MCM_ORDER = ['常用', '控制器输入', '输入设置', '判定', '显示', '音频', '其他硬件',
+    '解锁与省时', '选曲界面', '美化', '调试工具', '高级设置', '实验性', '不建议关闭'];
+
+  function mcmCat(section) {
+    const n = ((section.name || '') + ' ' + (section.title || '') + ' ' + (section.group || '')).toLowerCase();
+    if (/unlock|解锁|skip|quickretry|autoplay|省时/.test(n)) return '解锁与省时';
+    if (/judge|判定|timing|late|early|perfect/.test(n)) return '判定';
+    if (/audio|sound|音量|volume|bass|dsp/.test(n)) return '音频';
+    if (/display|window|显示|render|screen|fps|frame|optionload/.test(n)) return '显示';
+    if (/touch|sensor|pdx|触摸/.test(n)) return '输入设置';
+    if (/keymap|input|button|io4|adxhid|hid|按钮/.test(n)) return '控制器输入';
+    if (/select|选曲|song|music|chart|battle/.test(n)) return '选曲界面';
+    if (/fancy|美化|skin|led|light|灯/.test(n)) return '美化';
+    if (/debug|调试|log|test/.test(n)) return '调试工具';
+    if (/experiment|实验|beta|unstable/.test(n)) return '实验性';
+    if (/disabletimeout|encrypt|removeencrypt|不建议/.test(n)) return '不建议关闭';
+    return '高级设置';
+  }
+
+  function buildCategories() {
+    const cats = [{ id: 'home', title: '主页', sections: null, actions: ACTIONS }];
+    if (GAMES.list.length > 0) cats.push({ id: 'versions', title: '版本', versions: GAMES.list });
+
+    const buckets = new Map();
+    for (const g of (AQUAMAI.groups || [])) {
+      for (const sec of (g.sections || [])) {
+        const title = mcmCat(sec);
+        if (!buckets.has(title)) buckets.set(title, []);
+        buckets.get(title).push(sec);
+      }
+    }
+
+    for (const title of MCM_ORDER) {
+      const list = buckets.get(title);
+      if (list && list.length) cats.push({ id: 'mcm-' + title, title, sections: list });
+    }
+    return cats;
+  }
+
+  let GAMES = { list: [], active: 0 };
+  let CATS = buildCategories();
+
+  /* ---------- 按键绘制（贴合感应区 A1–A8） ---------- */
+  const SCALE = 1.8;
+
+  BUTTONS.forEach((b, i) => {
+    const z = ZONES['A' + b.n];
+    if (!z) return;
+
+    if (b.n === 2 || b.n === 7) {
+      const ph = document.createElementNS(NS, 'text');
+      ph.setAttribute('class', 'btn-label');
+      ph.dataset.ph = '1';
+      ph.dataset.i = String(i);
+      ph.setAttribute('pointer-events', 'none');
+      btnLabels.appendChild(ph);
+      return;
+    }
+
+    const isRound = b.n === 3 || b.n === 6;
+    if (isRound) {
+      const len = Math.hypot(z.cx, z.cy) || 1;
+      const ccx = z.cx * SCALE * (1 + 24 / len);
+      const ccy = z.cy * SCALE * (1 + 24 / len);
+      const circle = document.createElementNS(NS, 'circle');
+      circle.setAttribute('cx', ccx.toFixed(1));
+      circle.setAttribute('cy', ccy.toFixed(1));
+      circle.setAttribute('r', '58');
+      circle.setAttribute('class', 'btn round ' + b.cls);
+      circle.dataset.i = String(i);
+      circle.addEventListener('click', () => press(i));
+      btnPaths.appendChild(circle);
+
+      const arrow = document.createElementNS(NS, 'text');
+      arrow.setAttribute('x', ccx.toFixed(1));
+      arrow.setAttribute('y', (ccy + 12).toFixed(1));
+      arrow.setAttribute('text-anchor', 'middle');
+      arrow.setAttribute('font-size', '38');
+      arrow.setAttribute('font-weight', '900');
+      arrow.setAttribute('fill', '#fff');
+      arrow.setAttribute('pointer-events', 'none');
+      arrow.textContent = b.n === 3 ? '▶' : '◀';
+      btnLabels.appendChild(arrow);
+
+      const placeholder = document.createElementNS(NS, 'text');
+      placeholder.setAttribute('data-i', String(i));
+      placeholder.setAttribute('class', 'btn-label');
+      placeholder.dataset.ph = '1';
+      placeholder.setAttribute('pointer-events', 'none');
+      btnLabels.appendChild(placeholder);
+      return;
+    }
+
+
+    // 完整感应区轮廓
+    const outline = document.createElementNS(NS, 'path');
+    outline.setAttribute('d', z.path);
+    outline.setAttribute('transform', `scale(${SCALE})`);
+    outline.setAttribute('class', 'zone-line');
+    outline.setAttribute('pointer-events', 'none');
+    btnPaths.appendChild(outline);
+
+    // 只保留外圈一半（r 419–538），形状仍严格是 A 区
+    const p = document.createElementNS(NS, 'path');
+    p.setAttribute('d', z.path);
+    p.setAttribute('transform', `scale(${SCALE})`);
+    p.setAttribute('class', 'btn ' + b.cls);
+    p.setAttribute('mask', 'url(#bandMask)');
+    p.dataset.i = String(i);
+    p.addEventListener('click', () => press(i));
+    btnPaths.appendChild(p);
+
+    const angle = (Math.atan2(z.cy, z.cx) * 180) / Math.PI;
+    const rad = (angle * Math.PI) / 180;
+    const cx = Math.cos(rad) * 478;
+    const cy = Math.sin(rad) * 478;
+
+    const num = document.createElementNS(NS, 'text');
+    num.setAttribute('x', cx.toFixed(1));
+    num.setAttribute('y', (cy - 15).toFixed(1));
+    num.setAttribute('class', 'btn-num');
+    num.textContent = String(b.n);
+    num.setAttribute('pointer-events', 'none');
+    num.dataset.i = String(i);
+    btnLabels.appendChild(num);
+
+    const lab = document.createElementNS(NS, 'text');
+    lab.dataset.i = String(i);
+    lab.setAttribute('x', cx.toFixed(1));
+    lab.setAttribute('y', (cy + 15).toFixed(1));
+    lab.setAttribute('class', 'btn-label');
+    lab.textContent = b.label;
+    lab.setAttribute('pointer-events', 'none');
+    btnLabels.appendChild(lab);
+  });
+
+  // 和真机同一感应区：E8/E2 切分类，E7/E3 切卡片/选项
+  const arrowBtns = $('arrowBtns');
+  function addArrowAt(zoneName, dir, kind, action) {
+    const z = ZONES[zoneName];
+    if (!z) return;
+    const cx = z.cx * 1.8 + 540;
+    const cy = z.cy * 1.8 + 540;
+    const b = document.createElement('div');
+    b.className = 'arrow-btn ' + kind;
+    b.textContent = dir < 0 ? '◀' : '▶';
+    b.style.left = (cx - 44) + 'px';
+    b.style.top = (cy - 44) + 'px';
+    b.onclick = action;
+    arrowBtns.appendChild(b);
+  }
+  addArrowAt('E8', -1, 'cat', () => prevCat());
+  addArrowAt('E2', 1, 'cat', () => nextCat());
+
+  const adjustBtns = $('adjustBtns');
+  function addAdjust(zoneName, dir) {
+    const z = ZONES[zoneName];
+    if (!z) return;
+    const x = z.cx * 1.8 + 540;
+    const y = z.cy * 1.8 + 540;
+    const b = document.createElement('div');
+    b.className = 'adjust ' + (dir < 0 ? 'minus' : 'plus');
+    b.textContent = dir < 0 ? '⊖' : '⊕';
+    b.style.left = (x - 39) + 'px';
+    b.style.top = (y - 39) + 'px';
+    b.onclick = () => adjust(dir);
+    adjustBtns.appendChild(b);
+  }
+  addAdjust('B5', -1);
+  addAdjust('B4', 1);
+
+
+  let buttonLabels = [];
+  function applySchema() {
+    if (!buttonLabels.length) {
+      buttonLabels = Array.from(btnLabels.querySelectorAll('.btn-label'));
+    }
+    const buttonNums = Array.from(btnLabels.querySelectorAll('.btn-num'));
+    const mode = state.help ? 'help' : state.detail ? 'detail' : (currentCat().id === 'home' ? 'home' : 'list');
+    const schema = SCHEMA[mode] || SCHEMA.list;
+    state.schema = schema;
+
+    buttonLabels.forEach((node, i) => {
+      const b = schema[i];
+      if (node.dataset.ph === '1') { node.textContent = ''; return; }
+      node.textContent = b ? b.label : '';
+      const path = btnPaths.querySelector(`[data-i="${i}"]`);
+      if (path) path.classList.toggle('off', !b);
+      if (buttonNums[i]) buttonNums[i].style.opacity = b ? '1' : '0.22';
+    });
+  }
+
+  function press(i) {
+    const el = btnPaths.querySelector(`[data-i="${i}"]`);
+    if (el) {
+      el.classList.add('active');
+      setTimeout(() => el.classList.remove('active'), 160);
+    }
+    onButton(i);
+  }
+
+  /* ---------- 数据访问 ---------- */
+  function currentCat() { return CATS[state.cat]; }
+  function cardsOf(cat) {
+    if (cat.actions) return cat.actions;
+    if (cat.versions) {
+      return [
+        ...cat.versions.map((g, i) => ({ kind: 'version', index: i, game: g })),
+        { kind: 'action', title: '新建版本', desc: '选择 .bat 添加为新版本', glyph: '＋', action: 'new-version' },
+        { kind: 'action', title: '重命名当前版本', desc: '给当前版本改一个显示名称', glyph: '✎', action: 'rename-version' },
+      ];
+    }
+    return (cat.sections || []).map((s) => ({ kind: 'section', section: s }));
+  }
+  function currentCard() {
+    const list = cardsOf(currentCat());
+    return list[Math.min(state.card, list.length - 1)];
+  }
+
+  /* ---------- 渲染 ---------- */
+  let tabEls = [];
+  let tabTrack = null;
+
+  function buildTabs() {
+    tabsEl.innerHTML = '';
+    tabTrack = document.createElement('div');
+    tabTrack.className = 'tab-track';
+    tabEls = CATS.map((c, i) => {
+      const t = document.createElement('div');
+      t.className = 'tab';
+      t.textContent = c.title;
+      t.onclick = () => { state.cat = i; resetCard(); };
+      tabTrack.appendChild(t);
+      return t;
+    });
+    tabsEl.appendChild(tabTrack);
+  }
+
+  function renderTabs() {
+    if (tabEls.length !== CATS.length) buildTabs();
+    tabEls.forEach((el, i) => el.classList.toggle('on', i === state.cat));
+
+    const el = tabEls[state.cat];
+    if (!el || !tabTrack) return;
+
+    // 用布局坐标（不受 transform 影响）把当前项中心对准两个黄箭头中点
+    const center = el.offsetLeft + el.offsetWidth / 2;
+    const target = tabsEl.clientWidth / 2;
+    tabTrack.style.transform = `translateX(${(target - center).toFixed(1)}px)`;
+  }
+
+  function resetCard() {
+    state.card = 0;
+    state.detail = false;
+    state.row = 0;
+    state.rowOffset = 0;
+    render();
+  }
+
+  function render() {
+    renderTabs();
+    const cat = currentCat();
+    $('kicker').textContent = cat.id === 'home'
+      ? 'HOME'
+      : cat.id === 'versions'
+        ? 'VERSIONS'
+        : 'AQUAMAI · ' + String(cat.id).toUpperCase();
+    $('title').textContent = cat.title;
+    if (!state.dash) content.classList.remove('plain');
+    content.classList.remove('enter', 'enter-left', 'enter-right');
+    void content.offsetWidth;
+    content.classList.add(state.dir < 0 ? 'enter-left' : state.dir > 0 ? 'enter-right' : 'enter');
+
+    $('desc').textContent = state.detail
+      ? 'A4 确认 / 切换 · A5 返回列表'
+      : 'A4 进入 · A5 返回 · A7/A2 分类 · A6/A3 翻页';
+    if (state.dash) renderDashboard();
+    else if (state.detail) renderDetail();
+    else renderCard();
+
+    const adj = $('adjustBtns');
+    if (adj) adj.classList.toggle('hidden', !state.detail);
+
+    applySchema();
+    renderSideList();
+  }
+
+  function cardEl(inner, onClick) {
+    const c = document.createElement('div');
+    c.className = 'card';
+    c.innerHTML = inner;
+    if (onClick) c.onclick = onClick;
+    return c;
+  }
+
+  function headHtml(kicker, title, doc) {
+    return `<div class="card-kicker">${escapeHtml(kicker)}</div>` +
+      `<div class="card-title">${escapeHtml(title)}</div>` +
+      (doc ? `<div class="card-doc">${escapeHtml(doc)}</div>` : '');
+  }
+
+  function footHtml(left, right) {
+    return `<div class="card-foot">` +
+      `<span class="hint">${escapeHtml(left)}</span>` +
+      `<span class="big-key">${escapeHtml(right)}</span>` +
+      `</div>`;
+  }
+
+  function renderSideList() {
+    if (state.dash || state.dashCard) { $('optList').classList.add('hidden'); return; }
+    const list = cardsOf(currentCat());
+
+    if (!state.detail) {
+      // 列表页：列出当前分类下所有条目，黄框框住当前条目
+      const rows = list.map((c) => {
+        if (c.kind === 'section') return trimDoc(c.section.doc) || c.section.title || c.section.name;
+        if (c.kind === 'version') return c.game.displayName || c.game.name || '版本';
+        return c.title || c.id || '';
+      });
+      showList(rows, Math.min(state.card, rows.length - 1));
+      return;
+    }
+
+    const item = list[Math.min(state.card, list.length - 1)];
+    if (item && item.kind === 'section') {
+      const ks = item.section.keys || [];
+      const rows = ks.length ? ks.map((k) => trimDoc(k.doc) || humanize(k.key))
+                             : [item.section.title || item.section.name];
+      showList(rows, Math.min(state.row, rows.length - 1));
+      return;
+    }
+
+    showList([], 0);
+  }
+
+  function showList(rows, idx) {
+    const listEl = $('optList');
+    const inner = $('listInner');
+    const hl = $('listHl');
+    if (!listEl) return;
+    listEl.classList.remove('hidden');
+    if (!rows.length) rows = ['（无条目）'];
+    inner.innerHTML = rows.map((t, i) =>
+      `<div class="list-row${i === idx ? ' on' : ''}">${escapeHtml(t)}</div>`
+    ).join('');
+    const target = (392 - 20) / 2 - 17 - idx * 34;
+    const shift = Math.min(0, target);
+    inner.style.transform = `translateY(${shift}px)`;
+    hl.style.transform = `translateY(${shift + idx * 34 - 8}px)`;
+  }
+
+  function dashRow(label, value, ok) {
+    return `<div class="dash-row"><span class="dash-label">${escapeHtml(label)}</span>` +
+      `<span class="dash-value ${ok === true ? 'ok' : ok === false ? 'bad' : ''}">${escapeHtml(value)}</span></div>`;
+  }
+
+  function renderDashboard() {
+    state.dashCard = true;
+    if (!$('content').classList.contains('plain')) $('content').classList.add('plain');
+    const st = state.status || {};
+    const html =
+      `<div class="dash">` +
+      `<div class="dash-title">硬件状态</div>` +
+      dashRow('io4 按键', st.io4 ? '已连接' : '无数据', !!st.io4) +
+      dashRow('触摸屏', (st.port || 'auto') + (st.touch ? ' · 已连接' : ' · 未连接'), !!st.touch) +
+      dashRow('LED 灯板', st.led ? 'COM21 · 已连接' : '未连接', !!st.led) +
+      dashRow('游戏进程', st.game ? '运行中' : '未运行', null) +
+      `<div class="dash-title">配置</div>` +
+      dashRow('AquaMai', st.aquamai || '未配置', null) +
+      dashRow('写入权限', st.writable ? '可写' : '只读', !!st.writable) +
+      dashRow('版本数', String(st.games == null ? 0 : st.games) + ' 个', null) +
+      dashRow('当前版本', GAMES.list[GAMES.active] ? GAMES.list[GAMES.active].name : '未配置', null) +
+      `<div class="dash-title">关于</div>` +
+      dashRow('启动器版本', st.version || '1.0', null) +
+      dashRow('界面', 'v2 · WebView2', null) +
+      `</div>`;
+    content.innerHTML = html;
+    $('kicker').textContent = 'STATUS';
+    $('title').textContent = '状态';
+    $('desc').textContent = '硬件连接 · 配置 · 关于';
+  }
+
+  function renderCard() {
+    const list = cardsOf(currentCat());
+    const item = list[Math.min(state.card, list.length - 1)];
+    content.innerHTML = '';
+    state.dashCard = false;
+
+    if (item.action === 'dashboard') {
+      renderDashboard();
+      return;
+    }
+
+    if (item.kind === 'version') {
+      const g = item.game;
+      const active = item.index === GAMES.active;
+      content.appendChild(cardEl(
+        headHtml(active ? 'VERSION · 当前' : 'VERSION', g.name, g.bat) +
+        footHtml(`${item.index + 1} / ${list.length}`, active ? '当前版本' : 'A4 切换'),
+        () => ok()));
+      return;
+    }
+
+    if (item.kind === 'section') {
+      const s = item.section;
+      const keys = s.keys || [];
+      const kicker = `${s.group || 'AQUAMAI'} · ${keys.length} 项`;
+      const foot = `${state.card + 1} / ${list.length} · ${s.enabled ? '已启用' : '默认（未启用）'} · ${state.writable ? '可写' : '只读'}`;
+      content.appendChild(cardEl(
+        headHtml(kicker, trimDoc(s.doc) || s.title || s.name, s.name) + footHtml(foot, 'A4 查看'),
+        () => ok()));
+      return;
+    }
+
+    let desc = item.desc;
+    if (item.action === 'launch') {
+      const cur = GAMES.list[GAMES.active];
+      desc = cur ? `当前版本：${cur.name}` : '当前版本未配置';
+    }
+
+    content.appendChild(cardEl(
+      `<div class="hero-glyph">${item.glyph || ''}</div>` +
+      headHtml('ACTION', item.title, desc) +
+      footHtml(`${state.card + 1} / ${list.length}`, 'A4 执行'),
+      () => ok()));
+  }
+
+  function humanize(key) {
+    return String(key || '').replace(/([a-z0-9])([A-Z])/g, '$1 $2');
+  }
+
+  function fmtValue(k) {
+    if (!k) return '';
+    if (k.type === 'bool') return String(k.value).toLowerCase() === 'true' ? 'ON' : 'OFF';
+    const v = String(k.value == null ? '' : k.value);
+    return v.length ? v : '未设置';
+  }
+
+  function renderDetail() {
+    $('optList').classList.remove('hidden');
+    const item = currentCard();
+    if (item.kind !== 'section') { state.detail = false; render(); return; }
+
+    const s = item.section;
+    const keys = s.keys || [];
+    content.innerHTML = '';
+
+    if (!keys.length) {
+      const l0 = $('optList');
+      l0.classList.remove('hidden');
+      $('listInner').innerHTML = `<div class="list-row on">${escapeHtml(s.title || s.name)}</div>`;
+      $('listHl').style.transform = 'translateY(0px)';
+      content.appendChild(cardEl(
+        headHtml(`${s.group} · 整段功能`, s.title || s.name, trimDoc(s.doc) || s.name) +
+        footHtml(s.enabled ? '已启用' : '未启用', state.writable ? 'A4 切换' : '只读'),
+        () => ok()));
+      return;
+    }
+
+    const idx = Math.min(state.row, keys.length - 1);
+    const wrap = document.createElement('div');
+    wrap.className = 'opt-strip';
+
+    function sideCard(k) {
+      const d = document.createElement('div');
+      d.className = 'opt side';
+      if (k) {
+        d.innerHTML = `<div class="opt-side-title">${escapeHtml(trimDoc(k.doc) || humanize(k.key))}</div>` +
+          `<div class="opt-value">${escapeHtml(fmtValue(k))}</div>`;
+      }
+      return d;
+    }
+
+
+
+    const main = document.createElement('div');
+    main.className = 'opt main';
+    const cur = keys[idx];
+    main.innerHTML =
+      `<div class="opt-kicker">${escapeHtml(trimDoc(s.doc) || s.title || s.name)}</div>` +
+      `<div class="opt-title">${escapeHtml(trimDoc(cur.doc) || humanize(cur.key))}</div>` +
+      `<div class="opt-value">${escapeHtml(fmtValue(cur))}</div>` +
+      `<div class="opt-key">${escapeHtml(cur.key)}</div>` +
+      `<div class="card-adjust">` +
+      `<div class="adj minus" data-dir="-1">⊖</div>` +
+      `<div class="adj plus" data-dir="1">⊕</div>` +
+      `</div>`;
+    main.querySelectorAll('.adj').forEach((b) => {
+      b.onclick = (e) => {
+        e.stopPropagation();
+        adjust(Number(b.dataset.dir));
+      };
+    });
+    main.onclick = () => ok();
+    wrap.appendChild(main);
+
+
+    content.appendChild(wrap);
+
+    const listEl = $('optList');
+    const inner = $('listInner');
+    const hl = $('listHl');
+    if (state.detail) {
+      listEl.classList.remove('hidden');
+      inner.innerHTML = keys.map((k, i) =>
+        `<div class="list-row${i === idx ? ' on' : ''}">${escapeHtml(trimDoc(k.doc) || humanize(k.key))}</div>`
+      ).join('');
+      hl.style.transform = `translateY(${idx * 34}px)`;
+      const viewH = 392 - 20;
+      const target = viewH / 2 - 17 - idx * 34;
+      inner.style.transform = `translateY(${Math.min(0, target)}px)`;
+    } else {
+      listEl.classList.add('hidden');
+    }
+
+    const vEl = main.querySelector('.opt-value');
+    if (vEl) {
+      vEl.classList.add('pop');
+      setTimeout(() => vEl.classList.remove('pop'), 260);
+    }
+
+    $('desc').textContent = `第 ${idx + 1} / ${keys.length} 项 · 内屏 B5/B4 调值 · A3/A6 翻页`;
+  }
+
+  function chipFor(k) {
+    if (k.type === 'bool') {
+      const on = String(k.value).toLowerCase() === 'true';
+      return `<span class="chip ${on ? 'on' : ''}">${on ? 'ON' : 'OFF'}</span>`;
+    }
+    if (k.type === 'int' || k.type === 'float') return `<span class="chip num">${escapeHtml(String(k.value))}</span>`;
+    if (k.type === 'array') return `<span class="chip">列表</span>`;
+    const s = String(k.value);
+    if (s.length === 0) return `<span class="chip">未设置</span>`;
+    return `<span class="chip str">${escapeHtml(s)}</span>`;
+  }
+
+  function trimDoc(doc) {
+    if (!doc) return '';
+    const line = String(doc).split('\n').map((x) => x.trim()).filter(Boolean)[0] || '';
+    return line.length > 40 ? line.slice(0, 40) + '…' : line;
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /* ---------- 交互 ---------- */
+  let pendingKey = null;
+
+  function openInput(key) {
+    pendingKey = key;
+    $('dlgTitle').textContent = (key.doc || key.key) + '（' + key.key + '）';
+    $('inputBox').value = key.value == null ? '' : String(key.value);
+    $('inputDlg').classList.remove('hidden');
+    kbOpen();
+    setTimeout(() => $('inputBox').focus(), 30);
+  }
+
+  let pendingRename = null;
+
+  let kbPos = 0;
+  let kbKeys = [];
+
+  function renderKb() {
+    if (!kbKeys.length) kbKeys = Array.from(document.querySelectorAll('.kb-key[data-i]'));
+    kbKeys.forEach((el, i) => el.classList.toggle('on', i === kbPos));
+  }
+
+  function kbOpen() {
+    kbPos = 0;
+    const kb = $('kb');
+    if (!kb) return;
+    kb.classList.remove('hidden');
+    kb.style.display = 'none';
+    renderKb();
+  }
+
+  function kbClose() {
+    const kb = $('kb');
+    if (!kb) return;
+    kb.style.display = 'none';
+    kb.classList.add('hidden');
+  }
+
+  function kbType() {
+    if (!kbKeys.length) return;
+    $('inputBox').value += kbKeys[kbPos].dataset.ch || '';
+  }
+
+  function kbBackspace() {
+    const box = $('inputBox');
+    box.value = box.value.slice(0, -1);
+  }
+
+  function kbMove(dx, dy) {
+    const cols = 8;
+    const n = kbKeys.length;
+    if (!n) return;
+    let p = kbPos + dx + dy * cols;
+    if (p < 0) p = 0;
+    if (p >= n) p = n - 1;
+    kbPos = p;
+    renderKb();
+  }
+
+  function kbOpen() {
+    kbPos = 0;
+    renderKb();
+    $('kb').classList.remove('hidden');
+  }
+
+  function kbClose() {
+    $('kb').classList.add('hidden');
+  }
+
+  function kbType() {
+    const box = $('inputBox');
+    box.value += kbChars()[kbPos];
+  }
+
+  function kbBackspace() {
+    const box = $('inputBox');
+    box.value = box.value.slice(0, -1);
+  }
+
+  function kbMove(dx, dy) {
+    const cols = 8;
+    const n = kbChars().length;
+    let p = kbPos + dx + dy * cols;
+    if (p < 0) p = 0;
+    if (p >= n) p = n - 1;
+    kbPos = p;
+    renderKb();
+  }
+
+  function closeInput() {
+    $('inputDlg').classList.add('hidden');
+    pendingKey = null;
+    pendingRename = null;
+  }
+
+  function saveInput() {
+    const value = $('inputBox').value;
+    if (pendingKey) {
+      pendingKey.value = value;
+      send({ type: 'aquamai-set', section: pendingKey._section, key: pendingKey.key, value });
+      state.detail = false;
+      state.dirty = false;
+      render();
+    } else if (pendingRename) {
+      send({ type: 'action', action: 'rename-version', index: pendingRename.index, name: value });
+      toast('正在重命名…');
+    }
+    closeInput();
+  }
+
+  function ok() {
+    const item = currentCard();
+
+    if (state.detail) {
+      const s = item.section;
+      const keys = s.keys || [];
+
+      if (!keys.length) {
+        if (state.writable) {
+          send({ type: 'aquamai-section', section: s.name, enabled: !s.enabled });
+        } else {
+          toast('只读模式：在 config.json 里把 AquaMai.Writable 设为 true');
+        }
+        return;
+      }
+
+      const k = keys[state.row];
+      if (state.writable && k.type === 'bool') {
+        const next = String(k.value).toLowerCase() !== 'true';
+        send({ type: 'aquamai-set', section: s.name, key: k.key, value: next ? 'true' : 'false' });
+        return;
+      }
+
+      toast('只读预览：' + k.key + ' = ' + k.value);
+      return;
+    }
+
+    if (item.kind === 'version') {
+      send({ type: 'action', action: 'version', index: item.index });
+      toast('已发送 · 切换版本');
+      return;
+    }
+
+    if (item.kind === 'section') {
+      state.detail = true;
+      state.row = 0;
+      state.rowOffset = 0;
+      render();
+      return;
+    }
+
+    if (item.action === 'rename-version') {
+      const cur = GAMES.list[GAMES.active];
+      if (!cur) { toast('没有可重命名的版本'); return; }
+      pendingRename = { index: GAMES.active };
+      $('dlgTitle').textContent = '重命名版本：' + cur.name;
+      $('inputBox').value = cur.name;
+      $('inputDlg').classList.remove('hidden');
+      kbOpen();
+      setTimeout(() => $('inputBox').focus(), 30);
+      return;
+    }
+
+    if (item.action === 'dashboard') {
+      state.dash = true;
+      render();
+      return;
+    }
+
+    if (item.action === 'help') {
+      send({ type: 'action', action: 'help' });
+      toast('已请求状态');
+      return;
+    }
+
+    toast('已发送 · ' + item.title);
+    send({ type: 'action', action: item.action });
+  }
+
+  function back() {
+    if (state.dash) { state.dash = false; render(); return; }
+    if (state.detail) { state.detail = false; state.dirty = false; render(); return; }
+    if (state.cat !== 0) { state.cat = 0; resetCard(); }
+  }
+
+  function nextCard() {
+    if (state.dash) { state.dash = false; }
+    state.dir = 1;
+    if (state.detail) {
+      const keys = currentCard().section.keys || [];
+      if (state.row < keys.length - 1) { state.row++; render(); }
+      return;
+    }
+    const list = cardsOf(currentCat());
+    state.card = (state.card + 1) % list.length;
+    render();
+  }
+
+  function prevCard() {
+    if (state.dash) { state.dash = false; }
+    state.dir = -1;
+    if (state.detail) {
+      if (state.row > 0) { state.row--; render(); }
+      return;
+    }
+    const list = cardsOf(currentCat());
+    state.card = (state.card + list.length - 1) % list.length;
+    render();
+  }
+
+  function nextCat() { if (state.dash) state.dash = false; state.dir = 1; state.cat = (state.cat + 1) % CATS.length; resetCard(); }
+  function prevCat() { if (state.dash) state.dash = false; state.dir = -1; state.cat = (state.cat + CATS.length - 1) % CATS.length; resetCard(); }
+
+  function onButton(i) {
+    if (!$('inputDlg').classList.contains('hidden')) {
+      if (i === 3) { saveInput(); return; }   // A4 保存
+      if (i === 4) { closeInput(); return; }  // A5 取消
+      return;                                  // 其余不操作底下的界面
+    }
+
+    const b = state.schema && state.schema[i];
+    if (b && b.fn) b.fn();
+  }
+
+  const ZONE_ORDER = [
+    ...Array.from({ length: 8 }, (_, i) => `A${i + 1}`),
+    ...Array.from({ length: 8 }, (_, i) => `B${i + 1}`),
+    'C1', 'C2',
+    ...Array.from({ length: 8 }, (_, i) => `D${i + 1}`),
+    ...Array.from({ length: 8 }, (_, i) => `E${i + 1}`),
+  ];
+  let lastTouchAt = 0;
+
+  let holdZone = -1;
+  let holdTimer = null;
+  let holdDelay = null;
+
+  function stopHold() {
+    if (holdDelay) { clearTimeout(holdDelay); holdDelay = null; }
+    if (holdTimer) { clearInterval(holdTimer); holdTimer = null; }
+    holdZone = -1;
+  }
+
+  function fireZone(z) {
+    if (!$('inputDlg').classList.contains('hidden')) {
+      const name = ZONE_ORDER[z];
+      if (name === 'A4' || name === 'C1' || name === 'C2') { saveInput(); return; }
+      if (name === 'A5' || name === 'B5' || name === 'E8') { closeInput(); return; }
+      return;
+    }
+
+    if (z < 8) {
+      if (!state.detail && currentCat().id === 'home' && (z === 3 || z === 4)) return;
+      press(z);
+      return;
+    }
+
+
+    const name = ZONE_ORDER[z];
+    const zone = ZONES[name];
+    if (!zone) return;
+
+    // 和真机一致：E8/E2 = 分类翻页，E7/E3 = 卡片/选项，中心 = 确认
+    if (name === 'E8') { prevCat(); return; }
+    if (name === 'E2') { nextCat(); return; }
+    // E7/E3 不再承担翻页，只由 E8/E2 负责
+    if (name === 'B5') { adjust(-1); return; }
+    if (name === 'B4') { adjust(1); return; }
+    if (name === 'C1' || name === 'C2') { if (state.detail) ok(); return; }
+
+    const x = zone.cx * 1.8;
+    if (x < -180) { prevCard(); return; }
+    if (x > 180) { nextCard(); return; }
+    if (state.detail) ok(); // 列表页：触摸不进入，只能外键 A4
+  }
+
+  function drawTouchFx(active) {
+    const g = document.getElementById('fx');
+    if (!g) return;
+    g.textContent = '';
+    for (const z of active) {
+      const name = ZONE_ORDER[z];
+      const zone = ZONES[name];
+      if (!zone) continue;
+      const p = document.createElementNS(NS, 'path');
+      p.setAttribute('d', zone.path);
+      p.setAttribute('transform', `scale(${SCALE})`);
+      p.setAttribute('fill', 'rgba(255,60,60,.16)');
+      p.setAttribute('stroke', 'rgba(255,120,120,.35)');
+      p.setAttribute('stroke-width', '2');
+      p.setAttribute('pointer-events', 'none');
+      g.appendChild(p);
+    }
+  }
+
+  function onTouchZones(active) {
+    drawTouchFx(active);
+    if (!active.length) {
+      stopHold();
+      state.prevTouch = new Set();
+      return;
+    }
+
+    // 按住不放：0.45s 后每 0.16s 连续步进，模拟“跟手滑动”
+    if (holdZone < 0) {
+      holdZone = active[0];
+      holdDelay = setTimeout(() => {
+        holdTimer = setInterval(() => {
+          if (holdZone >= 0) fireZone(holdZone);
+        }, 160);
+      }, 450);
+    }
+
+    const fresh = active.filter((z) => !state.prevTouch.has(z));
+    state.prevTouch = new Set(active);
+    if (!fresh.length) return;
+    if (Date.now() - lastTouchAt < 220) return;
+    lastTouchAt = Date.now();
+
+    fireZone(fresh[0]);
+  }
+
+  function adjust(dir) {
+    const item = currentCard();
+    if (!item || item.kind !== 'section' || !state.detail) {
+      toast('先进入一个选项');
+      return;
+    }
+
+    const keys = item.section.keys || [];
+    if (!keys.length) return;
+    const k = keys[Math.min(state.row, keys.length - 1)];
+
+    if (!state.writable) {
+      toast('只读模式：把 AquaMai.Writable 设为 true');
+      return;
+    }
+
+    let value = String(k.value);
+    if (k.type === 'bool') {
+      value = dir > 0 ? 'true' : 'false';
+    } else if (k.type === 'int' || k.type === 'float') {
+      const n = (Number(value) || 0) + dir;
+      value = String(k.type === 'int' ? Math.round(n) : Math.round(n * 10) / 10);
+    } else {
+      toast('该项暂不支持快速调整');
+      return;
+    }
+
+    k.value = value;
+    k.raw = value;
+    state.dirty = true;
+    render();
+  }
+
+  if (location.search.indexOf('dash=1') >= 0) {
+    setTimeout(() => { state.dash = true; render(); }, 400);
+  }
+
+  if (location.hash === '#kb' || location.search.indexOf('kb=1') >= 0) {
+    setTimeout(() => {
+      openInput({ key: 'PreviewText', doc: '键盘预览', value: 'Maimai DX', type: 'string', _section: 'Demo' });
+    }, 300);
+  }
+
+  document.querySelectorAll('.kb-key[data-i]').forEach((el) => {
+    el.onclick = () => { kbPos = Number(el.dataset.i); kbType(); };
+  });
+  const kbDel = document.getElementById('kbDel');
+  if (kbDel) kbDel.onclick = () => kbBackspace();
+  const kbSave = document.getElementById('kbSave');
+  if (kbSave) kbSave.onclick = () => saveInput();
+
+  $('dlgOk').onclick = () => saveInput();
+  $('dlgCancel').onclick = () => closeInput();
+  document.addEventListener('keydown', (e) => {
+    if ($('inputDlg').classList.contains('hidden')) return;
+    if (e.key === 'Enter') saveInput();
+    if (e.key === 'Escape') closeInput();
+  });
+
+  function send(msg) {
+    try { if (window.chrome && window.chrome.webview) window.chrome.webview.postMessage(msg); } catch (e) { /* ignore */ }
+  }
+
+  let toastTimer = null;
+  function toast(text) {
+    toastEl.textContent = text;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1600);
+  }
+
+  /* ---------- 原生输入 ---------- */
+  function applyInput(msg) {
+    if (!msg) return;
+    if (msg.buttons && Array.isArray(msg.buttons.pressed)) {
+      for (const i of msg.buttons.pressed) {
+        if (!state.prevButtons.has(i)) press(i);
+      }
+      state.prevButtons = new Set(msg.buttons.pressed);
+      return;
+    }
+    if (msg.type === 'toast') { toast((msg.title ? msg.title + ' · ' : '') + (msg.desc || '')); return; }
+    if (msg.type === 'aquamai') {
+      if (Array.isArray(msg.groups)) {
+        const groups = msg.groups.map((g) => ({
+          name: g.name ?? g.Name,
+          title: g.title ?? g.Title,
+          sections: (g.sections ?? g.Sections ?? []).map((s) => ({
+            name: s.name ?? s.Name,
+            group: s.group ?? s.Group,
+            title: s.title ?? s.Title,
+            doc: s.doc ?? s.Doc ?? '',
+            enabled: s.enabled ?? s.Enabled ?? false,
+            keys: (s.keys ?? s.Keys ?? []).map((k) => ({
+              key: k.key ?? k.Key,
+              value: k.value ?? k.Value,
+              type: k.type ?? k.Type,
+              doc: k.doc ?? k.Doc ?? '',
+              enabled: k.enabled ?? k.Enabled ?? false,
+              line: k.line ?? k.Line ?? 0,
+            })),
+          })),
+        }));
+        AQUAMAI = { groups };
+        CATS = buildCategories();
+        if (state.cat >= CATS.length) state.cat = 0;
+        state.writable = !!msg.writable;
+        resetCard();
+        toast('已读取 AquaMai 配置 · ' + groups.length + ' 类' + (state.writable ? ' · 可写' : ' · 只读'));
+      }
+      return;
+    }
+    if (msg.type === 'games') {
+      GAMES = {
+        list: (msg.games || []).map((g) => ({ name: g.name, bat: g.bat })),
+        active: msg.active || 0,
+      };
+      CATS = buildCategories();
+      if (state.cat >= CATS.length) state.cat = 0;
+      resetCard();
+      return;
+    }
+    if (msg.type === 'aquamai-saved') {
+      toast((msg.ok ? '已保存 · ' : '未保存 · ') + (msg.message || ''));
+      return;
+    }
+    if (msg.touch && Array.isArray(msg.touch.active)) {
+      onTouchZones(msg.touch.active);
+      return;
+    }
+    if (msg.type === 'status') {
+      state.native = true;
+      state.status = msg;
+      const bits = [
+        'io4 ' + (msg.io4 ? '已连接' : '无数据'),
+        '触摸 ' + (msg.port || 'COM3') + (msg.touch ? ' 已连接' : ' 未连接'),
+        '灯光 ' + (msg.led ? 'COM21 已连接' : '未连接'),
+      ];
+      $('status').textContent = bits.join(' · ');
+      $('status').classList.add('live');
+    }
+  }
+
+  window.chrome?.webview?.addEventListener('message', (e) => applyInput(e.data));
+
+  window.addEventListener('keydown', (evt) => {
+    if (evt.key >= '1' && evt.key <= '8') { press(Number(evt.key) - 1); evt.preventDefault(); }
+    else if (evt.key === 'Escape') { back(); evt.preventDefault(); }
+  });
+
+  function tickClock() {
+    const d = new Date();
+    $('clock').textContent = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  }
+  setInterval(tickClock, 1000);
+  tickClock();
+
+  function fit() {
+    const s = Math.min(window.innerWidth / 1080, window.innerHeight / 1920);
+    const screen = $('screen');
+    screen.style.transform = `scale(${s})`;
+    screen.style.left = `${Math.max(0, (window.innerWidth - 1080 * s) / 2)}px`;
+    screen.style.top = `${Math.max(0, (window.innerHeight - 1920 * s) / 2)}px`;
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  // 方便截图/调试：menu-v2.html#cat=GameSystem&card=0&detail=1&row=2
+  function applyDeepLink() {
+    const m = new URLSearchParams(location.hash.replace(/^#/, ''));
+    if (!m.has('cat')) return;
+    const id = m.get('cat');
+    const idx = CATS.findIndex((c) => c.id === id);
+    if (idx >= 0) state.cat = idx;
+    state.card = Number(m.get('card') || 0);
+    state.detail = m.get('detail') === '1';
+    state.row = Number(m.get('row') || 0);
+  }
+
+  render();
+  applyDeepLink();
+  render();
+
+  try {
+    if (window.chrome && window.chrome.webview) window.chrome.webview.postMessage({ type: 'ready' });
+  } catch (e) { /* ignore */ }
+})();
+</script>
+</body>
+</html>

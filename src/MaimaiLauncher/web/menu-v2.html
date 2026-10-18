@@ -1,0 +1,1520 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>舞萌手台启动器</title>
+<style>
+  :root{
+    --bg:#04060b;
+    --line:rgba(34,211,238,.28);
+    --cyan:#22d3ee;
+    --cyan-dim:rgba(34,211,238,.55);
+    --text:#e8f0fb;
+    --muted:#7f93ad;
+    --amber:#fbbf24;
+    --violet:#a78bfa;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:#000;overflow:hidden;
+    font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;color:var(--text)}
+  #screen{position:absolute;left:0;top:0;width:1080px;height:1920px;transform-origin:top left;
+    background:
+      radial-gradient(760px 560px at 50% 42%, rgba(34,211,238,.10), transparent 65%),
+      radial-gradient(900px 700px at 50% 85%, rgba(139,92,246,.10), transparent 70%),
+      linear-gradient(180deg,#03050a 0%,#060b16 45%,#04060c 100%);
+    overflow:hidden}
+
+  /* ---------- 上半屏 ---------- */
+  .top{position:absolute;left:0;top:0;width:1080px;height:469px;padding:26px 38px 18px;
+    display:flex;flex-direction:column;
+    background:linear-gradient(180deg,rgba(3,7,14,.25),rgba(3,7,14,.75) 78%,rgba(4,6,12,1) 100%)}
+  .top::after{content:"";position:absolute;left:38px;right:38px;bottom:0;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(34,211,238,.35),transparent)}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:24px}
+  .brand{display:flex;align-items:center;gap:13px}
+  .logo{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;
+    font-weight:900;font-size:11px;line-height:1;color:#041016;
+    background:linear-gradient(135deg,#67e8f9,#22d3ee 50%,#0ea5e9);
+    box-shadow:0 0 26px rgba(34,211,238,.35),inset 0 1px 0 rgba(255,255,255,.6)}
+  .brand-title{font-size:22px;font-weight:800;letter-spacing:.5px}
+  .brand-sub{font-size:10px;color:var(--muted);letter-spacing:2px;margin-top:2px}
+  .clock{font-family:ui-monospace,Consolas,monospace;font-size:34px;font-weight:700;
+    color:#cbd5e1;letter-spacing:1px}
+
+  .hero{margin-top:40px}
+  .kicker{font-size:12px;letter-spacing:6px;color:var(--cyan-dim);font-weight:700}
+  .title{font-size:52px;font-weight:900;letter-spacing:1px;margin-top:8px;
+    background:linear-gradient(90deg,#f8fafc,#a5f3fc);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .desc{font-size:16px;color:#9fb2c8;margin-top:8px;max-width:900px;line-height:1.45}
+
+  .status-row{position:absolute;left:38px;right:38px;bottom:22px;display:flex;
+    align-items:center;justify-content:space-between;gap:20px}
+  .status{font-size:15px;color:#8ba0b8;padding:7px 16px;border-radius:999px;
+    border:1px solid rgba(148,163,184,.22);background:rgba(15,23,42,.55)}
+  .status.live{color:#67e8f9;border-color:rgba(34,211,238,.45)}
+  .hint{font-size:14px;color:#64748b;letter-spacing:1px}
+
+  /* ---------- 圆屏 ---------- */
+  .stage{position:absolute;left:0;top:840px;width:1080px;height:1080px}
+  #ring{width:1080px;height:1080px;display:block;overflow:visible}
+
+  .btn{stroke-width:12;stroke-linejoin:round;paint-order:stroke;
+    filter:drop-shadow(0 8px 22px rgba(0,0,0,.55));transition:fill .12s,stroke .12s}
+  .zone-line{fill:none;stroke:rgba(34,211,238,.16);stroke-width:1.2}
+  .btn.active{fill:rgba(34,211,238,.28);stroke:rgba(34,211,238,.95)}
+  .btn.ok{fill:url(#okGrad);stroke:#b45309}
+  .btn.ok.active{fill:rgba(251,191,36,.45)}
+  .btn.back{fill:url(#backGrad);stroke:#1d4ed8}
+  .btn.back.active{fill:rgba(96,165,250,.4)}
+  .btn.cat{fill:url(#catGrad);stroke:#b45309}
+  .btn.cat.active{fill:rgba(251,191,36,.35)}
+  .btn.card{fill:url(#baseGrad);stroke:rgba(34,211,238,.6)}
+  .btn.card.active{fill:rgba(34,211,238,.3)}
+  .btn.off{opacity:.16;pointer-events:none}
+
+  .btn-num{font-size:22px;font-weight:900;fill:#67e8f9;text-anchor:middle;dominant-baseline:middle;filter:drop-shadow(0 0 6px rgba(34,211,238,.5))}
+  .btn.ok .btn-num{fill:#fff;opacity:.95}
+  .btn.back .btn-num{fill:#fff;opacity:.95}
+  .btn-label{font-size:14px;font-weight:800;fill:#cfe6f5;text-anchor:middle;dominant-baseline:middle;letter-spacing:1px;filter:drop-shadow(0 0 6px rgba(0,0,0,.6))}
+  .btn.ok .btn-label{fill:#fff;font-size:18px;filter:drop-shadow(0 0 8px rgba(255,255,255,.55))}
+  .btn.back .btn-label{fill:#fff;font-size:18px;filter:drop-shadow(0 0 8px rgba(255,255,255,.55))}
+  .btn.cat .btn-label{fill:#fcd34d}
+  .btn.card .btn-label{fill:#67e8f9}
+
+  .ring-base{fill:none;stroke:rgba(34,211,238,.30);stroke-width:2}
+  .ring-glow{fill:none;stroke:rgba(34,211,238,.08);stroke-width:14}
+
+  /* ---------- 分类页签 ---------- */
+  .tab-frame{position:absolute;left:236px;top:250px;width:608px;height:132px;
+    border:1.6px solid rgba(34,211,238,.28);border-radius:66px;
+    background:rgba(8,16,28,.55);z-index:1;
+    box-shadow:0 0 30px rgba(34,211,238,.10) inset,0 0 24px rgba(0,0,0,.45)}
+  .tabs{position:absolute;left:60px;top:268px;width:960px;height:96px;overflow:hidden;z-index:2;
+    pointer-events:auto;
+    mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
+  .tab-track{display:flex;align-items:center;justify-content:flex-start;height:100%;
+    white-space:nowrap;will-change:transform;
+    transition:transform .38s cubic-bezier(.22,.8,.24,1)}
+  .tab{flex:0 0 auto;font-size:16px;font-weight:700;letter-spacing:1px;color:#6b7f99;
+    padding:0 18px;cursor:pointer;opacity:.65;
+    transition:font-size .3s,color .3s,opacity .3s,text-shadow .3s}
+  .tab.on{font-size:36px;font-weight:900;color:#fff;opacity:1;
+    text-shadow:0 0 22px rgba(251,191,36,.45),0 2px 0 rgba(0,0,0,.4)}
+
+  .adjust-btns{display:none}
+  .adjust-btns.hidden{display:none}
+  .adjust{position:absolute;width:78px;height:78px;border-radius:50%;
+    display:grid;place-items:center;font-size:34px;font-weight:900;
+    pointer-events:auto;cursor:pointer;transition:background .12s,transform .1s}
+  .adjust:active{transform:scale(.94)}
+  .adjust.minus{color:#f87171;border:3px solid rgba(248,113,113,.75);background:rgba(248,113,113,.12)}
+  .adjust.minus:hover{background:rgba(248,113,113,.26)}
+  .adjust.plus{color:#60a5fa;border:3px solid rgba(96,165,250,.75);background:rgba(96,165,250,.12)}
+  .adjust.plus:hover{background:rgba(96,165,250,.26)}
+
+  .arrow-btns{position:absolute;inset:0;pointer-events:none;z-index:6}
+  .arrow-btn{position:absolute;width:88px;height:88px;border-radius:50%;
+    display:grid;place-items:center;font-size:36px;font-weight:900;
+    pointer-events:auto;cursor:pointer;transition:transform .12s,fill .12s}
+  .arrow-btn:active{transform:scale(.94)}
+  .arrow-btn.cat{color:#fbbf24;border:2.5px solid rgba(251,191,36,.7);
+    background:rgba(251,191,36,.12)}
+  .arrow-btn.cat:hover{background:rgba(251,191,36,.24)}
+  .arrow-btn.card{color:#67e8f9;border:2.5px solid rgba(34,211,238,.65);
+    background:rgba(34,211,238,.10)}
+  .arrow-btn.card:hover{background:rgba(34,211,238,.22)}
+
+  /* ---------- 中央卡片 ---------- */
+  @keyframes cardInLeft {
+    from { opacity: .2; transform: translateX(-90px) scale(.97); }
+    to   { opacity: 1;  transform: translateX(0)     scale(1); }
+  }
+  @keyframes cardInRight {
+    from { opacity: .2; transform: translateX(90px) scale(.97); }
+    to   { opacity: 1;  transform: translateX(0)    scale(1); }
+  }
+  .content.enter-left { animation: cardInLeft .26s cubic-bezier(.22,.8,.24,1); }
+  .content.enter-right { animation: cardInRight .26s cubic-bezier(.22,.8,.24,1); }
+
+  @keyframes cardIn {
+    from { opacity: .25; transform: translateY(18px) scale(.965); }
+    to   { opacity: 1;   transform: translateY(0)   scale(1); }
+  }
+  @keyframes valuePop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.12); }
+    100% { transform: scale(1); }
+  }
+  @keyframes bgDrift {
+    0%   { transform: translate3d(-1.5%, -1%, 0) scale(1.04); }
+    50%  { transform: translate3d(1.5%, 1%, 0) scale(1.07); }
+    100% { transform: translate3d(-1.5%, -1%, 0) scale(1.04); }
+  }
+  .content.enter { animation: cardIn .26s cubic-bezier(.22,.8,.24,1); }
+  .bg-glow{position:absolute;inset:-8%;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(620px 460px at 38% 40%, rgba(34,211,238,.10), transparent 62%),
+      radial-gradient(720px 520px at 64% 62%, rgba(139,92,246,.09), transparent 66%);
+    animation: bgDrift 20s ease-in-out infinite;}
+  .opt-value.pop { animation: valuePop .24s ease-out; }
+
+  .content{position:absolute;left:326px;top:404px;width:392px;height:420px;
+    display:flex;align-items:center;justify-content:center;pointer-events:none}
+
+  .dialog{position:absolute;left:0;top:0;width:1080px;height:1080px;z-index:200;
+    display:flex;align-items:center;justify-content:center;background:rgba(2,8,16,.72)}
+  .dialog.hidden{display:none}
+  .dlg-box{width:620px;border-radius:24px;border:2px solid rgba(34,211,238,.45);
+    background:#0a1626;padding:28px;box-shadow:0 0 40px rgba(0,0,0,.6)}
+  .dlg-title{font-size:20px;font-weight:800;color:#e2f3ff;margin-bottom:14px}
+  .dlg-input{width:100%;height:64px;border-radius:14px;border:2px solid rgba(34,211,238,.35);
+    background:#071322;color:#fff;font-size:22px;padding:0 16px;outline:none}
+  .dlg-actions{display:flex;justify-content:flex-end;gap:14px;margin-top:20px}
+  .dlg-btn{padding:12px 26px;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer;
+    border:2px solid rgba(34,211,238,.4);color:#cfe6f5}
+  .dlg-btn.ok{background:#0e7490;border-color:transparent;color:#fff}
+
+  .dlg-hint{font-size:13px;color:#8ba0b8;margin-top:10px;text-align:center}
+  .kb{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin-top:18px}
+  .kb.hidden{display:none}
+  .kb-key{height:52px;border-radius:10px;display:grid;place-items:center;
+    font-size:20px;font-weight:800;color:#cfe6f5;
+    border:1.5px solid rgba(34,211,238,.25);background:rgba(10,24,40,.9)}
+  .kb-key.on{border-color:#fbbf24;background:rgba(251,191,36,.22);color:#fff;
+    box-shadow:0 0 16px rgba(251,191,36,.35)}
+  .kb-key.wide{grid-column:span 2;font-size:15px}
+
+  .content.plain{left:246px;width:588px;background:transparent !important;
+    border:none !important;box-shadow:none !important}
+  .fx-layer{position:absolute;left:0;top:0;width:1080px;height:1080px;
+    pointer-events:none;z-index:120}
+  .dash{display:flex;flex-direction:column;gap:6px;width:100%;height:100%;
+    padding:10px 4px;overflow:hidden}
+  .dash-title{font-size:12px;font-weight:800;color:#7f93a8;letter-spacing:2px;margin-top:6px}
+  .dash-row{display:flex;justify-content:space-between;gap:10px;padding:4px 2px;
+    border-bottom:1px solid rgba(120,150,175,.12);font-size:13px}
+  .dash-label{color:#9fb3c8}
+  .dash-value{color:#e2f3ff;font-weight:700;text-align:right;word-break:break-all}
+  .dash-value.ok{color:#4ade80}
+  .dash-value.bad{color:#f87171}
+
+  .opt-list.hidden{display:none}
+  .opt-list{position:absolute;left:736px;top:392px;width:150px;z-index:99;height:392px;
+    border:1.5px solid rgba(34,211,238,.22);border-radius:18px;
+    background:rgba(8,16,28,.55);overflow:hidden;padding:10px 0;z-index:3}
+  .opt-list .list-inner{position:absolute;left:0;top:0;width:100%;
+    transition:transform .28s cubic-bezier(.22,.8,.24,1)}
+  .list-row{height:34px;line-height:34px;padding:0 14px;font-size:13px;color:#8ba0b8;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .list-row.on{color:#fff;font-weight:800}
+  .list-hl{position:absolute;left:6px;right:6px;height:34px;border-radius:10px;
+    border:2px solid rgba(251,191,36,.85);background:rgba(251,191,36,.10);
+    transition:transform .28s cubic-bezier(.22,.8,.24,1);pointer-events:none}
+
+  .card-adjust{position:absolute;left:0;right:0;bottom:20px;display:flex;justify-content:center;gap:52px}
+  .opt.main{position:relative;padding-bottom:96px}
+  .adj{width:66px;height:66px;border-radius:50%;display:grid;place-items:center;
+    font-size:30px;font-weight:900;cursor:pointer;transition:transform .1s,background .12s}
+  .adj:active{transform:scale(.93)}
+  .adj.minus{color:#f87171;border:3px solid rgba(248,113,113,.75);background:rgba(248,113,113,.12)}
+  .adj.plus{color:#60a5fa;border:3px solid rgba(96,165,250,.75);background:rgba(96,165,250,.12)}
+
+  .opt-strip{display:flex;align-items:stretch;justify-content:center;gap:10px;width:100%;height:100%}
+  .opt{display:flex;flex-direction:column;justify-content:center;border-radius:20px;
+    border:1px solid rgba(148,163,184,.14);background:rgba(8,15,28,.62);
+    padding:14px;pointer-events:auto;overflow:hidden}
+  .opt.side{width:62px;opacity:.5;align-items:center;text-align:center;padding:10px 8px;gap:6px}
+  .opt-side-title{font-size:11px;font-weight:700;color:#9fb3c8;line-height:1.3;
+    overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .opt.main{width:330px;border-color:rgba(251,191,36,.45);
+    background:linear-gradient(160deg,rgba(13,23,40,.97),rgba(5,10,20,.99));
+    box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  .opt-kicker{font-size:10px;letter-spacing:3px;color:var(--cyan-dim);font-weight:700}
+  .opt-title{font-size:19px;font-weight:800;margin-top:8px;line-height:1.3;
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .opt-value{font-size:28px;font-weight:900;color:#fcd34d;margin-top:12px}
+  .opt-key{font-size:10px;color:#64748b;margin-top:8px;word-break:break-all}
+  .opt.side .opt-title{font-size:11px}
+  .opt.side .opt-value{font-size:15px;margin-top:6px}
+
+  .arrow{cursor:pointer;transition:fill .12s}
+  .arrow.cat{fill:rgba(251,191,36,.12);stroke:rgba(251,191,36,.7);stroke-width:2.5}
+  .arrow.cat:hover{fill:rgba(251,191,36,.25)}
+  .arrow.card{fill:rgba(34,211,238,.10);stroke:rgba(34,211,238,.65);stroke-width:2.5}
+  .arrow.card:hover{fill:rgba(34,211,238,.22)}
+  .arrow-txt{font-size:34px;font-weight:900;text-anchor:middle;
+    dominant-baseline:middle;pointer-events:none}
+  .arrow-txt.cat{fill:#fbbf24}
+  .arrow-txt.card{fill:#67e8f9}
+  .card{width:100%;height:100%;border-radius:24px;padding:22px 26px;
+    background:linear-gradient(160deg,rgba(13,23,40,.94),rgba(5,10,20,.97));
+    border:1px solid var(--line);box-shadow:0 30px 90px rgba(0,0,0,.55),0 0 40px rgba(34,211,238,.06);
+    display:flex;flex-direction:column;pointer-events:auto;overflow:hidden}
+  .card-kicker{font-size:12px;letter-spacing:4px;color:var(--cyan-dim);font-weight:700}
+  .card-title{font-size:28px;font-weight:900;margin-top:6px;line-height:1.15}
+  .card-doc{font-size:14px;color:#93a7bd;margin-top:10px;line-height:1.5;
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .card-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;
+    gap:16px;padding-top:14px;border-top:1px solid rgba(148,163,184,.12)}
+  .card-foot .hint{font-size:12px;color:#64748b;letter-spacing:1px}
+  .big-key{font-size:18px;font-weight:900;color:#fbbf24;letter-spacing:2px}
+
+  .hero-glyph{position:absolute;right:30px;top:22px;font-size:58px;font-weight:900;
+    color:rgba(34,211,238,.14)}
+
+  .rows{display:flex;flex-direction:column;gap:6px;margin-top:12px;overflow:hidden;flex:1}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:8px 12px;border-radius:10px;border:1px solid rgba(148,163,184,.10);
+    background:rgba(15,23,42,.45)}
+  .row.sel{border-color:rgba(251,191,36,.65);background:rgba(251,191,36,.10)}
+  .row-label{font-size:14px;color:#cbd5e1;font-weight:600;overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap;max-width:470px}
+  .row-key{font-size:10px;color:#64748b;margin-top:1px;letter-spacing:.5px}
+  .chip{font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;
+    border:1px solid rgba(148,163,184,.25);color:#94a3b8;background:rgba(8,15,28,.7);white-space:nowrap}
+  .chip.on{color:#041016;background:linear-gradient(135deg,#67e8f9,#22d3ee);border-color:transparent}
+  .chip.num{color:#fcd34d;border-color:rgba(251,191,36,.4)}
+  .chip.str{color:#c4b5fd;border-color:rgba(167,139,250,.4)}
+
+  .empty{color:#64748b;font-size:14px;margin-top:16px}
+
+  .toast{position:absolute;left:50%;top:700px;transform:translateX(-50%);
+    padding:10px 20px;border-radius:999px;border:1px solid var(--line);
+    background:rgba(8,15,28,.92);color:#a5f3fc;font-size:15px;font-weight:600;
+    opacity:0;transition:opacity .18s;pointer-events:none;z-index:50}
+  .toast.show{opacity:1}
+
+  /* ---- 扁平化覆盖 ---- */
+  .screen{background:#0b1017 !important}
+  .bg-glow{display:none !important}
+  .card,.opt,.opt-list,.tab-frame,.dlg-box{
+    background:#0f1720 !important; box-shadow:none !important;
+    border:1px solid #24303d !important}
+  .btn{filter:none !important}
+  .btn.ok{fill:#e08a2e !important;stroke:#e08a2e !important}
+  .btn.back{fill:#3b6fd4 !important;stroke:#3b6fd4 !important}
+  .btn.cat{fill:#5a4a1e !important;stroke:#7a6420 !important}
+  .btn.card{fill:#16324a !important;stroke:#2a4a66 !important}
+  .btn-num,.btn-label,.tab.on{text-shadow:none !important;filter:none !important}
+  .arrow-btn{box-shadow:none !important}
+  .tab.on{color:#fff !important;text-shadow:none !important}
+  .card-adjust .adj{box-shadow:none !important}
+  .zone-line{stroke:rgba(120,150,175,.25) !important}
+  .kicker,.card-kicker{color:#7f93a8 !important}
+  .title,.card-title{text-shadow:none !important}
+</style>
+</head>
+<body>
+<div id="screen">
+  <section class="top">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">mai<br>mai</div>
+        <div>
+          <div class="brand-title">手台启动器</div>
+          <div class="brand-sub">MAIMAI LAUNCHER · TV UI · BY 123456776543</div>
+        </div>
+      </div>
+      <div class="clock" id="clock">--:--</div>
+    </div>
+    <div class="hero">
+      <div class="kicker" id="kicker">HOME</div>
+      <div class="title" id="title">主页</div>
+      <div class="desc" id="desc">A4 确认 · A5 返回</div>
+    </div>
+    <div class="status-row">
+      <span id="status" class="status">正在连接…</span>
+      <span class="hint">A4 OK · A5 BACK · A7/A2 分类 · A6/A3 翻页</span>
+    </div>
+  </section>
+
+  <section class="stage">
+    <svg id="ring" viewBox="-540 -540 1080 1080">
+      <defs>
+        <mask id="bandMask" maskUnits="userSpaceOnUse" x="-600" y="-600" width="1200" height="1200">
+          <rect x="-600" y="-600" width="1200" height="1200" fill="black"/>
+          <circle r="299" fill="white"/>
+          <circle r="233" fill="black"/>
+        </mask>
+        <radialGradient id="okGrad" cx="50%" cy="38%" r="68%">
+          <stop offset="0%" stop-color="#fbbf24"/>
+          <stop offset="55%" stop-color="#f59e0b"/>
+          <stop offset="100%" stop-color="#b45309"/>
+        </radialGradient>
+        <radialGradient id="backGrad" cx="50%" cy="38%" r="68%">
+          <stop offset="0%" stop-color="#93c5fd"/>
+          <stop offset="55%" stop-color="#3b82f6"/>
+          <stop offset="100%" stop-color="#1d4ed8"/>
+        </radialGradient>
+        <radialGradient id="catGrad" cx="50%" cy="40%" r="70%">
+          <stop offset="0%" stop-color="#4a3410"/>
+          <stop offset="60%" stop-color="#2a1d09"/>
+          <stop offset="100%" stop-color="#150e04"/>
+        </radialGradient>
+        <radialGradient id="baseGrad" cx="50%" cy="38%" r="72%">
+          <stop offset="0%" stop-color="#1d4f7a"/>
+          <stop offset="55%" stop-color="#12324f"/>
+          <stop offset="100%" stop-color="#0a1a2d"/>
+        </radialGradient>
+      </defs>
+      <circle class="ring-glow" r="538"/>
+      <circle class="ring-base" r="538"/>
+
+      <g id="btnPaths"></g>
+      <g id="btnLabels"></g>
+      <g id="tabMarks"></g>
+      <g id="arrows"></g>
+    </svg>
+    <div class="tab-frame"></div>
+    <div class="tabs" id="tabs"></div>
+    <div class="arrow-btns" id="arrowBtns"></div>
+    <div class="adjust-btns hidden" id="adjustBtns"></div>
+    <div class="dialog hidden" id="inputDlg">
+      <div class="dlg-box">
+        <div class="dlg-title" id="dlgTitle">输入</div>
+        <input class="dlg-input" id="inputBox" spellcheck="false">
+        <div class="dlg-hint">物理键盘输入 · Enter 保存 · Esc 取消 · A4 保存 · A5 取消</div>
+        <div class="kb hidden" id="kb" style="display:none"><div class="kb-key" data-i="0" data-ch="a">a</div><div class="kb-key" data-i="1" data-ch="b">b</div><div class="kb-key" data-i="2" data-ch="c">c</div><div class="kb-key" data-i="3" data-ch="d">d</div><div class="kb-key" data-i="4" data-ch="e">e</div><div class="kb-key" data-i="5" data-ch="f">f</div><div class="kb-key" data-i="6" data-ch="g">g</div><div class="kb-key" data-i="7" data-ch="h">h</div><div class="kb-key" data-i="8" data-ch="i">i</div><div class="kb-key" data-i="9" data-ch="j">j</div><div class="kb-key" data-i="10" data-ch="k">k</div><div class="kb-key" data-i="11" data-ch="l">l</div><div class="kb-key" data-i="12" data-ch="m">m</div><div class="kb-key" data-i="13" data-ch="n">n</div><div class="kb-key" data-i="14" data-ch="o">o</div><div class="kb-key" data-i="15" data-ch="p">p</div><div class="kb-key" data-i="16" data-ch="q">q</div><div class="kb-key" data-i="17" data-ch="r">r</div><div class="kb-key" data-i="18" data-ch="s">s</div><div class="kb-key" data-i="19" data-ch="t">t</div><div class="kb-key" data-i="20" data-ch="u">u</div><div class="kb-key" data-i="21" data-ch="v">v</div><div class="kb-key" data-i="22" data-ch="w">w</div><div class="kb-key" data-i="23" data-ch="x">x</div><div class="kb-key" data-i="24" data-ch="y">y</div><div class="kb-key" data-i="25" data-ch="z">z</div><div class="kb-key" data-i="26" data-ch="0">0</div><div class="kb-key" data-i="27" data-ch="1">1</div><div class="kb-key" data-i="28" data-ch="2">2</div><div class="kb-key" data-i="29" data-ch="3">3</div><div class="kb-key" data-i="30" data-ch="4">4</div><div class="kb-key" data-i="31" data-ch="5">5</div><div class="kb-key" data-i="32" data-ch="6">6</div><div class="kb-key" data-i="33" data-ch="7">7</div><div class="kb-key" data-i="34" data-ch="8">8</div><div class="kb-key" data-i="35" data-ch="9">9</div><div class="kb-key" data-i="36" data-ch="-">-</div><div class="kb-key" data-i="37" data-ch="_">_</div><div class="kb-key" data-i="38" data-ch=".">.</div><div class="kb-key" data-i="39" data-ch="@">@</div><div class="kb-key" data-i="40" data-ch="#">#</div><div class="kb-key" data-i="41" data-ch="%">%</div><div class="kb-key" data-i="42" data-ch="&">&</div><div class="kb-key" data-i="43" data-ch="+">+</div><div class="kb-key" data-i="44" data-ch="=">=</div><div class="kb-key" data-i="45" data-ch=":">:</div><div class="kb-key" data-i="46" data-ch="/">/</div><div class="kb-key" data-i="47" data-ch="?">?</div><div class="kb-key wide" id="kbDel">⌫ 删除</div><div class="kb-key wide" id="kbSave">保存</div></div>
+        <div class="dlg-actions">
+          <div class="dlg-btn" id="dlgCancel">取消 (A5)</div>
+          <div class="dlg-btn ok" id="dlgOk">保存 (A4)</div>
+        </div>
+      </div>
+    </div>
+    <svg id="fx" viewBox="-540 -540 1080 1080" class="fx-layer"></svg>
+    <div class="opt-list hidden" id="optList"><div class="list-hl" id="listHl"></div><div class="list-inner" id="listInner"></div></div>
+    <div class="content" id="content"></div>
+    <div class="toast" id="toast"></div>
+  </section>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  let AQUAMAI = /*__AQUAMAI_DATA__*/{"groups":[{"name":"General","title":"常规","sections":[{"name":"General","group":"General","title":"General","doc":"","enabled":true,"keys":[{"key":"Version","value":"2.6","raw":"\"2.6\"","type":"string","doc":"这是 AquaMai 的 TOML 配置文件\n- 井号 # 开头的行为注释，被注释掉的内容不会生效\n- 为方便使用 VSCode 等编辑器进行编辑，被注释掉的配置内容使用一个井号 #，而注释文本使用两个井号 ##\n- 以方括号包裹的行，如 [OptionalCategory.Section]，为一个栏目\n- 将默认被注释（即默认禁用）的栏目取消注释即可启用\n- 若要禁用一个默认启用的栏目，请在栏目下添加「Disabled = true」配置项，删除它/注释它不会有效\n- 形如「键 = 值」为一个配置项\n- 配置项应用到其上方最近的栏目，请不要在一个栏目被注释掉的情况下开启其配置项（会加到上一个栏目，无效）\n- 当对应栏目启用时，配置项生效，无论是否将其取消注释\n- 注释掉的配置项保留其注释中的默认值，默认值可能会随版本更新而变化\n- 该文件的格式和文字注释是固定的，配置文件将在启动时被重写，无法解析的内容将被删除\n试试使用 MaiChartManager 图形化配置 AquaMai 吧！\nhttps://github.com/MuNET-OSS/MaiChartManager","enabled":true,"line":17}]},{"name":"General","group":"General","title":"General","doc":"AquaMai 的通用设置","enabled":true,"keys":[{"key":"Locale","value":"zh","raw":"\"zh\"","type":"string","doc":"Mod 界面语言\nMod 界面的语言，支持 en 和 zh\n如果为空，将使用系统语言\n配置文件也将以此语言保存","enabled":true,"line":25}]}]},{"name":"GameSystem","title":"游戏系统","sections":[{"name":"GameSystem.Assets.Fonts","group":"GameSystem","title":"Fonts","doc":"自定义字体\n使用自定义字体作为回退（解决中文字形缺失问题），或完全替换游戏原字体","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":30},{"key":"Paths","value":"%SYSTEMROOT%/Fonts/msyhbd.ttc","raw":"\"%SYSTEMROOT%/Fonts/msyhbd.ttc\"","type":"string","doc":"字体路径\n使用分号分隔多个路径以构成 Fallback 链\n默认为微软雅黑 Bold","enabled":false,"line":34},{"key":"AddAsFallback","value":"true","raw":"true","type":"bool","doc":"作为回退字体\n将自定义字体作为游戏原字体的回退，尽可能使用游戏原字体","enabled":false,"line":37},{"key":"MaruGothicPaths","value":"","raw":"\"\"","type":"string","doc":"SEGA_MaruGothicDB（文本用圆体）的单独字体路径\n使用分号分隔多个路径\n留空则使用上方的总设置","enabled":false,"line":41},{"key":"NewRodinPaths","value":"","raw":"\"\"","type":"string","doc":"SEGA_NewRodinN v2-EB_0（标题用粗体）的单独字体路径\n使用分号分隔多个路径\n留空则使用上方的总设置","enabled":false,"line":45}]},{"name":"GameSystem.Assets.IgnoreLoadFailedAssetBundle","group":"GameSystem","title":"Ignore Load Failed Asset Bundle","doc":"忽略加载失败的 .ab 图片资源","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":49}]},{"name":"GameSystem.Assets.LoadAssetBundleWithoutManifest","group":"GameSystem","title":"Load Asset Bundle Without Manifest","doc":"无视 Manifest\n加载所有存在的 .ab 图片资源（无视 AssetBundleImages.manifest）\n导入了删除曲包之类的话，应该需要开启这个","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":55}]},{"name":"GameSystem.Assets.LoadLocalImages","group":"GameSystem","title":"Load Local Images","doc":"直读图片\n从指定目录下加载资源图片（自制谱用）","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":60},{"key":"ImageAssetsDir","value":"LocalAssets","raw":"\"LocalAssets\"","type":"string","doc":"图片路径","enabled":false,"line":62}]},{"name":"GameSystem.Assets.MovieLoader","group":"GameSystem","title":"Movie Loader","doc":"直读 PV\n自定义歌曲游玩界面背景\n优先级: 首先读游戏自带 PV, 然后读本地 mp4 格式 PV, 最后读封面","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":68},{"key":"LoadSourceMovie","value":"true","raw":"true","type":"bool","doc":"游戏自带 PV\n加载游戏自带的 PV","enabled":false,"line":71},{"key":"LoadMp4Movie","value":"true","raw":"true","type":"bool","doc":"本地 MP4\n从 LocalAssets 中加载 MP4 文件作为 PV","enabled":false,"line":74},{"key":"MovieAssetsDir","value":"LocalAssets","raw":"\"LocalAssets\"","type":"string","doc":"MP4 路径\n加载 MP4 文件的路径","enabled":false,"line":77},{"key":"JacketAsMovie","value":"true","raw":"true","type":"bool","doc":"封面作为背景\n用封面作为背景 PV\n请和 `LoadLocalImages` 一起用","enabled":false,"line":81}]},{"name":"GameSystem.AddPlayCountWhenQuickRetry","group":"GameSystem","title":"Add Play Count When Quick Retry","doc":"重开计次\n在一键重开（无论何种触发方式）时，增加当前谱面的游玩次数","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":86}]},{"name":"GameSystem.AdxHidInput","group":"GameSystem","title":"Adx Hid Input","doc":"ADX / NPRO HID\n使用 ADX / NPRO 的自定义输入（没有 ADX / NPRO 的话开了也不会加载，也没有坏处）","enabled":true,"keys":[{"key":"Disabled","value":"true","raw":"true","type":"bool","doc":"","enabled":true,"line":91},{"key":"HotPlugSupport","value":"true","raw":"true","type":"bool","doc":"热插拔支持","enabled":false,"line":93},{"key":"P1Button1","value":"Select1P","raw":"\"Select1P\"","type":"string","doc":"1P 按钮 1\n向上的三角键","enabled":false,"line":96},{"key":"P1Button2","value":"Service","raw":"\"Service\"","type":"string","doc":"1P 按钮 2\n三角键中间的圆形按键","enabled":false,"line":99},{"key":"P1Button3","value":"Select2P","raw":"\"Select2P\"","type":"string","doc":"1P 按钮 3\n向下的三角键","enabled":false,"line":102},{"key":"P1Button4","value":"Test","raw":"\"Test\"","type":"string","doc":"1P 按钮 4\n最下方的圆形按键","enabled":false,"line":105},{"key":"P1DisableButtons","value":"false","raw":"false","type":"bool","doc":"1P 禁用外键输入","enabled":false,"line":107},{"key":"P2Button1","value":"Select1P","raw":"\"Select1P\"","type":"string","doc":"2P 按钮 1\n向上的三角键","enabled":false,"line":110},{"key":"P2Button2","value":"Service","raw":"\"Service\"","type":"string","doc":"2P 按钮 2\n三角键中间的圆形按键","enabled":false,"line":113},{"key":"P2Button3","value":"Select2P","raw":"\"Select2P\"","type":"string","doc":"2P 按钮 3\n向下的三角键","enabled":false,"line":116},{"key":"P2Button4","value":"Test","raw":"\"Test\"","type":"string","doc":"2P 按钮 4\n最下方的圆形按键","enabled":false,"line":119},{"key":"P2DisableButtons","value":"false","raw":"false","type":"bool","doc":"2P 禁用外键输入","enabled":false,"line":121}]},{"name":"GameSystem.CustomCameraId","group":"GameSystem","title":"Custom Camera Id","doc":"自定义摄像头\n使用自定义的摄像头 ID 而不是默认的\n启用后可以指定游戏使用的摄像头","enabled":false,"keys":[{"key":"PrintCameraList","value":"false","raw":"false","type":"bool","doc":"打印摄像头列表\n启动时打印摄像头列表到日志中，可以作为修改的依据","enabled":false,"line":129},{"key":"LeftQrCamera","value":"0","raw":"0","type":"int","doc":"DX Pass 1P","enabled":false,"line":131},{"key":"RightQrCamera","value":"0","raw":"0","type":"int","doc":"DX Pass 2P","enabled":false,"line":133},{"key":"PhotoCamera","value":"0","raw":"0","type":"int","doc":"玩家摄像头","enabled":false,"line":135},{"key":"ChimeCamera","value":"0","raw":"0","type":"int","doc":"二维码扫描器","enabled":false,"line":137}]},{"name":"GameSystem.DisableTimeout","group":"GameSystem","title":"Disable Timeout","doc":"去除倒计时\n去除并隐藏游戏中的倒计时","enabled":true,"keys":[{"key":"InContinueProcess","value":"false","raw":"false","type":"bool","doc":"移除续关倒计时","enabled":false,"line":143},{"key":"InGameStart","value":"true","raw":"true","type":"bool","doc":"移除开始倒计时\n也移除刷卡和选择模式界面的倒计时","enabled":false,"line":146},{"key":"HideTimer","value":"true","raw":"true","type":"bool","doc":"隐藏计时器","enabled":false,"line":148},{"key":"ShowInfinity","value":"true","raw":"true","type":"bool","doc":"显示无穷符号\n仅在 隐藏计时器 关闭时显示","enabled":false,"line":151},{"key":"InstanceSkip","value":"false","raw":"false","type":"bool","doc":"快速跳过\n在登录和选择模式界面，按一下跳过按钮就可以立即跳过","enabled":false,"line":154}]},{"name":"GameSystem.EnableFreedomMode","group":"GameSystem","title":"Enable Freedom Mode","doc":"SDGA 启用自由模式\n在 SDGA 上启用自由模式。如果你安装了独立的 FreedomUnlocker，请删除它","enabled":false,"keys":[]},{"name":"GameSystem.ExteraMouseInput","group":"GameSystem","title":"Extera Mouse Input","doc":"触屏优化\n启用触摸输入和半径，以获得更真实的触摸屏体验","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":163},{"key":"Radius","value":"25.0","raw":"25.0","type":"float","doc":"触摸半径\n触摸区域半径大小。请根据手指大小调整，可以去 Test 中测试","enabled":false,"line":166},{"key":"AAreaExtraRadius","value":"0.0","raw":"0.0","type":"float","doc":"A 区额外半径\nA 区（外圈按键）的额外半径，可以为负值来缩小","enabled":false,"line":169},{"key":"BAreaExtraRadius","value":"0.0","raw":"0.0","type":"float","doc":"B 区额外半径\nB 区（中圈传感器）的额外半径，可以为负值来缩小","enabled":false,"line":172},{"key":"CAreaExtraRadius","value":"0.0","raw":"0.0","type":"float","doc":"C 区额外半径\nC 区（中心传感器）的额外半径，可以为负值来缩小","enabled":false,"line":175},{"key":"DAreaExtraRadius","value":"0.0","raw":"0.0","type":"float","doc":"D 区额外半径\nD 区（内圈传感器）的额外半径，可以为负值来缩小","enabled":false,"line":178},{"key":"EAreaExtraRadius","value":"0.0","raw":"0.0","type":"float","doc":"E 区额外半径\nE 区（最内圈传感器）的额外半径，可以为负值来缩小","enabled":false,"line":181},{"key":"DisplayArea","value":"false","raw":"false","type":"bool","doc":"显示触摸点\n显示触摸点（仅限触屏输入）","enabled":false,"line":184}]},{"name":"GameSystem.HeadphoneVolumeMultiply","group":"GameSystem","title":"Headphone Volume Multiply","doc":"耳机音量倍率\n将 1P/2P 用户设置的耳机音量乘以一个倍率，可以调低或调高，但不能高于原本的 20。","enabled":false,"keys":[{"key":"P1","value":"1.0","raw":"1.0","type":"float","doc":"1P","enabled":false,"line":190},{"key":"P2","value":"1.0","raw":"1.0","type":"float","doc":"2P","enabled":false,"line":192}]},{"name":"GameSystem.HeadphoneVolumeOverride","group":"GameSystem","title":"Headphone Volume Override","doc":"耳机音量覆盖\n将 1P/2P 耳机音量强制覆盖为固定值，忽略用户的游戏内设置。设为 -1 则禁用（使用用户设置）。范围：0–20。","enabled":false,"keys":[{"key":"P1","value":"-1.0","raw":"-1.0","type":"float","doc":"1P 音量覆盖\n1P 耳机音量覆盖值。-1 = 使用用户设置，0–20 = 固定音量（20 为最大值）。","enabled":false,"line":199},{"key":"P2","value":"-1.0","raw":"-1.0","type":"float","doc":"2P 音量覆盖\n2P 耳机音量覆盖值。-1 = 使用用户设置，0–20 = 固定音量（20 为最大值）。","enabled":false,"line":202}]},{"name":"GameSystem.KeyMap","group":"GameSystem","title":"Key Map","doc":"按键映射\n启用或禁用 IO4 和 DebugInput。配置 DebugInput 的按键映射。\nDebugInput 与 IO4（兼容 IO4 板 / segatools IO4 模拟）独立工作。\n（你应该至少启用一个输入源，除非你使用其他输入方案如 AdxHidInput。）","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":209},{"key":"DisableIO4_1P","value":"false","raw":"false","type":"bool","doc":"禁用 IO4（1P）\n禁用 IO4（兼容 IO4 板 / segatools IO4 模拟）输入。\n在禁用 IO4 输入后，你的兼容 IO4 板或 segatools IO4 模拟将被忽略。","enabled":false,"line":213},{"key":"DisableIO4_2P","value":"false","raw":"false","type":"bool","doc":"禁用 IO4（2P）","enabled":false,"line":215},{"key":"DisableIO4System","value":"false","raw":"false","type":"bool","doc":"禁用 IO4（系统按键）\n禁用系统按键的 IO4 输入，输入源同上。","enabled":false,"line":218},{"key":"DisableDebugInput","value":"true","raw":"true","type":"bool","doc":"禁用 DebugInput\n禁用 DebugInput，下列按键映射将不起作用。\n在禁用 DebugInput 后，你需要兼容 IO4 板、segatools IO4 模拟或其他自定义输入方案才能游玩。\n如果使用 IO4 模拟，你可以在 segatools.ini 的 [io4] 和 [button] 部分配置按键映射。","enabled":true,"line":223},{"key":"DisableDebugFeatureHotkeys","value":"false","raw":"false","type":"bool","doc":"禁用调试快捷键\n禁用 DebugFeature Polyfill 的快捷键，比如说回车暂停，左右键快进快退等。","enabled":false,"line":226},{"key":"Test","value":"M","raw":"\"M\"","type":"string","doc":"","enabled":true,"line":227},{"key":"Service","value":"N","raw":"\"N\"","type":"string","doc":"","enabled":true,"line":228},{"key":"Button1_1P","value":"W","raw":"\"W\"","type":"string","doc":"","enabled":false,"line":229},{"key":"Button2_1P","value":"E","raw":"\"E\"","type":"string","doc":"","enabled":false,"line":230},{"key":"Button3_1P","value":"D","raw":"\"D\"","type":"string","doc":"","enabled":false,"line":231},{"key":"Button4_1P","value":"C","raw":"\"C\"","type":"string","doc":"","enabled":false,"line":232},{"key":"Button5_1P","value":"X","raw":"\"X\"","type":"string","doc":"","enabled":false,"line":233},{"key":"Button6_1P","value":"Z","raw":"\"Z\"","type":"string","doc":"","enabled":false,"line":234},{"key":"Button7_1P","value":"A","raw":"\"A\"","type":"string","doc":"","enabled":false,"line":235},{"key":"Button8_1P","value":"Q","raw":"\"Q\"","type":"string","doc":"","enabled":false,"line":236},{"key":"Select_1P","value":"Alpha3","raw":"\"Alpha3\"","type":"string","doc":"","enabled":false,"line":237},{"key":"Button1_2P","value":"Keypad8","raw":"\"Keypad8\"","type":"string","doc":"","enabled":false,"line":238},{"key":"Button2_2P","value":"Keypad9","raw":"\"Keypad9\"","type":"string","doc":"","enabled":false,"line":239},{"key":"Button3_2P","value":"Keypad6","raw":"\"Keypad6\"","type":"string","doc":"","enabled":false,"line":240},{"key":"Button4_2P","value":"Keypad3","raw":"\"Keypad3\"","type":"string","doc":"","enabled":false,"line":241},{"key":"Button5_2P","value":"Keypad2","raw":"\"Keypad2\"","type":"string","doc":"","enabled":false,"line":242},{"key":"Button6_2P","value":"Keypad1","raw":"\"Keypad1\"","type":"string","doc":"","enabled":false,"line":243},{"key":"Button7_2P","value":"Keypad4","raw":"\"Keypad4\"","type":"string","doc":"","enabled":false,"line":244},{"key":"Button8_2P","value":"Keypad7","raw":"\"Keypad7\"","type":"string","doc":"","enabled":false,"line":245},{"key":"Select_2P","value":"KeypadMultiply","raw":"\"KeypadMultiply\"","type":"string","doc":"","enabled":false,"line":246},{"key":"Autoplay","value":"Home","raw":"\"Home\"","type":"string","doc":"","enabled":false,"line":247}]},{"name":"GameSystem.LightBoardPort","group":"GameSystem","title":"Light Board Port","doc":"灯光串口\n调整灯板串口号，默认值 COM21 COM23\n需要设备管理器配置，如果你不清楚你是否可以使用，请不要使用","enabled":false,"keys":[{"key":"PortName_1PLED","value":"COM21","raw":"\"COM21\"","type":"string","doc":"1P灯光串口号","enabled":false,"line":254},{"key":"PortName_2PLED","value":"COM23","raw":"\"COM23\"","type":"string","doc":"2P灯光串口号","enabled":false,"line":256}]},{"name":"GameSystem.MaimollerIO","group":"GameSystem","title":"Maimoller I O","doc":"Maimoller IO V2\n适配 Maimoller 控制器的输入（按钮和触屏）和输出（LED），替代厂商提供的 ADXHIDIOMod.dll。\n如果你没有使用 Maimoller 控制器，请勿启用。\n请删除 ADXHIDIOMod.dll（如果有）并关闭 mai2.ini 中的 DummyTouchpanel。","enabled":false,"keys":[{"key":"Touch1p","value":"true","raw":"true","type":"bool","doc":"启用 1P 触屏\n如果混用 Maimoller 与其他协议，请对不是 Maimoller 的一侧禁用","enabled":false,"line":265},{"key":"Button1p","value":"true","raw":"true","type":"bool","doc":"启用 1P 按键","enabled":false,"line":267},{"key":"Led1p","value":"true","raw":"true","type":"bool","doc":"启用 1P 灯光","enabled":false,"line":269},{"key":"Touch2p","value":"true","raw":"true","type":"bool","doc":"启用 2P 触屏","enabled":false,"line":271},{"key":"Button2p","value":"true","raw":"true","type":"bool","doc":"启用 2P 按键","enabled":false,"line":273},{"key":"Led2p","value":"true","raw":"true","type":"bool","doc":"启用 2P 灯光","enabled":false,"line":275},{"key":"UseLegacy","value":"false","raw":"false","type":"bool","doc":"启用兼容模式\n使用基于厂商 DLL 的旧版实现\n请在 Sinmai_Data/Plugins 文件夹下放置 libadxhid.dll 和 hidapi.dll。但请不要放置 ADXHIDIOMod.dll","enabled":false,"line":279},{"key":"Alternative2p","value":"false","raw":"false","type":"bool","doc":"兼容性 2P 模式\n当混用 Maimoller 与其他协议并且 Maimoller 在 2P 上，而且 Maimoller 无法正常使用时开启（仅对旧版实现有效）","enabled":false,"line":282},{"key":"P1Button1","value":"Select1P","raw":"\"Select1P\"","type":"string","doc":"1P 按钮 1（三角形）","enabled":false,"line":284},{"key":"P1Button2","value":"Test","raw":"\"Test\"","type":"string","doc":"1P 按钮 2（圆形）","enabled":false,"line":286},{"key":"P1Button3","value":"Service","raw":"\"Service\"","type":"string","doc":"1P 按钮 3（圆形）","enabled":false,"line":288},{"key":"P1Button4","value":"Select2P","raw":"\"Select2P\"","type":"string","doc":"1P 按钮 4（圆形）","enabled":false,"line":290},{"key":"P2Button1","value":"Select1P","raw":"\"Select1P\"","type":"string","doc":"2P 按钮 1（三角形）","enabled":false,"line":292},{"key":"P2Button2","value":"Test","raw":"\"Test\"","type":"string","doc":"2P 按钮 2（圆形）","enabled":false,"line":294},{"key":"P2Button3","value":"Service","raw":"\"Service\"","type":"string","doc":"2P 按钮 3（圆形）","enabled":false,"line":296},{"key":"P2Button4","value":"Select2P","raw":"\"Select2P\"","type":"string","doc":"2P 按钮 4（圆形）","enabled":false,"line":298}]},{"name":"GameSystem.OldCabLightBoardSupport","group":"GameSystem","title":"Old Cab Light Board Support","doc":"旧框灯板支持\n跳过 BoardNo 检查以使用 837-15070-02（旧框灯板），并映射新框顶板 LED 至重低音扬声器 LED、顶板 LED 以及中央 LED","enabled":false,"keys":[]},{"name":"GameSystem.OptionLoadFix","group":"GameSystem","title":"Option Load Fix","doc":"Opt 加载修复\n在 StreamingAssets 加载 Opt 时，不仅加载 A 开头的，也加载版本对应字母开头的","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":307},{"key":"OverridePath","value":"","raw":"\"\"","type":"string","doc":"自定义路径\n自定义 Option 文件夹的路径（没事别填）","enabled":false,"line":310}]},{"name":"GameSystem.PdxTouch","group":"GameSystem","title":"Pdx Touch","doc":"PDX 独占触摸","enabled":false,"keys":[{"key":"Radius","value":"20","raw":"20","type":"int","doc":"触摸体积半径\n基准是 1440x1440","enabled":false,"line":316},{"key":"AAreaExtraRadius","value":"0.0","raw":"0.0","type":"float","doc":"A 区额外半径\nA 区（外圈按键）的额外半径，可以为负值来缩小","enabled":false,"line":319},{"key":"BAreaExtraRadius","value":"25.0","raw":"25.0","type":"float","doc":"B 区额外半径\nB 区（中圈传感器）的额外半径，可以为负值来缩小","enabled":false,"line":322},{"key":"CAreaExtraRadius","value":"0.0","raw":"0.0","type":"float","doc":"C 区额外半径\nC 区（中心传感器）的额外半径，可以为负值来缩小","enabled":false,"line":325},{"key":"DAreaExtraRadius","value":"0.0","raw":"0.0","type":"float","doc":"D 区额外半径\nD 区（内圈传感器）的额外半径，可以为负值来缩小","enabled":false,"line":328},{"key":"EAreaExtraRadius","value":"30.0","raw":"30.0","type":"float","doc":"E 区额外半径\nE 区（最内圈传感器）的额外半径，可以为负值来缩小","enabled":false,"line":331},{"key":"Path1p","value":"","raw":"\"\"","type":"string","doc":"1P 设备标识\nUSB 序列号或端口路径，例如 2.2。请使用配置工具中显示的标识。留空则使用第一个检测到的设备作为 1P","enabled":false,"line":334},{"key":"Path2p","value":"","raw":"\"\"","type":"string","doc":"2P 设备标识","enabled":false,"line":336},{"key":"DiagnosticLog","value":"false","raw":"false","type":"bool","doc":"触摸诊断日志\n将触摸报告诊断信息写入 UserData/AquaMaiTouch.log","enabled":false,"line":339}]},{"name":"GameSystem.QuickRetry","group":"GameSystem","title":"Quick Retry","doc":"快速重开\n按住下方四个按钮（3456）快速重开本局游戏（像在 Freedom Mode 中一样，默认仅对非宴谱有效）","enabled":true,"keys":[{"key":"QuickerRetry","value":"true","raw":"true","type":"bool","doc":"更快触发\n将长按时间修改为 0.5 秒","enabled":true,"line":346},{"key":"EnableInUtage","value":"false","raw":"false","type":"bool","doc":"宴谱启用\n在宴谱中强制启用","enabled":false,"line":349}]},{"name":"GameSystem.RemoveEncryption","group":"GameSystem","title":"Remove Encryption","doc":"移除加密\n如果你在用未经修改的客户端，会默认加密到服务器的连接，而连接私服的时候不应该加密\n开了这个选项之后就不会加密连接了，同时也会移除不同版本的客户端可能会对 API 接口加的后缀\n正常情况下，请保持这个选项开启","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":356}]},{"name":"GameSystem.SinglePlayer","group":"GameSystem","title":"Single Player","doc":"单人模式\n单人模式，不显示 2P","enabled":true,"keys":[{"key":"HideSubMonitor","value":"false","raw":"false","type":"bool","doc":"隐藏副屏\n只显示主区域，不显示副屏","enabled":true,"line":363},{"key":"AutoSkip","value":"true","raw":"true","type":"bool","doc":"自动跳过倒计时\n单人模式下刷卡登录直接进入下一个界面，无需跳过倒计时","enabled":true,"line":366},{"key":"FixHanabi","value":"true","raw":"true","type":"bool","doc":"修复烟花效果\n修复单人模式下的烟花效果（如果启用了 HideHanabi，则会自动禁用）","enabled":false,"line":369},{"key":"ShowFreedomModeTimer","value":"true","raw":"true","type":"bool","doc":"显示自由模式计时\n使用自由模式时，在副屏显示计时器","enabled":false,"line":372}]},{"name":"GameSystem.SongConstantSort","group":"GameSystem","title":"Song Constant Sort","doc":"定数排序\n按照乐曲实际的细化定数来排序乐曲列表。请在游戏内切换至该排列模式","enabled":false,"keys":[]},{"name":"GameSystem.Sound","group":"GameSystem","title":"Sound","doc":"音频输出设置\n音频独占与八声道设置","enabled":false,"keys":[{"key":"EnableExclusive","value":"false","raw":"false","type":"bool","doc":"音频独占","enabled":false,"line":382},{"key":"BitsPerSample","value":"32","raw":"32","type":"int","doc":"如果不知道是什么，请不要修改","enabled":false,"line":384},{"key":"ValidBitsPerSample","value":"24","raw":"24","type":"int","doc":"如果不知道是什么，请不要修改","enabled":false,"line":386},{"key":"SamplesPerSec","value":"48000","raw":"48000","type":"int","doc":"如果不知道是什么，请不要修改","enabled":false,"line":388},{"key":"Enable8Channel","value":"false","raw":"false","type":"bool","doc":"八声道","enabled":false,"line":390},{"key":"MusicVolume","value":"1.0","raw":"1.0","type":"float","doc":"乐曲音量","enabled":false,"line":392}]},{"name":"GameSystem.SoundRouting","group":"GameSystem","title":"Sound Routing","doc":"8Ch 音频路由重映射\n将 8Ch 的各个声道重新映射到指定的声道\n可进行混合，可使用 \"None\" 以禁用一个声道，音量在源声道应用（> 1.0 不会生效，若要提高音量，请使用 HeadphoneVolumeMultiply）\n（注：对于 2Ch 用户，请将需要的声道路由到 P1SpeakerLeft/Right，其他声道路由到 None）","enabled":false,"keys":[{"key":"RouteP1SpeakerLeftTo","value":"P1SpeakerLeft","raw":"\"P1SpeakerLeft\"","type":"string","doc":"1P外放左","enabled":false,"line":400},{"key":"RouteP1SpeakerRightTo","value":"P1SpeakerRight","raw":"\"P1SpeakerRight\"","type":"string","doc":"1P外放右","enabled":false,"line":402},{"key":"RouteP1HeadphoneLeftTo","value":"P1HeadphoneLeft","raw":"\"P1HeadphoneLeft\"","type":"string","doc":"1P耳机左","enabled":false,"line":404},{"key":"RouteP1HeadphoneRightTo","value":"P1HeadphoneRight","raw":"\"P1HeadphoneRight\"","type":"string","doc":"1P耳机右","enabled":false,"line":406},{"key":"RouteP2SpeakerLeftTo","value":"P2SpeakerLeft","raw":"\"P2SpeakerLeft\"","type":"string","doc":"2P外放左","enabled":false,"line":408},{"key":"RouteP2SpeakerRightTo","value":"P2SpeakerRight","raw":"\"P2SpeakerRight\"","type":"string","doc":"2P外放右","enabled":false,"line":410},{"key":"RouteP2HeadphoneLeftTo","value":"P2HeadphoneLeft","raw":"\"P2HeadphoneLeft\"","type":"string","doc":"2P耳机左","enabled":false,"line":412},{"key":"RouteP2HeadphoneRightTo","value":"P2HeadphoneRight","raw":"\"P2HeadphoneRight\"","type":"string","doc":"2P耳机右","enabled":false,"line":414},{"key":"VolumeP1Speaker","value":"1.0","raw":"1.0","type":"float","doc":"1P外放音量","enabled":false,"line":416},{"key":"VolumeP1Headphone","value":"1.0","raw":"1.0","type":"float","doc":"1P耳机音量","enabled":false,"line":418},{"key":"VolumeP2Speaker","value":"1.0","raw":"1.0","type":"float","doc":"2P外放音量","enabled":false,"line":420},{"key":"VolumeP2Headphone","value":"1.0","raw":"1.0","type":"float","doc":"2P耳机音量","enabled":false,"line":422}]},{"name":"GameSystem.StartupDirectToGame","group":"GameSystem","title":"Startup Direct To Game","doc":"启动直达乐曲\n启动流程结束后直接进入通过 --music 传入的歌曲 ID","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":427},{"key":"DefaultDifficulty","value":"3","raw":"3","type":"int","doc":"缺省难度\n如果没有在命令行中传入难度（--difficulty）的话，默认使用的难度","enabled":false,"line":430},{"key":"DefaultNoteSpeed","value":"6.5","raw":"\"6.5\"","type":"string","doc":"缺省 Note Speed\n如果没有在命令行中传入 Note Speed（--noteSpeed）的话，默认使用的 Note Speed","enabled":false,"line":433},{"key":"DefaultTouchSpeed","value":"6.5","raw":"\"6.5\"","type":"string","doc":"缺省 Touch Speed\n如果没有在命令行中传入 Touch Speed（--touchSpeed）的话，默认使用的 Touch Speed","enabled":false,"line":436},{"key":"DefaultSlideSpeed","value":"normal","raw":"\"normal\"","type":"string","doc":"缺省 Slide Speed\n如果没有在命令行中传入 Slide Speed（--slideSpeed）的话，默认使用的 Slide Speed。例如 normal、-0.5、0.5","enabled":false,"line":439},{"key":"DefaultAutoplay","value":"Critical","raw":"\"Critical\"","type":"string","doc":"缺省 Autoplay 类型\n如果没有在命令行中传入 Autoplay 类型（--autoplay）的话，默认使用的类型。例如 Critical、Perfect、Great、Good、Miss、Random、None","enabled":false,"line":442}]},{"name":"GameSystem.TestProof","group":"GameSystem","title":"Test Proof","doc":"测试键长按\n启用后，测试键必须长按才能进入游戏测试模式\n当测试键被绑定到其它功能时，此选项自动开启","enabled":true,"keys":[{"key":"TestKey","value":"Test","raw":"\"Test\"","type":"string","doc":"测试模式按键\n修改为 Test 以外的值来实现长按特定的键进入游戏测试模式，这样 Test 键就可以完全用来实现自定义功能了","enabled":true,"line":450}]},{"name":"GameSystem.TouchPanelBaudRate","group":"GameSystem","title":"Touch Panel Baud Rate","doc":"触摸屏波特率\n调整触摸屏串口波特率，默认值 9600\n需要硬件配合，如果你不清楚你是否可以使用，请不要使用","enabled":false,"keys":[{"key":"BaudRate","value":"9600","raw":"9600","type":"int","doc":"波特率","enabled":false,"line":457}]},{"name":"GameSystem.TouchPanelPort","group":"GameSystem","title":"Touch Panel Port","doc":"触摸屏串口\n调整触摸屏串口号，默认值 COM3 COM4\n需要设备管理器配置，如果你不清楚你是否可以使用，请不要使用","enabled":false,"keys":[{"key":"PortName_1P","value":"COM3","raw":"\"COM3\"","type":"string","doc":"1P串口号","enabled":false,"line":464},{"key":"PortName_2P","value":"COM4","raw":"\"COM4\"","type":"string","doc":"2P串口号","enabled":false,"line":466}]},{"name":"GameSystem.TouchToButtonInput","group":"GameSystem","title":"Touch To Button Input","doc":"触摸转按键\n映射触摸操作至实体按键","enabled":false,"keys":[]},{"name":"GameSystem.Unlock","group":"GameSystem","title":"Unlock","doc":"全解\n解锁原本锁定（包括正常途径无法解锁）的游戏内容\n由本 Mod 解锁的内容（除了被你升级过的角色以外）不会上传到你的账户\n游玩时仍会像未开启解锁一样「获得」那些乐曲/收藏品/段位","enabled":true,"keys":[{"key":"Maps","value":"true","raw":"true","type":"bool","doc":"区域\n解锁游戏里所有的区域，包括非当前版本的（并不会帮你跑完）","enabled":false,"line":479},{"key":"Songs","value":"true","raw":"true","type":"bool","doc":"乐曲\n解锁所有乐曲，并跳过紫/白解锁画面（会正常保存解锁状态）","enabled":false,"line":482},{"key":"Tickets","value":"false","raw":"false","type":"bool","doc":"跑图券\n解锁游戏里所有可能的跑图券","enabled":true,"line":485},{"key":"Courses","value":"false","raw":"false","type":"bool","doc":"段位\n解锁所有段位模式的段位（不需要十段就可以打真段位）","enabled":false,"line":488},{"key":"Utage","value":"true","raw":"true","type":"bool","doc":"宴会场\n不需要万分也可以进宴会场","enabled":false,"line":491},{"key":"Titles","value":"false","raw":"false","type":"bool","doc":"称号","enabled":false,"line":493},{"key":"Icons","value":"false","raw":"false","type":"bool","doc":"头像","enabled":false,"line":495},{"key":"Plates","value":"false","raw":"false","type":"bool","doc":"姓名框","enabled":false,"line":497},{"key":"Frames","value":"false","raw":"false","type":"bool","doc":"背景","enabled":false,"line":499},{"key":"Partners","value":"false","raw":"false","type":"bool","doc":"搭档","enabled":false,"line":501},{"key":"Events","value":"false","raw":"false","type":"bool","doc":"Events","enabled":false,"line":503},{"key":"EventBlackList","value":"0,250926121,251205121,260612121","raw":"\"0,250926121,251205121,260612121\"","type":"string","doc":"Event 黑名单\n不解锁以下 Event。如果你不知道这是什么，请勿修改","enabled":false,"line":506},{"key":"Characters","value":"false","raw":"false","type":"bool","doc":"旅行伙伴","enabled":false,"line":508}]},{"name":"GameSystem.VirtualCoin","group":"GameSystem","title":"Virtual Coin","doc":"虚拟投币\n基于Mod，在不依赖 SegaTools 的前提下实现的投币功能\n支持通过键盘按键、机台上自定义功能键或 HTTP 接口远程增加点数\n注意:该功能增加的点数游戏重启后不会保存","enabled":false,"keys":[{"key":"CoinKey","value":"Equals","raw":"\"Equals\"","type":"string","doc":"投币按键\n绑定使用的投币按键（键盘按键或自定义功能键均可）","enabled":false,"line":517},{"key":"LongPress","value":"false","raw":"false","type":"bool","doc":"长按\n是否长按上述按键才能触发","enabled":false,"line":520},{"key":"IsUseRemote","value":"false","raw":"false","type":"bool","doc":"启用远程投币\n通过 HTTP 接口远程增加点数。\n警告：若开启此项，则会在您机器的0.0.0.0上监听一个HTTP服务器（端口号由下面选项指定）。请注意安全性问题，并考虑配合密码验证。","enabled":false,"line":524},{"key":"Port","value":"7654","raw":"7654","type":"int","doc":"监听端口\nHTTP服务监听的端口","enabled":false,"line":527},{"key":"Password","value":"","raw":"\"\"","type":"string","doc":"密码验证\n设置访问密码，留空则不使用密码。如果使用密码，请求时URL后应当追加参数'?password='","enabled":false,"line":530},{"key":"IsPlaySound","value":"true","raw":"true","type":"bool","doc":"启用音效\n是否播放音效","enabled":false,"line":533}]},{"name":"GameSystem.VolumeSync","group":"GameSystem","title":"Volume Sync","doc":"音量同步\n将1P耳机音量同步给游戏主音量（外放音量）\n注意：若此功能与八声道同时开启，会导致内置耳机声道的音量被缩放两次，推荐在仅使用1P且不开启八声道时使用,","enabled":false,"keys":[]},{"name":"GameSystem.Window","group":"GameSystem","title":"Window","doc":"图形设置\n分辨率设置 / 窗口化","enabled":true,"keys":[{"key":"Windowed","value":"false","raw":"false","type":"bool","doc":"窗口模式\n窗口化游戏","enabled":true,"line":545},{"key":"Borderless","value":"false","raw":"false","type":"bool","doc":"无边框","enabled":false,"line":547},{"key":"Width","value":"1080","raw":"1080","type":"int","doc":"宽度\n宽度（和高度）窗口化时为游戏窗口大小，全屏时为渲染分辨率\n如果设为 0，窗口化将记住用户设定的大小，全屏时将使用当前显示器分辨率\n全屏时如果显示大小不正确，请改成屏幕的分辨率（如 2160x3840）","enabled":true,"line":552},{"key":"Height","value":"1920","raw":"1920","type":"int","doc":"高度","enabled":true,"line":554},{"key":"ExclusiveFullscreen","value":"false","raw":"false","type":"bool","doc":"独占全屏\n使用独占全屏而不是全屏窗口（仅全屏模式）\n跳过桌面合成，显示延迟更低更稳定。游戏失去焦点时会最小化\n需要游戏在驱动该显示器的 GPU 上渲染，并为 Sinmai.exe 禁用 Windows 的“全屏优化”（兼容性设置），\n否则 Windows 会用合成窗口模拟独占全屏，延迟反而比默认更高","enabled":false,"line":560}]}]},{"name":"GameSettings","title":"游戏设置","sections":[{"name":"GameSettings.CreditConfig","group":"GameSettings","title":"Credit Config","doc":"点数设置\n设置游戏为付费游玩（锁定可用点数）或免费游玩","enabled":true,"keys":[{"key":"IsFreePlay","value":"false","raw":"false","type":"bool","doc":"免费游玩\n是否免费游玩（设为 false 时为付费游玩）","enabled":true,"line":567},{"key":"AllowTicketInFreePlay","value":"false","raw":"false","type":"bool","doc":"免费时购票\n可以在免费游玩时购买付费功能票","enabled":false,"line":570},{"key":"LockCredits","value":"24","raw":"24","type":"int","doc":"锁定点数\n锁定可用点数数量（仅在付费游玩时有效），设为 0 以禁用","enabled":true,"line":573}]},{"name":"GameSettings.ForceAsServer","group":"GameSettings","title":"Force As Server","doc":"强制为服务器\n如果要配置店内招募的话，应该要把这个关闭","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":578}]},{"name":"GameSettings.JudgeAdjust","group":"GameSettings","title":"Judge Adjust","doc":"判定调整\n全局分玩家调整 A/B 判（单位和游戏里一样）或增加触摸延迟","enabled":true,"keys":[{"key":"A_1P","value":"0.0","raw":"0.0","type":"float","doc":"1P A判","enabled":true,"line":584},{"key":"A_2P","value":"0.0","raw":"0.0","type":"float","doc":"2P A判","enabled":true,"line":586},{"key":"B_1P","value":"0.0","raw":"0.0","type":"float","doc":"1P B判","enabled":true,"line":588},{"key":"B_2P","value":"0.0","raw":"0.0","type":"float","doc":"2P B判","enabled":true,"line":590},{"key":"TouchDelay","value":"0","raw":"0","type":"int","doc":"触摸延迟\n增加触摸延迟（不建议使用）","enabled":true,"line":593}]},{"name":"GameSettings.TouchSensitivity","group":"GameSettings","title":"Touch Sensitivity","doc":"触摸灵敏度\n使用自定义触摸灵敏度\n这里启用之后 Test 里的就不再起作用了\n这里禁用之后就还是用 Test 里的调\n在 Test 模式下调整的灵敏度不是线性的\nA 区默认灵敏度 90, 80, 70, 60, 50, 40, 30, 26, 23, 20, 10\n其他区域默认灵敏度 70, 60, 50, 40, 30, 20, 15, 10, 5, 1, 1\nTest 里设置的 0 对应的是 40, 20 这一档，-5 是 90, 70，+5 是 10, 1\nTest 里的数字越大，这里的数字越小，对于官机来说，灵敏度更大\n而 ADX 的灵敏度是反的，所以对于 ADX，这里的数字越大，灵敏度越大","enabled":false,"keys":[{"key":"A1","value":"40","raw":"40","type":"int","doc":"","enabled":false,"line":607},{"key":"A2","value":"40","raw":"40","type":"int","doc":"","enabled":false,"line":608},{"key":"A3","value":"40","raw":"40","type":"int","doc":"","enabled":false,"line":609},{"key":"A4","value":"40","raw":"40","type":"int","doc":"","enabled":false,"line":610},{"key":"A5","value":"40","raw":"40","type":"int","doc":"","enabled":false,"line":611},{"key":"A6","value":"40","raw":"40","type":"int","doc":"","enabled":false,"line":612},{"key":"A7","value":"40","raw":"40","type":"int","doc":"","enabled":false,"line":613},{"key":"A8","value":"40","raw":"40","type":"int","doc":"","enabled":false,"line":614},{"key":"B1","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":615},{"key":"B2","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":616},{"key":"B3","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":617},{"key":"B4","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":618},{"key":"B5","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":619},{"key":"B6","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":620},{"key":"B7","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":621},{"key":"B8","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":622},{"key":"C1","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":623},{"key":"C2","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":624},{"key":"D1","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":625},{"key":"D2","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":626},{"key":"D3","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":627},{"key":"D4","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":628},{"key":"D5","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":629},{"key":"D6","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":630},{"key":"D7","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":631},{"key":"D8","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":632},{"key":"E1","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":633},{"key":"E2","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":634},{"key":"E3","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":635},{"key":"E4","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":636},{"key":"E5","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":637},{"key":"E6","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":638},{"key":"E7","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":639},{"key":"E8","value":"20","raw":"20","type":"int","doc":"","enabled":false,"line":640}]}]},{"name":"Tweaks","title":"优化","sections":[{"name":"Tweaks.IgnoreAimeServerError","group":"Tweaks","title":"Ignore Aime Server Error","doc":"忽略 Aime 错误\n防止因错误认为 AimeDB 服务器问题引起的灰网，建议开启","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":645}]},{"name":"Tweaks.LedBrightnessControl","group":"Tweaks","title":"Led Brightness Control","doc":"LED亮度控制\n控制按键和框体灯的亮度","enabled":true,"keys":[{"key":"Button1p","value":"0.800000011920929","raw":"0.800000011920929","type":"float","doc":"1P按键亮度\n(0.0 - 1.0)","enabled":true,"line":652},{"key":"Button2p","value":"1.0","raw":"1.0","type":"float","doc":"2P按键亮度\n(0.0 - 1.0)","enabled":false,"line":655},{"key":"Cabinet1p","value":"1.0","raw":"1.0","type":"float","doc":"1P框体灯亮度\n(0.0 - 1.0)","enabled":false,"line":658},{"key":"Cabinet2p","value":"1.0","raw":"1.0","type":"float","doc":"2P框体灯亮度\n(0.0 - 1.0)","enabled":false,"line":661}]},{"name":"Tweaks.LockFrameRate","group":"Tweaks","title":"Lock Frame Rate","doc":"锁定帧率\n强制设置帧率上限为 60 帧并关闭垂直同步\n如果你的游戏没有问题，请不要使用。建议直接设置显示器的刷新率","enabled":false,"keys":[{"key":"TargetFrameRate","value":"60","raw":"60","type":"int","doc":"目标帧率\n目标帧率，不建议修改。除非你知道你在做什么","enabled":false,"line":669}]},{"name":"Tweaks.ResetTouch","group":"Tweaks","title":"Reset Touch","doc":"重置触摸面板","enabled":false,"keys":[{"key":"AfterTrack","value":"false","raw":"false","type":"bool","doc":"玩完一首歌自动重置","enabled":false,"line":674},{"key":"Key","value":"None","raw":"\"None\"","type":"string","doc":"重置按键","enabled":false,"line":676},{"key":"LongPress","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":677}]},{"name":"Tweaks.SkipUserVersionCheck","group":"Tweaks","title":"Skip User Version Check","doc":"跳过版本检查\n原先如果你的账号版本比当前游戏设定的版本高的话，就会不能登录\n开了这个选项之后就可以登录了，不过你的账号版本还是会被设定为当前游戏的版本","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":683}]},{"name":"Tweaks.TimeSaving.CheckSkip","group":"Tweaks","title":"Check Skip","doc":"跳过启动检查\n在自检界面，有一些检查需要等待检查完毕后，才会进入下一阶段\n开了以下选项之后会将检查过程丢入后台进行，但可能存在部分副作用","enabled":false,"keys":[{"key":"SkipStartupCameraCheck","value":"false","raw":"false","type":"bool","doc":"跳过摄像头检查\n若在后台检查完毕前过早启动摄像头会导致摄像头临时黑屏","enabled":false,"line":691},{"key":"SkipPowerOnNetworkCheck","value":"false","raw":"false","type":"bool","doc":"跳过启动网络检查\n若在后台检查完毕前过早进入会进入临时灰网","enabled":false,"line":694}]},{"name":"Tweaks.TimeSaving.EntryToMusicSelection","group":"Tweaks","title":"Entry To Music Selection","doc":"登录后直接选歌\n登录完成后直接进入选歌界面","enabled":false,"keys":[{"key":"EnableOnlyInGuestMode","value":"false","raw":"false","type":"bool","doc":"仅游客模式\n仅在游客模式启用","enabled":false,"line":701}]},{"name":"Tweaks.TimeSaving.ExitToSave","group":"Tweaks","title":"Exit To Save","doc":"游戏结束直接登出\n游戏结束后跳过上传照片和收藏品直接登出","enabled":false,"keys":[]},{"name":"Tweaks.TimeSaving.IWontTapOrSlideVigorously","group":"Tweaks","title":"I Wont Tap Or Slide Vigorously","doc":"跳过拍打警告\n跳过“不要大力拍打或滑动哦”这个界面，数据一旦加载完就立马进入下一个界面","enabled":true,"keys":[]},{"name":"Tweaks.TimeSaving.SkipEventInfo","group":"Tweaks","title":"Skip Event Info","doc":"跳过活动提示\n跳过登录 / 注册游戏时候可能的 “发现了新的区域哟” “乐曲增加” “有活动哟” 之类的提示","enabled":true,"keys":[]},{"name":"Tweaks.TimeSaving.SkipGoodbyeScreen","group":"Tweaks","title":"Skip Goodbye Screen","doc":"跳过再见界面\n跳过游戏结束的「再见」界面","enabled":false,"keys":[]},{"name":"Tweaks.TimeSaving.SkipStartupDelays","group":"Tweaks","title":"Skip Startup Delays","doc":"跳过启动延迟\n在自检界面，每个屏幕结束的时候都会等两秒才进入下一个屏幕，很浪费时间\n开了这个选项之后就不会等了","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":723}]},{"name":"Tweaks.TimeSaving.SkipStartupWarning","group":"Tweaks","title":"Skip Startup Warning","doc":"跳过启动警告\n跳过 SDEZ 启动时的 WARNING 界面","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":728}]},{"name":"Tweaks.TimeSaving.SkipTrackStart","group":"Tweaks","title":"Skip Track Start","doc":"跳过乐曲开始\n跳过乐曲开始界面","enabled":false,"keys":[]}]},{"name":"UX","title":"界面体验","sections":[{"name":"UX.CustomFnToKeyboard","group":"UX","title":"Custom Fn To Keyboard","doc":"自定义功能键映射\n将控制器上的自定义功能键映射为系统级键盘按键。可以通过把功能键映射为Enter等按键，实现用机台按键回车刷卡等功能。注意：使用前需要在对应的控制器IO设置中，将相应的物理按键功能设置为“自定义功能键”。","enabled":false,"keys":[{"key":"CustomFn1","value":"None","raw":"\"None\"","type":"string","doc":"自定义功能键1","enabled":false,"line":738},{"key":"CustomFn2","value":"None","raw":"\"None\"","type":"string","doc":"自定义功能键2","enabled":false,"line":740},{"key":"CustomFn3","value":"None","raw":"\"None\"","type":"string","doc":"自定义功能键3","enabled":false,"line":742},{"key":"CustomFn4","value":"None","raw":"\"None\"","type":"string","doc":"自定义功能键4","enabled":false,"line":744}]},{"name":"UX.DisableLightOutGame","group":"UX","title":"Disable Light Out Game","doc":"闲置时关闭灯光\n在游戏闲置时关闭外键和框体的灯光\n“一闪一闪的 闪的我心发慌”","enabled":false,"keys":[]},{"name":"UX.DontRuinMyAccount","group":"UX","title":"Dont Ruin My Account","doc":"AutoPlay 时不保存成绩","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":753},{"key":"ShowNotice","value":"true","raw":"true","type":"bool","doc":"AutoPlay 激活后显示提示","enabled":false,"line":755},{"key":"ForPracticeMode","value":"true","raw":"true","type":"bool","doc":"使用练习模式/DebugFeature相关功能也不保存成绩","enabled":false,"line":757}]},{"name":"UX.FestaControl","group":"UX","title":"Festa Control","doc":"Festa 开关\n控制 “Festa” 模式 UI 的显示。如不开启，则不会更改设置，由 Event 或者服务器控制","enabled":false,"keys":[{"key":"IsFesta","value":"false","raw":"false","type":"bool","doc":"启用 Festa\n是否显示 “Festa” 模式 UI","enabled":false,"line":764}]},{"name":"UX.FixTrackNumDisplay","group":"UX","title":"Fix Track Num Display","doc":"两位数曲目修复\n让右上角的当前曲目数字可以显示两位数（在普通模式中）","enabled":true,"keys":[]},{"name":"UX.GrantFinalGateKey","group":"UX","title":"Grant Final Gate Key","doc":"按 Enter 键获得 KLD 里门的钥匙 (DXPASS)","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":772}]},{"name":"UX.HardwareAlert","group":"UX","title":"Hardware Alert","doc":"自定义自检警告\n自定义硬件警告，可配置在指定硬件自检失败时阻止游戏启动并显示报错画面，开启下方的错误类型以配置需要关注的错误。","enabled":false,"keys":[{"key":"UseOriginalGameLanguage","value":"true","raw":"true","type":"bool","doc":"原始语言显示\n如果启用，所有硬件警告将会使用游戏原本的语言显示，例如 SDEZ 就会用日文显示报错。如果你安装了任何汉化包，你应该关闭这个选项。","enabled":false,"line":779},{"key":"TouchSensor_1P","value":"false","raw":"false","type":"bool","doc":"1P 触摸屏","enabled":false,"line":781},{"key":"TouchSensor_2P","value":"false","raw":"false","type":"bool","doc":"2P 触摸屏","enabled":false,"line":783},{"key":"LED_1P","value":"false","raw":"false","type":"bool","doc":"1P LED","enabled":false,"line":785},{"key":"LED_2P","value":"false","raw":"false","type":"bool","doc":"2P LED","enabled":false,"line":787},{"key":"PlayerCamera","value":"false","raw":"false","type":"bool","doc":"玩家摄像机","enabled":false,"line":789},{"key":"CodeReader_1P","value":"false","raw":"false","type":"bool","doc":"DX Pass 1P","enabled":false,"line":791},{"key":"CodeReader_2P","value":"false","raw":"false","type":"bool","doc":"DX Pass 2P","enabled":false,"line":793},{"key":"ChimeCamera","value":"false","raw":"false","type":"bool","doc":"二维码扫描摄像头","enabled":false,"line":795}]},{"name":"UX.Hide1879","group":"UX","title":"Hide1879","doc":"隐藏乱码曲\n在正常模式中，隐藏乱码曲 Xaleid◆scopiX","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":800}]},{"name":"UX.HideSelfMadeCharts","group":"UX","title":"Hide Self Made Charts","doc":"自制谱隐藏\n在选曲界面一键隐藏所有自制谱，或对一部分用户进行隐藏","enabled":false,"keys":[{"key":"DefaultHide","value":"false","raw":"false","type":"bool","doc":"默认隐藏\n登录时默认隐藏自制谱","enabled":false,"line":807},{"key":"Key","value":"Test","raw":"\"Test\"","type":"string","doc":"切换自制谱显示的按键","enabled":false,"line":809},{"key":"LongPress","value":"false","raw":"false","type":"bool","doc":"长按","enabled":false,"line":811},{"key":"SelfMadeChartsDenyUsersFile","value":"LocalAssets/SelfMadeChartsDenyUsers.txt","raw":"\"LocalAssets/SelfMadeChartsDenyUsers.txt\"","type":"string","doc":"黑名单\n该文件中每行一个用户 ID，当这些用户登录时隐藏自制谱","enabled":false,"line":814},{"key":"SelfMadeChartsWhiteListUsersFile","value":"LocalAssets/SelfMadeChartsWhiteListUsers.txt","raw":"\"LocalAssets/SelfMadeChartsWhiteListUsers.txt\"","type":"string","doc":"白名单\n该文件中每行一个用户 ID，只有这些用户登录时才显示自制谱","enabled":false,"line":817}]},{"name":"UX.ImmediateSave","group":"UX","title":"Immediate Save","doc":"打一首存一首\n打完一首歌的时候立即向服务器保存成绩","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":822},{"key":"ShowTip","value":"true","raw":"true","type":"bool","doc":"显示保存中提示","enabled":false,"line":824}]},{"name":"UX.JudgeAccuracyInfo","group":"UX","title":"Judge Accuracy Info","doc":"判定详情统计\n在游戏总结的计分板中显示击打误差的详细信息（以帧为单位）","enabled":true,"keys":[{"key":"SavePath","value":"JudgeAccuracyInfo","raw":"\"JudgeAccuracyInfo\"","type":"string","doc":"保存路径","enabled":false,"line":830}]},{"name":"UX.JudgeDisplayPro","group":"UX","title":"Judge Display Pro","doc":"高级判定显示\n可自定义所有种类音符显示的判定样式，开启后将替代游戏原本的判定样式预设。需要在游戏设置中更改需要的显示样式","enabled":false,"keys":[]},{"name":"UX.NoAmDaemonAlert","group":"UX","title":"No Am Daemon Alert","doc":"因 AmDaemon 未运行而黑屏时显示警告","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":838}]},{"name":"UX.OneKeyEntryEnd","group":"UX","title":"One Key Entry End","doc":"一键登录与登出\n一键跳过登录过程直接进入选歌界面，或在选歌界面直接结束本局游戏","enabled":true,"keys":[{"key":"Key","value":"F1","raw":"\"F1\"","type":"string","doc":"按键","enabled":true,"line":844},{"key":"LongPress","value":"false","raw":"false","type":"bool","doc":"长按","enabled":true,"line":846}]},{"name":"UX.OneKeyRetrySkip","group":"UX","title":"One Key Retry Skip","doc":"一键重开和跳过\n在游戏中途一键重试或跳过当前谱面","enabled":false,"keys":[{"key":"RetryKey","value":"Service","raw":"\"Service\"","type":"string","doc":"重开按键","enabled":false,"line":852},{"key":"RetryLongPress","value":"false","raw":"false","type":"bool","doc":"重开长按","enabled":false,"line":854},{"key":"SkipKey","value":"Service","raw":"\"Service\"","type":"string","doc":"跳关按键","enabled":false,"line":856},{"key":"SkipLongPress","value":"true","raw":"true","type":"bool","doc":"跳关长按","enabled":false,"line":858},{"key":"AllowRetryOnlyInFreedomMode","value":"false","raw":"false","type":"bool","doc":"仅自由模式可重开\n仅在自由模式且时间未耗尽时允许一键重试，跳过不受影响","enabled":false,"line":861}]},{"name":"UX.PracticeMode","group":"UX","title":"Practice Mode","doc":"练习模式","enabled":true,"keys":[{"key":"Key","value":"Service","raw":"\"Service\"","type":"string","doc":"按键\n显示练习模式 UI 的按键","enabled":true,"line":867},{"key":"LongPress","value":"true","raw":"true","type":"bool","doc":"","enabled":true,"line":868},{"key":"OnlyInFreedomMode","value":"false","raw":"false","type":"bool","doc":"仅自由模式可用\n仅在自由模式且时间未耗尽时允许使用练习模式","enabled":false,"line":871}]},{"name":"UX.QuickEndPlay","group":"UX","title":"Quick End Play","doc":"歌曲快速结束\n音符结束之后显示像 AstroDX 一样的「跳过」按钮","enabled":true,"keys":[]},{"name":"UX.RemoveCharacterCopyrightRestriction","group":"UX","title":"Remove Character Copyright Restriction","doc":"移除成绩照片的角色限制\n如果旅行伙伴队长是版权角色（通常是非官方的角色）的话，游戏默认是不允许将其作为成绩照片上的立绘角色的。开启此项后，将移除此限制，任何角色都可以出现在成绩照片中。","enabled":false,"keys":[]},{"name":"UX.SelectionDetail","group":"UX","title":"Selection Detail","doc":"歌曲详情\n选歌界面显示选择的歌曲的详情","enabled":true,"keys":[{"key":"ShowBattleAchievement","value":"false","raw":"false","type":"bool","doc":"显示友人对战目标分数","enabled":false,"line":885}]}]},{"name":"Utils","title":"工具","sections":[{"name":"Utils.AntiLag","group":"Utils","title":"Anti Lag","doc":"狂暴引擎\n可能缓解掉帧，但也可能把狂暴转移到用户身上","enabled":true,"keys":[{"key":"ActivateWhileBackground","value":"true","raw":"true","type":"bool","doc":"后台运行\n游戏未取得焦点时也运行","enabled":true,"line":892},{"key":"SetHighPriority","value":"true","raw":"true","type":"bool","doc":"高优先级\n将游戏设为高优先级","enabled":false,"line":895}]},{"name":"Utils.DisplayFrameRate","group":"Utils","title":"Display Frame Rate","doc":"显示帧率","enabled":true,"keys":[]},{"name":"Utils.DisplayTouchInGame","group":"Utils","title":"Display Touch In Game","doc":"实时触摸显示\n在游戏过程中显示触摸输入，可用于调试吃和蹭的问题","enabled":true,"keys":[{"key":"DefaultOn","value":"true","raw":"true","type":"bool","doc":"默认显示\n关了的话，可以用按键切换显示","enabled":false,"line":905},{"key":"Key","value":"F11","raw":"\"F11\"","type":"string","doc":"切换显示按键","enabled":true,"line":907},{"key":"LongPress","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":908}]},{"name":"Utils.EarlyContinue","group":"Utils","title":"Early Continue","doc":"更早的续关\n在最后一首歌结束的时候显示续关界面，确认续关后立即增加指定 Track 数","enabled":true,"keys":[{"key":"AddTrackCount","value":"0","raw":"0","type":"int","doc":"增加的曲目数\n设为 0 则为 1P 3首，2P 4首","enabled":false,"line":915}]},{"name":"Utils.FreedomTimer","group":"Utils","title":"Freedom Timer","doc":"自由模式时间修改","enabled":false,"keys":[{"key":"Seconds","value":"600","raw":"600","type":"int","doc":"秒数","enabled":false,"line":920},{"key":"InfinityTime","value":"false","raw":"false","type":"bool","doc":"无限时间","enabled":false,"line":922},{"key":"AddTimeKey","value":"None","raw":"\"None\"","type":"string","doc":"追加时间按键\n可通过指定按键，随时为自由模式追加时间。设为 None 则禁用","enabled":false,"line":925},{"key":"AddTimeLongPress","value":"false","raw":"false","type":"bool","doc":"追加时间长按\n上述“追加时间按键”是否需要长按","enabled":false,"line":928},{"key":"AddTimeSeconds","value":"120","raw":"120","type":"int","doc":"每次追加秒数\n每次按上述“追加时间按键”，所追加的秒数","enabled":false,"line":931}]},{"name":"Utils.InstantQuit","group":"Utils","title":"Instant Quit","doc":"瞬间退出\n让你的游戏更快的退出（按 ESC 或使用系统测试模式时），立即结束进程的那种，不会卡一会儿","enabled":true,"keys":[]},{"name":"Utils.LedOffOnQuit","group":"Utils","title":"Led Off On Quit","doc":"退出时关闭灯光","enabled":true,"keys":[]},{"name":"Utils.LogNetworkRequests","group":"Utils","title":"Log Network Requests","doc":"网络请求日志\n将网络请求输出到 MelonLoader 控制台","enabled":false,"keys":[{"key":"Url","value":"true","raw":"true","type":"bool","doc":"URL","enabled":false,"line":944},{"key":"Request","value":"true","raw":"true","type":"bool","doc":"请求","enabled":false,"line":946},{"key":"RequestOmittedApis","value":"UploadUserPhotoApi,UploadUserPortraitApi","raw":"\"UploadUserPhotoApi,UploadUserPortraitApi\"","type":"string","doc":"省略以下请求","enabled":false,"line":948},{"key":"Response","value":"true","raw":"true","type":"bool","doc":"响应","enabled":false,"line":950},{"key":"ResponseOmittedApis","value":"GetGameEventApi","raw":"\"GetGameEventApi\"","type":"string","doc":"省略以下响应","enabled":false,"line":952},{"key":"ResponseErrorOnly","value":"false","raw":"false","type":"bool","doc":"仅输出错误\n仅输出出错的响应，不输出成功的响应","enabled":false,"line":955}]},{"name":"Utils.LogUserId","group":"Utils","title":"Log User Id","doc":"用户 ID 日志\n登录时将 UserID 输出到日志","enabled":false,"keys":[]},{"name":"Utils.MoveAnswerSound","group":"Utils","title":"Move Answer Sound","doc":"移动正解音","enabled":true,"keys":[{"key":"DisplayInGameConfig","value":"true","raw":"true","type":"bool","doc":"游戏内设置\n在游戏内添加设置项给用户，使用户能够在游戏内调整正解音偏移量。如果关闭此选项，则就算用户之前设置过，也会忽略。","enabled":false,"line":965},{"key":"MoveValue_1P","value":"0.0","raw":"0.0","type":"float","doc":"1P 偏移量\n正解音偏移量，单位为毫秒，此设定值会与用户游戏内的设置相加。增大这个值将会使正解音出现得更晚，反之则更早。","enabled":true,"line":968},{"key":"MoveValue_2P","value":"0.0","raw":"0.0","type":"float","doc":"2P 偏移量\n与 MoveValue_1P 作用相同。","enabled":false,"line":971}]},{"name":"Utils.ScreenPositionAdjust","group":"Utils","title":"Screen Position Adjust","doc":"屏幕位置调整\n屏幕位置调整。适用于手台对不齐的情况，可以分别调整每个屏幕区域的位置\n在游戏中按键开启调整模式\n此功能会对性能产生一定影响\n必须同时开启 ExteraMouseInput 才能使用鼠标模拟触摸","enabled":false,"keys":[{"key":"CompactMode","value":"false","raw":"false","type":"bool","doc":"上屏紧贴着下屏","enabled":false,"line":980},{"key":"AdjustKey","value":"F10","raw":"\"F10\"","type":"string","doc":"进入调整模式的按键","enabled":false,"line":982}]},{"name":"Utils.ShowErrorLog","group":"Utils","title":"Show Error Log","doc":"崩溃报错\n在游戏中显示错误日志窗口而不是关闭游戏进程","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":987},{"key":"UseNewErrorHandler","value":"true","raw":"true","type":"bool","doc":"崩溃窗口\n使用新版错误报告生成器","enabled":false,"line":990}]},{"name":"Utils.ShowNetErrorDetail","group":"Utils","title":"Show Net Error Detail","doc":"灰网时显示原因","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":994}]},{"name":"Utils.UnstableRate","group":"Utils","title":"Unstable Rate","doc":"稳定度指示器\n在屏幕中心显示每次判定的精确区间","enabled":true,"keys":[]}]},{"name":"Fancy","title":"花活","sections":[{"name":"Fancy.CustomButton","group":"Fancy","title":"Custom Button","doc":"自定义按钮\n从指定目录加载按钮贴图","enabled":true,"keys":[{"key":"ButtonDir","value":"LocalAssets/Buttons","raw":"\"LocalAssets/Buttons\"","type":"string","doc":"贴图目录\n按钮贴图的目录","enabled":false,"line":1005}]},{"name":"Fancy.CustomCreditsString","group":"Fancy","title":"Custom Credits String","doc":"自定义点数文本\n自定义中间和右上角的 \"CREDIT(S)\"（可用点数）文本","enabled":false,"keys":[{"key":"CreditsString","value":"","raw":"\"\"","type":"string","doc":"点数文本\n用于替换 \"CREDIT(S)\" 的自定义文本，留空则为空白","enabled":false,"line":1012},{"key":"HideCreditsNumber","value":"true","raw":"true","type":"bool","doc":"隐藏点数\n隐藏 \"CREDIT(S)\" 后的可用点数数量","enabled":false,"line":1015}]},{"name":"Fancy.CustomIntroCinematic","group":"Fancy","title":"Custom Intro Cinematic","doc":"开场视频\n播放自定义乐曲开场视频","enabled":false,"keys":[{"key":"IntroMovieDir","value":"LocalAssets/IntroMovies","raw":"\"LocalAssets/IntroMovies\"","type":"string","doc":"开场视频文件夹的路径\n该文件夹应包含开场视频文件 (mp4/acb/awb)\n视频文件命名: Enter_xxx.mp4 (左右屏播放同一视频) 或 Enter_xxx_L.mp4 + Enter_xxx_R.mp4 (左右屏播放不同的视频)\n音频文件命名: Enter_xxx.acb + Enter_xxx.awb (可选, 无音频文件时静音播放)\nxxx = 乐曲ID, 文件夹内可以包含多个乐曲的开场视频\n使用 MaiChartManager 中的工具可以快速转换视频\n效果演示: https://www.bilibili.com/video/BV1jTxVzjETG","enabled":false,"line":1027},{"key":"OnlyPlayWhenNotPlayed","value":"false","raw":"false","type":"bool","doc":"仅在未玩过乐曲时播放\n开启后，仅当 1P 2P 双方均没有玩过这首乐曲时播放开场视频","enabled":false,"line":1030}]},{"name":"Fancy.CustomLogo","group":"Fancy","title":"Custom Logo","doc":"自定义 Logo\n用自定义的图片替换「SEGA」和「ALL.Net」的标志","enabled":true,"keys":[{"key":"SegaLogoDir","value":"LocalAssets/SegaLogo","raw":"\"LocalAssets/SegaLogo\"","type":"string","doc":"SEGA Logo 目录\n从此目录中随机选择一张 PNG 图片用于「SEGA」标志","enabled":false,"line":1037},{"key":"AllNetLogoDir","value":"LocalAssets/AllNetLogo","raw":"\"LocalAssets/AllNetLogo\"","type":"string","doc":"ALL.Net Logo 目录\n从此目录中随机选择一张 PNG 图片用于「ALL.Net」标志","enabled":false,"line":1040},{"key":"LogoFullScreen","value":"false","raw":"false","type":"bool","doc":"Logo 全屏幕\n将标志全屏占满下屏幕","enabled":false,"line":1043}]},{"name":"Fancy.CustomPlaceName","group":"Fancy","title":"Custom Place Name","doc":"自定义店铺名\n自定义拍照的店铺名称\n同时在 SDGA 中会启用店铺名称的显示（但是不会在游戏里有设置）","enabled":false,"keys":[{"key":"PlaceName","value":"","raw":"\"\"","type":"string","doc":"店铺名称","enabled":false,"line":1050}]},{"name":"Fancy.CustomSkins","group":"Fancy","title":"Custom Skins","doc":"自定义皮肤\n提供自定义皮肤的能力（高级功能）\n从自定义路径中加载皮肤贴图","enabled":false,"keys":[{"key":"SkinsDir","value":"LocalAssets/Skins","raw":"\"LocalAssets/Skins\"","type":"string","doc":"皮肤目录","enabled":false,"line":1057}]},{"name":"Fancy.CustomTrackStartDiff","group":"Fancy","title":"Custom Track Start Diff","doc":"自定义难度显示\n自定义在歌曲开始界面上显示的难度贴图 (并不是真的自定义难度)\n需要启用自定义皮肤功能\n会通过自定义皮肤加载四个图片资源: musicBase, musicTab, musicLvBase, musicLvText","enabled":false,"keys":[]},{"name":"Fancy.CustomVersionString","group":"Fancy","title":"Custom Version String","doc":"自定义版本文本\n把右上角的版本更改为自定义文本","enabled":false,"keys":[{"key":"VersionString","value":"","raw":"\"\"","type":"string","doc":"版本文本","enabled":false,"line":1069}]},{"name":"Fancy.DemoMaster","group":"Fancy","title":"Demo Master","doc":"闲置播放紫谱\n在闲置时的演示画面上播放紫谱而不是绿谱","enabled":true,"keys":[]},{"name":"Fancy.GamePlay.AlignCircleSlideJudgeDisplay","group":"Fancy","title":"Align Circle Slide Judge Display","doc":"圆弧判定对齐\n让圆弧形的 Slide 的判定显示与判定线精确对齐 (原本会有一点歪)\n就像 majdata 里那样","enabled":false,"keys":[]},{"name":"Fancy.GamePlay.BreakSlideJudgeBlink","group":"Fancy","title":"Break Slide Judge Blink","doc":"Break 星星闪烁\n这个 Patch 让 BreakSlide 的 Critical 判定也可以像 BreakTap 一样闪烁\n推荐与自定义皮肤一起使用 (否则视觉效果可能并不好)","enabled":false,"keys":[]},{"name":"Fancy.GamePlay.CustomNoteTypes","group":"Fancy","title":"Custom Note Types","doc":"自定义 Note 类型","enabled":false,"keys":[]},{"name":"Fancy.GamePlay.DisableTrackStartTabs","group":"Fancy","title":"Disable Track Start Tabs","doc":"隐藏曲目信息\n在歌曲开始界面, 把 TRACK X 字样, DX/标准谱面的显示框, 以及画面下方的滴蜡熊隐藏掉\n录制谱面确认用","enabled":false,"keys":[]},{"name":"Fancy.GamePlay.ExtendNotesPool","group":"Fancy","title":"Extend Notes Pool","doc":"扩展音符池\n增加更多待命的音符贴图，防止奇怪的自制谱用完音符贴图池","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":1096},{"key":"Count","value":"128","raw":"128","type":"int","doc":"增加数量\n要增加的对象数量","enabled":false,"line":1099}]},{"name":"Fancy.GamePlay.FanJudgeFlip","group":"Fancy","title":"Fan Judge Flip","doc":"WiFi 判定翻转\n这个 Patch 让 WiFi Slide 的判定显示有上下的区别 (原本所有 WiFi 的判定显示都是朝向圆心的), 就像 majdata 里那样\n这个 bug 产生的原因是 SBGA 忘记给 WiFi 的 EndButtonId 赋值了","enabled":false,"keys":[]},{"name":"Fancy.GamePlay.FixJudgeTouchHoldInNormalArea","group":"Fancy","title":"Fix Judge Touch Hold In Normal Area","doc":"修复非 C 区 Hold\n使游戏可以正常判定非 C 区的 Touch Hold。实验性实现，据反馈不稳定","enabled":false,"keys":[]},{"name":"Fancy.GamePlay.HideHanabi","group":"Fancy","title":"Hide Hanabi","doc":"隐藏烟花","enabled":false,"keys":[]},{"name":"Fancy.GamePlay.JudgeDisplay4B","group":"Fancy","title":"Judge Display4 B","doc":"精细判定显示\n更精细的判定表示\n需开启 CustomSkins 并下载资源文件\nhttps://github.com/hykilpikonna/AquaDX/releases/download/nightly/JudgeDisplay4B.7z","enabled":false,"keys":[]},{"name":"Fancy.GamePlay.RealisticRandomJudge","group":"Fancy","title":"Realistic Random Judge","doc":"真随机判定\n让 AutoPlay 的随机判定模式真的会随机产生所有的判定 (精确到子判定)\n原本的随机判定只会等概率产生 Critical, LateGreat1st, LateGood, Miss(TooLate)\n这里改成三角分布产生从 Miss(TooFast) ~ Critical ~ Miss(TooLate) 的所有 15 种判定结果\n当然, 此处并不会考虑原本那个 Note 是不是真的有对应的判定 (比如 Slide 实际上不应该有小 p 之类的)","enabled":false,"keys":[]},{"name":"Fancy.GamePlay.ReviveFinaleVSlide","group":"Fancy","title":"Revive Finale V Slide","doc":"允许 1v1 星星\n允许形如 \"1v1\" 的，起点和终点相同的 v 型星星","enabled":false,"keys":[]},{"name":"Fancy.GamePlay.SlideArrowAnimation","group":"Fancy","title":"Slide Arrow Animation","doc":"星星缩入动画\n使 Slide Track 消失时有类似 AstroDX 一样的向内缩入的动画","enabled":false,"keys":[]},{"name":"Fancy.GamePlay.SlideFadeInTweak","group":"Fancy","title":"Slide Fade In Tweak","doc":"星星渐入\n让星星在启动拍等待期间从 50% 透明度渐入为 100%，取代原本在击打星星头时就完成渐入","enabled":false,"keys":[]},{"name":"Fancy.GamePlay.SlideLayerReverse","group":"Fancy","title":"Slide Layer Reverse","doc":"反转星星层级\n反转 Slide 层级, 使新出现的 Slide 像旧框一样显示在上层\n启用以支持通过叠加多个星星达成的变色效果","enabled":false,"keys":[]},{"name":"Fancy.GamePlay.TapInHoldFix","group":"Fancy","title":"Tap In Hold Fix","doc":"Hold 夹 Tap\n让普通模式也能像宴会场一样，在 Hold 音符期间正常判定其他音符，兼容特殊设计谱面（如飞行志）\n实验性功能，未测试对其他谱面的影响","enabled":false,"keys":[]},{"name":"Fancy.GamePlay.TrackStartProcessTweak","group":"Fancy","title":"Track Start Process Tweak","doc":"延迟开始动画\n推迟了歌曲开始界面的动画\n录制谱面确认用","enabled":false,"keys":[]},{"name":"Fancy.HideMask","group":"Fancy","title":"Hide Mask","doc":"移除圆形遮罩","enabled":false,"keys":[]},{"name":"Fancy.IgnoreCommercialTimeout","group":"Fancy","title":"Ignore Commercial Timeout","doc":"无限闲置视频时长\n忽略闲置时的视频广告画面的5分钟总时长限制","enabled":true,"keys":[{"key":"Disabled","value":"false","raw":"false","type":"bool","doc":"","enabled":false,"line":1159}]},{"name":"Fancy.RandomBgm","group":"Fancy","title":"Random Bgm","doc":"随机 BGM\n在配置的目录下放置了旧版游戏的 Mai2Cue.{acb,awb} 并重命名的话，可以在播放游戏 BGM 的时候随机播放这里面的旧版游戏 BGM\n无法在 2P 模式下工作","enabled":false,"keys":[{"key":"Mai2CueDir","value":"LocalAssets/Mai2Cue","raw":"\"LocalAssets/Mai2Cue\"","type":"string","doc":"Mai2Cue 目录","enabled":false,"line":1166}]},{"name":"Fancy.ResourcesOverride","group":"Fancy","title":"Resources Override","doc":"力大砖飞\n【危险功能】适用于便捷魔改的自定义全场景图片。警告：可能对游戏造成未知性能影响，可能与其他模组冲突？","enabled":false,"keys":[{"key":"SkinsDir","value":"LocalAssets/ResourcesOverride","raw":"\"LocalAssets/ResourcesOverride\"","type":"string","doc":"资源目录","enabled":false,"line":1172}]},{"name":"Fancy.SetFade","group":"Fancy","title":"Set Fade","doc":"转场动画\n修改转场动画为其他变种","enabled":true,"keys":[{"key":"FadeType","value":"0","raw":"0","type":"int","doc":"转场类型\n类型: Non-Plus 0, Plus 1. (SDEZ 1.60 限定可选 Festa 2)","enabled":false,"line":1179}]},{"name":"Fancy.SkipGameResultAnimation","group":"Fancy","title":"Skip Game Result Animation","doc":"跳过结算特效\n在 AutoPlay 模式下跳过结算画面的 AP/FC/FS 等庆祝特效，方便录制谱面确认","enabled":false,"keys":[]},{"name":"Fancy.TrackCamouflage","group":"Fancy","title":"Track Camouflage","doc":"曲目伪装术\n仿 KoP 决赛曲揭晓时的曲目信息隐藏特性，配合自定义乐曲开场视频功能使用效果更佳","enabled":false,"keys":[{"key":"CamouflageDir","value":"LocalAssets/Camouflages","raw":"\"LocalAssets/Camouflages\"","type":"string","doc":"曲目伪装信息和封面文件夹的路径\n- 曲目伪装信息的文件名为 <曲目ID>.toml，TOML 文档可填入的字段包括：\n- Name: 伪装后的曲目名\n- Artist: 伪装后的曲师\n- NoteDesigner：伪装后的谱师（可选，如不指定则默认不伪装，显示原本的谱师）\n- 或者：亦可用 HideNoteDesigner = true 来隐藏谱师、显示为和绿黄谱一样的 \"-\"\n- UnlockScore：解除伪装所需要的最低达成率，例如 97.0\n- 可选，默认为0，即只要玩家打过一次、有过成绩，就不再伪装；而通过指定为102的方式，则可以实现永远伪装\n- 伪装封面的文件名为 <曲目ID>_jacket.jpg/png。目前仅支持jpg、png这两种格式，不支持ab。","enabled":false,"line":1197},{"key":"AlwaysShowCamouflage","value":"false","raw":"false","type":"bool","doc":"无视 UnlockScore / 游玩记录检测，始终显示伪装后的曲目信息","enabled":false,"line":1199}]},{"name":"Fancy.Triggers","group":"Fancy","title":"Triggers","doc":"触发器\n在一定时机执行命令的触发器","enabled":false,"keys":[{"key":"ExecOnIdle","value":"","raw":"\"\"","type":"string","doc":"闲置时执行\n在游戏闲置的时候执行指定的命令脚本\n比如说可以在游戏闲置时降低显示器的亮度","enabled":false,"line":1207},{"key":"ExecOnEntry","value":"","raw":"\"\"","type":"string","doc":"登录时执行\n在玩家登录的时候执行指定的命令脚本","enabled":false,"line":1210}]}]}]};
+  const ZONES = /*__ZONES_DATA__*/{"A1":{"path":"M 44.62 -296.66 A 300.00 300.00 0 0 1 178.80 -240.90 L 115.61 -156.74 L 91.15 -156.24 L 49.22 -172.71 L 28.75 -191.68 L 44.62 -296.66 Z","cx":84.69,"cy":-202.49},"A2":{"path":"M 241.36 -178.17 A 300.00 300.00 0 0 1 296.77 -43.92 L 192.58 -29.05 L 174.91 -46.02 L 156.94 -87.35 L 156.84 -113.51 L 241.36 -178.17 Z","cx":203.23,"cy":-83.01},"A3":{"path":"M 296.66 44.62 A 300.00 300.00 0 0 1 240.90 178.80 L 156.74 115.61 L 156.24 91.15 L 172.71 49.22 L 191.18 30.65 L 296.66 44.62 Z","cx":202.41,"cy":85.01},"A4":{"path":"M 178.17 241.36 A 300.00 300.00 0 0 1 43.92 296.77 L 29.05 192.58 L 46.02 174.91 L 87.35 156.94 L 113.51 156.84 L 178.17 241.36 Z","cx":83.01,"cy":203.23},"A5":{"path":"M -44.62 296.66 A 300.00 300.00 0 0 1 -178.80 240.90 L -115.61 156.74 L -91.15 156.24 L -49.22 172.71 L -30.65 191.18 L -44.62 296.66 Z","cx":-85.01,"cy":202.41},"A6":{"path":"M -241.36 178.17 A 300.00 300.00 0 0 1 -296.77 43.92 L -192.58 29.05 L -174.91 46.02 L -156.94 87.35 L -156.84 113.51 L -241.36 178.17 Z","cx":-203.23,"cy":83.01},"A7":{"path":"M -296.66 -44.62 A 300.00 300.00 0 0 1 -240.90 -178.80 L -156.74 -115.61 L -156.24 -91.15 L -172.71 -49.22 L -191.18 -30.65 L -296.66 -44.62 Z","cx":-202.41,"cy":-85.01},"A8":{"path":"M -178.17 -241.36 A 300.00 300.00 0 0 1 -43.92 -296.77 L -29.05 -192.58 L -46.02 -174.91 L -87.35 -156.94 L -113.51 -156.84 L -178.17 -241.36 Z","cx":-83.01,"cy":-203.23},"B1":{"path":"M 5.19 -126.29 L 35.74 -155.74 L 89.05 -133.78 L 87.55 -90.35 L 72.58 -76.37 L 31.25 -77.37 L 4.79 -103.33 L 5.19 -126.29 Z","cx":46.59,"cy":-109.03},"B2":{"path":"M 92.95 -85.66 L 135.37 -84.86 L 157.54 -31.65 L 125.79 -2.00 L 105.32 -2.70 L 76.77 -32.65 L 76.47 -69.68 L 92.95 -85.66 Z","cx":110.03,"cy":-44.17},"B3":{"path":"M 126.29 5.19 L 155.74 35.74 L 133.78 89.05 L 90.35 87.55 L 76.37 72.58 L 77.37 31.25 L 103.33 4.79 L 126.29 5.19 Z","cx":109.03,"cy":46.59},"B4":{"path":"M 85.66 92.95 L 84.86 135.37 L 31.65 157.54 L 2.00 125.79 L 2.70 105.32 L 32.65 76.77 L 69.68 76.47 L 85.66 92.95 Z","cx":44.17,"cy":110.03},"B5":{"path":"M -5.19 126.29 L -35.74 155.74 L -89.05 133.78 L -87.55 90.35 L -72.58 76.37 L -31.25 77.37 L -4.79 103.33 L -5.19 126.29 Z","cx":-46.59,"cy":109.03},"B6":{"path":"M -92.95 85.66 L -135.37 84.86 L -157.54 31.65 L -125.79 2.00 L -105.32 2.70 L -76.77 32.65 L -76.47 69.68 L -92.95 85.66 Z","cx":-110.03,"cy":44.17},"B7":{"path":"M -126.29 -5.19 L -155.74 -35.74 L -133.78 -89.05 L -90.35 -87.55 L -76.37 -72.58 L -77.37 -31.25 L -103.33 -4.79 L -126.29 -5.19 Z","cx":-109.03,"cy":-46.59},"B8":{"path":"M -85.66 -92.95 L -84.86 -135.37 L -31.65 -157.54 L -2.00 -125.79 L -2.70 -105.32 L -32.65 -76.77 L -69.68 -76.47 L -85.66 -92.95 Z","cx":-44.17,"cy":-110.03},"C1":{"path":"M 4.79 -56.41 L 24.26 -56.91 L 57.60 -23.46 L 59.10 22.96 L 24.26 57.90 L 4.79 57.40 L 4.79 -56.41 Z","cx":29.13,"cy":0.25},"C2":{"path":"M -4.79 -56.41 L -24.26 -56.91 L -57.60 -23.46 L -59.10 22.96 L -24.26 57.90 L -4.19 57.40 L -4.79 -56.41 Z","cx":-29.03,"cy":0.25},"D1":{"path":"M -38.64 -297.50 A 300.00 300.00 0 0 1 39.63 -297.37 L 25.76 -200.17 L 2.20 -221.13 L -22.66 -198.17 L -38.64 -297.50 Z","cx":1.26,"cy":-242.87},"D2":{"path":"M 183.07 -237.67 A 300.00 300.00 0 0 1 238.28 -182.28 L 159.73 -123.29 L 157.94 -154.84 L 124.09 -156.14 L 183.07 -237.67 Z","cx":172.62,"cy":-170.84},"D3":{"path":"M 297.50 -38.64 A 300.00 300.00 0 0 1 297.37 39.63 L 200.17 25.76 L 221.13 2.20 L 198.17 -22.66 L 297.50 -38.64 Z","cx":242.87,"cy":1.26},"D4":{"path":"M 237.67 183.07 A 300.00 300.00 0 0 1 182.28 238.28 L 123.29 159.73 L 154.84 157.94 L 156.14 124.09 L 237.67 183.07 Z","cx":170.84,"cy":172.62},"D5":{"path":"M 38.64 297.50 A 300.00 300.00 0 0 1 -39.63 297.37 L -25.76 200.17 L -2.20 221.13 L 22.66 198.17 L 38.64 297.50 Z","cx":-1.26,"cy":242.87},"D6":{"path":"M -183.07 237.67 A 300.00 300.00 0 0 1 -238.28 182.28 L -159.73 123.29 L -157.94 154.84 L -124.09 156.14 L -183.07 237.67 Z","cx":-172.62,"cy":170.84},"D7":{"path":"M -297.50 38.64 A 300.00 300.00 0 0 1 -297.37 -39.63 L -200.17 -25.76 L -221.13 -2.20 L -198.17 22.66 L -297.50 38.64 Z","cx":-242.87,"cy":-1.26},"D8":{"path":"M -237.67 -183.07 A 300.00 300.00 0 0 1 -182.28 -238.28 L -123.29 -159.73 L -154.84 -157.94 L -156.14 -124.09 L -237.67 -183.07 Z","cx":-170.84,"cy":-172.62},"E1":{"path":"M -38.94 -172.81 L 0.50 -212.25 L 41.13 -171.71 L 0.90 -132.88 L -38.94 -172.81 Z","cx":0.9,"cy":-172.41},"E2":{"path":"M 94.64 -149.75 L 150.45 -149.75 L 150.45 -92.35 L 94.64 -93.34 L 94.64 -149.75 Z","cx":122.55,"cy":-121.3},"E3":{"path":"M 172.81 -38.94 L 212.25 0.50 L 171.71 41.13 L 132.88 0.90 L 172.81 -38.94 Z","cx":172.41,"cy":0.9},"E4":{"path":"M 149.75 94.64 L 149.75 150.45 L 92.35 150.45 L 93.34 94.64 L 149.75 94.64 Z","cx":121.3,"cy":122.55},"E5":{"path":"M 38.94 172.81 L -0.50 212.25 L -41.13 171.71 L -0.90 132.88 L 38.94 172.81 Z","cx":-0.9,"cy":172.41},"E6":{"path":"M -94.64 149.75 L -150.45 149.75 L -150.45 92.35 L -94.64 93.34 L -94.64 149.75 Z","cx":-122.55,"cy":121.3},"E7":{"path":"M -172.81 38.94 L -212.25 -0.50 L -171.71 -41.13 L -132.88 -0.90 L -172.81 38.94 Z","cx":-172.41,"cy":-0.9},"E8":{"path":"M -149.75 -94.64 L -149.75 -150.45 L -92.35 -150.45 L -93.34 -94.64 L -149.75 -94.64 Z","cx":-121.3,"cy":-122.55}};
+
+  const NS = 'http://www.w3.org/2000/svg';
+  const $ = (id) => document.getElementById(id);
+  const btnPaths = $('btnPaths');
+  const btnLabels = $('btnLabels');
+  const tabsEl = $('tabs');
+  const content = $('content');
+  const toastEl = $('toast');
+
+  const state = {
+    cat: 0,
+    card: 0,
+    detail: false,
+    row: 0,
+    rowOffset: 0,
+    native: false,
+    writable: false,
+    prevButtons: new Set(),
+    prevTouch: new Set(),
+    dir: 0,
+  };
+
+  const ACTIONS = [
+    { id: 'launch', title: '启动 sinmai', desc: '运行当前版本的启动脚本，进入舞萌', glyph: '▶', action: 'launch' },
+    { id: 'majplay', title: 'MajPlay', desc: '启动 MajdataPlay（Simai 播放器）', glyph: '♪', action: 'majplay' },
+    { id: 'majplay-path', title: 'MajPlay 路径', desc: '选择 MajdataPlay.exe 的位置', glyph: '⌘', action: 'majplay-path' },
+    { id: 'mcm', title: 'MaiChartManager', desc: '启动 MCM，并放到下方圆内 898×599', glyph: '◈', action: 'mcm' },
+    { id: 'update-aquamai', title: '更新 AquaMai', desc: '检查 GitHub 最新版并替换 AquaMai.dll（保留 toml）', glyph: '⟳', action: 'update-aquamai' },
+    { id: 'reboot', title: '重启电脑', desc: '重新启动这台电脑', glyph: '↻', action: 'reboot' },
+    { id: 'shutdown', title: '关机', desc: '关闭这台游戏电脑', glyph: '⏻', action: 'shutdown' },
+    { id: 'exit', title: '退出启动器', desc: '关闭启动器，回到桌面', glyph: '×', action: 'exit' },
+    { id: 'dashboard', title: '状态', desc: '硬件连接 · 配置 · 关于', glyph: '▤', action: 'dashboard' },
+  ];
+
+  const ACT = {
+    volUp: { label: '音量 +', fn: () => { send({ type: 'action', action: 'volume-up' }); toast('音量 +'); } },
+    volDown: { label: '音量 −', fn: () => { send({ type: 'action', action: 'volume-down' }); toast('音量 −'); } },
+    catPrev: { label: '◀ 上一分类', fn: () => prevCat() },
+    catNext: { label: '下一分类 ▶', fn: () => nextCat() },
+    itemPrev: { label: '◀ 上一项', fn: () => prevCard() },
+    itemNext: { label: '下一项 ▶', fn: () => nextCard() },
+    ok: { label: 'OK', fn: () => ok() },
+    back: { label: 'BACK', fn: () => back() },
+  };
+
+  // 不同场景显示不同按键；null = 该位置不显示
+  const SCHEMA = {
+    home: [ACT.volUp, null, ACT.itemNext, ACT.ok, ACT.back, ACT.itemPrev, null, ACT.volDown],
+    list: [ACT.volUp, null, ACT.itemNext, ACT.ok, ACT.back, ACT.itemPrev, null, ACT.volDown],
+    detail: [null, null, ACT.itemNext, ACT.ok, ACT.back, ACT.itemPrev, null, null],
+  };
+
+  const BUTTONS = [
+    { n: 1, label: '音量 +', cls: 'card' },
+    { n: 2, label: '下一页 ▶', cls: 'cat' },
+    { n: 3, label: '下一张 ▶', cls: 'card' },
+    { n: 4, label: 'OK', cls: 'ok' },
+    { n: 5, label: 'BACK', cls: 'back' },
+    { n: 6, label: '◀ 上一张', cls: 'card' },
+    { n: 7, label: '◀ 上一页', cls: 'cat' },
+    { n: 8, label: '音量 −', cls: 'card' },
+  ];
+
+  const MCM_ORDER = ['常用', '控制器输入', '输入设置', '判定', '显示', '音频', '其他硬件',
+    '解锁与省时', '选曲界面', '美化', '调试工具', '高级设置', '实验性', '不建议关闭'];
+
+  function mcmCat(section) {
+    const n = ((section.name || '') + ' ' + (section.title || '') + ' ' + (section.group || '')).toLowerCase();
+    if (/unlock|解锁|skip|quickretry|autoplay|省时/.test(n)) return '解锁与省时';
+    if (/judge|判定|timing|late|early|perfect/.test(n)) return '判定';
+    if (/audio|sound|音量|volume|bass|dsp/.test(n)) return '音频';
+    if (/display|window|显示|render|screen|fps|frame|optionload/.test(n)) return '显示';
+    if (/touch|sensor|pdx|触摸/.test(n)) return '输入设置';
+    if (/keymap|input|button|io4|adxhid|hid|按钮/.test(n)) return '控制器输入';
+    if (/select|选曲|song|music|chart|battle/.test(n)) return '选曲界面';
+    if (/fancy|美化|skin|led|light|灯/.test(n)) return '美化';
+    if (/debug|调试|log|test/.test(n)) return '调试工具';
+    if (/experiment|实验|beta|unstable/.test(n)) return '实验性';
+    if (/disabletimeout|encrypt|removeencrypt|不建议/.test(n)) return '不建议关闭';
+    return '高级设置';
+  }
+
+  function buildCategories() {
+    const cats = [{ id: 'home', title: '主页', sections: null, actions: ACTIONS }];
+    if (GAMES.list.length > 0) cats.push({ id: 'versions', title: '版本', versions: GAMES.list });
+
+    const buckets = new Map();
+    for (const g of (AQUAMAI.groups || [])) {
+      for (const sec of (g.sections || [])) {
+        const title = mcmCat(sec);
+        if (!buckets.has(title)) buckets.set(title, []);
+        buckets.get(title).push(sec);
+      }
+    }
+
+    for (const title of MCM_ORDER) {
+      const list = buckets.get(title);
+      if (list && list.length) cats.push({ id: 'mcm-' + title, title, sections: list });
+    }
+    return cats;
+  }
+
+  let GAMES = { list: [], active: 0 };
+  let CATS = buildCategories();
+
+  /* ---------- 按键绘制（贴合感应区 A1–A8） ---------- */
+  const SCALE = 1.8;
+
+  BUTTONS.forEach((b, i) => {
+    const z = ZONES['A' + b.n];
+    if (!z) return;
+
+    if (b.n === 2 || b.n === 7) {
+      const ph = document.createElementNS(NS, 'text');
+      ph.setAttribute('class', 'btn-label');
+      ph.dataset.ph = '1';
+      ph.dataset.i = String(i);
+      ph.setAttribute('pointer-events', 'none');
+      btnLabels.appendChild(ph);
+      return;
+    }
+
+    const isRound = b.n === 3 || b.n === 6;
+    if (isRound) {
+      const len = Math.hypot(z.cx, z.cy) || 1;
+      const ccx = z.cx * SCALE * (1 + 24 / len);
+      const ccy = z.cy * SCALE * (1 + 24 / len);
+      const circle = document.createElementNS(NS, 'circle');
+      circle.setAttribute('cx', ccx.toFixed(1));
+      circle.setAttribute('cy', ccy.toFixed(1));
+      circle.setAttribute('r', '58');
+      circle.setAttribute('class', 'btn round ' + b.cls);
+      circle.dataset.i = String(i);
+      circle.addEventListener('click', () => press(i));
+      btnPaths.appendChild(circle);
+
+      const arrow = document.createElementNS(NS, 'text');
+      arrow.setAttribute('x', ccx.toFixed(1));
+      arrow.setAttribute('y', (ccy + 12).toFixed(1));
+      arrow.setAttribute('text-anchor', 'middle');
+      arrow.setAttribute('font-size', '38');
+      arrow.setAttribute('font-weight', '900');
+      arrow.setAttribute('fill', '#fff');
+      arrow.setAttribute('pointer-events', 'none');
+      arrow.textContent = b.n === 3 ? '▶' : '◀';
+      btnLabels.appendChild(arrow);
+
+      const placeholder = document.createElementNS(NS, 'text');
+      placeholder.setAttribute('data-i', String(i));
+      placeholder.setAttribute('class', 'btn-label');
+      placeholder.dataset.ph = '1';
+      placeholder.setAttribute('pointer-events', 'none');
+      btnLabels.appendChild(placeholder);
+      return;
+    }
+
+
+    // 完整感应区轮廓
+    const outline = document.createElementNS(NS, 'path');
+    outline.setAttribute('d', z.path);
+    outline.setAttribute('transform', `scale(${SCALE})`);
+    outline.setAttribute('class', 'zone-line');
+    outline.setAttribute('pointer-events', 'none');
+    btnPaths.appendChild(outline);
+
+    // 只保留外圈一半（r 419–538），形状仍严格是 A 区
+    const p = document.createElementNS(NS, 'path');
+    p.setAttribute('d', z.path);
+    p.setAttribute('transform', `scale(${SCALE})`);
+    p.setAttribute('class', 'btn ' + b.cls);
+    p.setAttribute('mask', 'url(#bandMask)');
+    p.dataset.i = String(i);
+    p.addEventListener('click', () => press(i));
+    btnPaths.appendChild(p);
+
+    const angle = (Math.atan2(z.cy, z.cx) * 180) / Math.PI;
+    const rad = (angle * Math.PI) / 180;
+    const cx = Math.cos(rad) * 478;
+    const cy = Math.sin(rad) * 478;
+
+    const num = document.createElementNS(NS, 'text');
+    num.setAttribute('x', cx.toFixed(1));
+    num.setAttribute('y', (cy - 15).toFixed(1));
+    num.setAttribute('class', 'btn-num');
+    num.textContent = String(b.n);
+    num.setAttribute('pointer-events', 'none');
+    num.dataset.i = String(i);
+    btnLabels.appendChild(num);
+
+    const lab = document.createElementNS(NS, 'text');
+    lab.dataset.i = String(i);
+    lab.setAttribute('x', cx.toFixed(1));
+    lab.setAttribute('y', (cy + 15).toFixed(1));
+    lab.setAttribute('class', 'btn-label');
+    lab.textContent = b.label;
+    lab.setAttribute('pointer-events', 'none');
+    btnLabels.appendChild(lab);
+  });
+
+  // 和真机同一感应区：E8/E2 切分类，E7/E3 切卡片/选项
+  const arrowBtns = $('arrowBtns');
+  function addArrowAt(zoneName, dir, kind, action) {
+    const z = ZONES[zoneName];
+    if (!z) return;
+    const cx = z.cx * 1.8 + 540;
+    const cy = z.cy * 1.8 + 540;
+    const b = document.createElement('div');
+    b.className = 'arrow-btn ' + kind;
+    b.textContent = dir < 0 ? '◀' : '▶';
+    b.style.left = (cx - 44) + 'px';
+    b.style.top = (cy - 44) + 'px';
+    b.onclick = action;
+    arrowBtns.appendChild(b);
+  }
+  addArrowAt('E8', -1, 'cat', () => prevCat());
+  addArrowAt('E2', 1, 'cat', () => nextCat());
+
+  const adjustBtns = $('adjustBtns');
+  function addAdjust(zoneName, dir) {
+    const z = ZONES[zoneName];
+    if (!z) return;
+    const x = z.cx * 1.8 + 540;
+    const y = z.cy * 1.8 + 540;
+    const b = document.createElement('div');
+    b.className = 'adjust ' + (dir < 0 ? 'minus' : 'plus');
+    b.textContent = dir < 0 ? '⊖' : '⊕';
+    b.style.left = (x - 39) + 'px';
+    b.style.top = (y - 39) + 'px';
+    b.onclick = () => adjust(dir);
+    adjustBtns.appendChild(b);
+  }
+  addAdjust('B5', -1);
+  addAdjust('B4', 1);
+
+
+  let buttonLabels = [];
+  function applySchema() {
+    if (!buttonLabels.length) {
+      buttonLabels = Array.from(btnLabels.querySelectorAll('.btn-label'));
+    }
+    const buttonNums = Array.from(btnLabels.querySelectorAll('.btn-num'));
+    const mode = state.help ? 'help' : state.detail ? 'detail' : (currentCat().id === 'home' ? 'home' : 'list');
+    const schema = SCHEMA[mode] || SCHEMA.list;
+    state.schema = schema;
+
+    buttonLabels.forEach((node, i) => {
+      const b = schema[i];
+      if (node.dataset.ph === '1') { node.textContent = ''; return; }
+      node.textContent = b ? b.label : '';
+      const path = btnPaths.querySelector(`[data-i="${i}"]`);
+      if (path) path.classList.toggle('off', !b);
+      if (buttonNums[i]) buttonNums[i].style.opacity = b ? '1' : '0.22';
+    });
+  }
+
+  function press(i) {
+    const el = btnPaths.querySelector(`[data-i="${i}"]`);
+    if (el) {
+      el.classList.add('active');
+      setTimeout(() => el.classList.remove('active'), 160);
+    }
+    onButton(i);
+  }
+
+  /* ---------- 数据访问 ---------- */
+  function currentCat() { return CATS[state.cat]; }
+  function cardsOf(cat) {
+    if (cat.actions) return cat.actions;
+    if (cat.versions) {
+      return [
+        ...cat.versions.map((g, i) => ({ kind: 'version', index: i, game: g })),
+        { kind: 'action', title: '新建版本', desc: '选择 .bat 添加为新版本', glyph: '＋', action: 'new-version' },
+        { kind: 'action', title: '重命名当前版本', desc: '给当前版本改一个显示名称', glyph: '✎', action: 'rename-version' },
+      ];
+    }
+    return (cat.sections || []).map((s) => ({ kind: 'section', section: s }));
+  }
+  function currentCard() {
+    const list = cardsOf(currentCat());
+    return list[Math.min(state.card, list.length - 1)];
+  }
+
+  /* ---------- 渲染 ---------- */
+  let tabEls = [];
+  let tabTrack = null;
+
+  function buildTabs() {
+    tabsEl.innerHTML = '';
+    tabTrack = document.createElement('div');
+    tabTrack.className = 'tab-track';
+    tabEls = CATS.map((c, i) => {
+      const t = document.createElement('div');
+      t.className = 'tab';
+      t.textContent = c.title;
+      t.onclick = () => { state.cat = i; resetCard(); };
+      tabTrack.appendChild(t);
+      return t;
+    });
+    tabsEl.appendChild(tabTrack);
+  }
+
+  function renderTabs() {
+    if (tabEls.length !== CATS.length) buildTabs();
+    tabEls.forEach((el, i) => el.classList.toggle('on', i === state.cat));
+
+    const el = tabEls[state.cat];
+    if (!el || !tabTrack) return;
+
+    // 用布局坐标（不受 transform 影响）把当前项中心对准两个黄箭头中点
+    const center = el.offsetLeft + el.offsetWidth / 2;
+    const target = tabsEl.clientWidth / 2;
+    tabTrack.style.transform = `translateX(${(target - center).toFixed(1)}px)`;
+  }
+
+  function resetCard() {
+    state.card = 0;
+    state.detail = false;
+    state.row = 0;
+    state.rowOffset = 0;
+    render();
+  }
+
+  function render() {
+    renderTabs();
+    const cat = currentCat();
+    $('kicker').textContent = cat.id === 'home'
+      ? 'HOME'
+      : cat.id === 'versions'
+        ? 'VERSIONS'
+        : 'AQUAMAI · ' + String(cat.id).toUpperCase();
+    $('title').textContent = cat.title;
+    if (!state.dash) content.classList.remove('plain');
+    content.classList.remove('enter', 'enter-left', 'enter-right');
+    void content.offsetWidth;
+    content.classList.add(state.dir < 0 ? 'enter-left' : state.dir > 0 ? 'enter-right' : 'enter');
+
+    $('desc').textContent = state.detail
+      ? 'A4 确认 / 切换 · A5 返回列表'
+      : 'A4 进入 · A5 返回 · A7/A2 分类 · A6/A3 翻页';
+    if (state.dash) renderDashboard();
+    else if (state.detail) renderDetail();
+    else renderCard();
+
+    const adj = $('adjustBtns');
+    if (adj) adj.classList.toggle('hidden', !state.detail);
+
+    applySchema();
+    renderSideList();
+  }
+
+  function cardEl(inner, onClick) {
+    const c = document.createElement('div');
+    c.className = 'card';
+    c.innerHTML = inner;
+    if (onClick) c.onclick = onClick;
+    return c;
+  }
+
+  function headHtml(kicker, title, doc) {
+    return `<div class="card-kicker">${escapeHtml(kicker)}</div>` +
+      `<div class="card-title">${escapeHtml(title)}</div>` +
+      (doc ? `<div class="card-doc">${escapeHtml(doc)}</div>` : '');
+  }
+
+  function footHtml(left, right) {
+    return `<div class="card-foot">` +
+      `<span class="hint">${escapeHtml(left)}</span>` +
+      `<span class="big-key">${escapeHtml(right)}</span>` +
+      `</div>`;
+  }
+
+  function renderSideList() {
+    if (state.dash || state.dashCard) { $('optList').classList.add('hidden'); return; }
+    const list = cardsOf(currentCat());
+
+    if (!state.detail) {
+      // 列表页：列出当前分类下所有条目，黄框框住当前条目
+      const rows = list.map((c) => {
+        if (c.kind === 'section') return trimDoc(c.section.doc) || c.section.title || c.section.name;
+        if (c.kind === 'version') return c.game.displayName || c.game.name || '版本';
+        return c.title || c.id || '';
+      });
+      showList(rows, Math.min(state.card, rows.length - 1));
+      return;
+    }
+
+    const item = list[Math.min(state.card, list.length - 1)];
+    if (item && item.kind === 'section') {
+      const ks = item.section.keys || [];
+      const rows = ks.length ? ks.map((k) => trimDoc(k.doc) || humanize(k.key))
+                             : [item.section.title || item.section.name];
+      showList(rows, Math.min(state.row, rows.length - 1));
+      return;
+    }
+
+    showList([], 0);
+  }
+
+  function showList(rows, idx) {
+    const listEl = $('optList');
+    const inner = $('listInner');
+    const hl = $('listHl');
+    if (!listEl) return;
+    listEl.classList.remove('hidden');
+    if (!rows.length) rows = ['（无条目）'];
+    inner.innerHTML = rows.map((t, i) =>
+      `<div class="list-row${i === idx ? ' on' : ''}">${escapeHtml(t)}</div>`
+    ).join('');
+    const target = (392 - 20) / 2 - 17 - idx * 34;
+    const shift = Math.min(0, target);
+    inner.style.transform = `translateY(${shift}px)`;
+    hl.style.transform = `translateY(${shift + idx * 34 - 8}px)`;
+  }
+
+  function dashRow(label, value, ok) {
+    return `<div class="dash-row"><span class="dash-label">${escapeHtml(label)}</span>` +
+      `<span class="dash-value ${ok === true ? 'ok' : ok === false ? 'bad' : ''}">${escapeHtml(value)}</span></div>`;
+  }
+
+  function renderDashboard() {
+    state.dashCard = true;
+    if (!$('content').classList.contains('plain')) $('content').classList.add('plain');
+    const st = state.status || {};
+    const html =
+      `<div class="dash">` +
+      `<div class="dash-title">硬件状态</div>` +
+      dashRow('io4 按键', st.io4 ? '已连接' : '无数据', !!st.io4) +
+      dashRow('触摸屏', (st.port || 'auto') + (st.touch ? ' · 已连接' : ' · 未连接'), !!st.touch) +
+      dashRow('LED 灯板', st.led ? 'COM21 · 已连接' : '未连接', !!st.led) +
+      dashRow('游戏进程', st.game ? '运行中' : '未运行', null) +
+      `<div class="dash-title">配置</div>` +
+      dashRow('AquaMai', st.aquamai || '未配置', null) +
+      dashRow('写入权限', st.writable ? '可写' : '只读', !!st.writable) +
+      dashRow('版本数', String(st.games == null ? 0 : st.games) + ' 个', null) +
+      dashRow('当前版本', GAMES.list[GAMES.active] ? GAMES.list[GAMES.active].name : '未配置', null) +
+      `<div class="dash-title">关于</div>` +
+      dashRow('启动器版本', st.version || '1.0', null) +
+      dashRow('界面', 'v2 · WebView2', null) +
+      `</div>`;
+    content.innerHTML = html;
+    $('kicker').textContent = 'STATUS';
+    $('title').textContent = '状态';
+    $('desc').textContent = '硬件连接 · 配置 · 关于';
+  }
+
+  function renderCard() {
+    const list = cardsOf(currentCat());
+    const item = list[Math.min(state.card, list.length - 1)];
+    content.innerHTML = '';
+    state.dashCard = false;
+
+    if (item.action === 'dashboard') {
+      renderDashboard();
+      return;
+    }
+
+    if (item.kind === 'version') {
+      const g = item.game;
+      const active = item.index === GAMES.active;
+      content.appendChild(cardEl(
+        headHtml(active ? 'VERSION · 当前' : 'VERSION', g.name, g.bat) +
+        footHtml(`${item.index + 1} / ${list.length}`, active ? '当前版本' : 'A4 切换'),
+        () => ok()));
+      return;
+    }
+
+    if (item.kind === 'section') {
+      const s = item.section;
+      const keys = s.keys || [];
+      const kicker = `${s.group || 'AQUAMAI'} · ${keys.length} 项`;
+      const foot = `${state.card + 1} / ${list.length} · ${s.enabled ? '已启用' : '默认（未启用）'} · ${state.writable ? '可写' : '只读'}`;
+      content.appendChild(cardEl(
+        headHtml(kicker, trimDoc(s.doc) || s.title || s.name, s.name) + footHtml(foot, 'A4 查看'),
+        () => ok()));
+      return;
+    }
+
+    let desc = item.desc;
+    if (item.action === 'launch') {
+      const cur = GAMES.list[GAMES.active];
+      desc = cur ? `当前版本：${cur.name}` : '当前版本未配置';
+    }
+
+    content.appendChild(cardEl(
+      `<div class="hero-glyph">${item.glyph || ''}</div>` +
+      headHtml('ACTION', item.title, desc) +
+      footHtml(`${state.card + 1} / ${list.length}`, 'A4 执行'),
+      () => ok()));
+  }
+
+  function humanize(key) {
+    return String(key || '').replace(/([a-z0-9])([A-Z])/g, '$1 $2');
+  }
+
+  function fmtValue(k) {
+    if (!k) return '';
+    if (k.type === 'bool') return String(k.value).toLowerCase() === 'true' ? 'ON' : 'OFF';
+    const v = String(k.value == null ? '' : k.value);
+    return v.length ? v : '未设置';
+  }
+
+  function renderDetail() {
+    $('optList').classList.remove('hidden');
+    const item = currentCard();
+    if (item.kind !== 'section') { state.detail = false; render(); return; }
+
+    const s = item.section;
+    const keys = s.keys || [];
+    content.innerHTML = '';
+
+    if (!keys.length) {
+      const l0 = $('optList');
+      l0.classList.remove('hidden');
+      $('listInner').innerHTML = `<div class="list-row on">${escapeHtml(s.title || s.name)}</div>`;
+      $('listHl').style.transform = 'translateY(0px)';
+      content.appendChild(cardEl(
+        headHtml(`${s.group} · 整段功能`, s.title || s.name, trimDoc(s.doc) || s.name) +
+        footHtml(s.enabled ? '已启用' : '未启用', state.writable ? 'A4 切换' : '只读'),
+        () => ok()));
+      return;
+    }
+
+    const idx = Math.min(state.row, keys.length - 1);
+    const wrap = document.createElement('div');
+    wrap.className = 'opt-strip';
+
+    function sideCard(k) {
+      const d = document.createElement('div');
+      d.className = 'opt side';
+      if (k) {
+        d.innerHTML = `<div class="opt-side-title">${escapeHtml(trimDoc(k.doc) || humanize(k.key))}</div>` +
+          `<div class="opt-value">${escapeHtml(fmtValue(k))}</div>`;
+      }
+      return d;
+    }
+
+
+
+    const main = document.createElement('div');
+    main.className = 'opt main';
+    const cur = keys[idx];
+    main.innerHTML =
+      `<div class="opt-kicker">${escapeHtml(trimDoc(s.doc) || s.title || s.name)}</div>` +
+      `<div class="opt-title">${escapeHtml(trimDoc(cur.doc) || humanize(cur.key))}</div>` +
+      `<div class="opt-value">${escapeHtml(fmtValue(cur))}</div>` +
+      `<div class="opt-key">${escapeHtml(cur.key)}</div>` +
+      `<div class="card-adjust">` +
+      `<div class="adj minus" data-dir="-1">⊖</div>` +
+      `<div class="adj plus" data-dir="1">⊕</div>` +
+      `</div>`;
+    main.querySelectorAll('.adj').forEach((b) => {
+      b.onclick = (e) => {
+        e.stopPropagation();
+        adjust(Number(b.dataset.dir));
+      };
+    });
+    main.onclick = () => ok();
+    wrap.appendChild(main);
+
+
+    content.appendChild(wrap);
+
+    const listEl = $('optList');
+    const inner = $('listInner');
+    const hl = $('listHl');
+    if (state.detail) {
+      listEl.classList.remove('hidden');
+      inner.innerHTML = keys.map((k, i) =>
+        `<div class="list-row${i === idx ? ' on' : ''}">${escapeHtml(trimDoc(k.doc) || humanize(k.key))}</div>`
+      ).join('');
+      hl.style.transform = `translateY(${idx * 34}px)`;
+      const viewH = 392 - 20;
+      const target = viewH / 2 - 17 - idx * 34;
+      inner.style.transform = `translateY(${Math.min(0, target)}px)`;
+    } else {
+      listEl.classList.add('hidden');
+    }
+
+    const vEl = main.querySelector('.opt-value');
+    if (vEl) {
+      vEl.classList.add('pop');
+      setTimeout(() => vEl.classList.remove('pop'), 260);
+    }
+
+    $('desc').textContent = `第 ${idx + 1} / ${keys.length} 项 · 内屏 B5/B4 调值 · A3/A6 翻页`;
+  }
+
+  function chipFor(k) {
+    if (k.type === 'bool') {
+      const on = String(k.value).toLowerCase() === 'true';
+      return `<span class="chip ${on ? 'on' : ''}">${on ? 'ON' : 'OFF'}</span>`;
+    }
+    if (k.type === 'int' || k.type === 'float') return `<span class="chip num">${escapeHtml(String(k.value))}</span>`;
+    if (k.type === 'array') return `<span class="chip">列表</span>`;
+    const s = String(k.value);
+    if (s.length === 0) return `<span class="chip">未设置</span>`;
+    return `<span class="chip str">${escapeHtml(s)}</span>`;
+  }
+
+  function trimDoc(doc) {
+    if (!doc) return '';
+    const line = String(doc).split('\n').map((x) => x.trim()).filter(Boolean)[0] || '';
+    return line.length > 40 ? line.slice(0, 40) + '…' : line;
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /* ---------- 交互 ---------- */
+  let pendingKey = null;
+
+  function openInput(key) {
+    pendingKey = key;
+    $('dlgTitle').textContent = (key.doc || key.key) + '（' + key.key + '）';
+    $('inputBox').value = key.value == null ? '' : String(key.value);
+    $('inputDlg').classList.remove('hidden');
+    kbOpen();
+    setTimeout(() => $('inputBox').focus(), 30);
+  }
+
+  let pendingRename = null;
+
+  let kbPos = 0;
+  let kbKeys = [];
+
+  function renderKb() {
+    if (!kbKeys.length) kbKeys = Array.from(document.querySelectorAll('.kb-key[data-i]'));
+    kbKeys.forEach((el, i) => el.classList.toggle('on', i === kbPos));
+  }
+
+  function kbOpen() {
+    kbPos = 0;
+    const kb = $('kb');
+    if (!kb) return;
+    kb.classList.remove('hidden');
+    kb.style.display = 'none';
+    renderKb();
+  }
+
+  function kbClose() {
+    const kb = $('kb');
+    if (!kb) return;
+    kb.style.display = 'none';
+    kb.classList.add('hidden');
+  }
+
+  function kbType() {
+    if (!kbKeys.length) return;
+    $('inputBox').value += kbKeys[kbPos].dataset.ch || '';
+  }
+
+  function kbBackspace() {
+    const box = $('inputBox');
+    box.value = box.value.slice(0, -1);
+  }
+
+  function kbMove(dx, dy) {
+    const cols = 8;
+    const n = kbKeys.length;
+    if (!n) return;
+    let p = kbPos + dx + dy * cols;
+    if (p < 0) p = 0;
+    if (p >= n) p = n - 1;
+    kbPos = p;
+    renderKb();
+  }
+
+  function kbOpen() {
+    kbPos = 0;
+    renderKb();
+    $('kb').classList.remove('hidden');
+  }
+
+  function kbClose() {
+    $('kb').classList.add('hidden');
+  }
+
+  function kbType() {
+    const box = $('inputBox');
+    box.value += kbChars()[kbPos];
+  }
+
+  function kbBackspace() {
+    const box = $('inputBox');
+    box.value = box.value.slice(0, -1);
+  }
+
+  function kbMove(dx, dy) {
+    const cols = 8;
+    const n = kbChars().length;
+    let p = kbPos + dx + dy * cols;
+    if (p < 0) p = 0;
+    if (p >= n) p = n - 1;
+    kbPos = p;
+    renderKb();
+  }
+
+  function closeInput() {
+    $('inputDlg').classList.add('hidden');
+    pendingKey = null;
+    pendingRename = null;
+  }
+
+  function saveInput() {
+    const value = $('inputBox').value;
+    if (pendingKey) {
+      pendingKey.value = value;
+      send({ type: 'aquamai-set', section: pendingKey._section, key: pendingKey.key, value });
+      state.detail = false;
+      state.dirty = false;
+      render();
+    } else if (pendingRename) {
+      send({ type: 'action', action: 'rename-version', index: pendingRename.index, name: value });
+      toast('正在重命名…');
+    }
+    closeInput();
+  }
+
+  function ok() {
+    const item = currentCard();
+
+    if (state.detail) {
+      const s = item.section;
+      const keys = s.keys || [];
+
+      if (!keys.length) {
+        if (state.writable) {
+          send({ type: 'aquamai-section', section: s.name, enabled: !s.enabled });
+        } else {
+          toast('只读模式：在 config.json 里把 AquaMai.Writable 设为 true');
+        }
+        return;
+      }
+
+      const k = keys[state.row];
+      if (state.writable && k.type === 'bool') {
+        const next = String(k.value).toLowerCase() !== 'true';
+        send({ type: 'aquamai-set', section: s.name, key: k.key, value: next ? 'true' : 'false' });
+        return;
+      }
+
+      toast('只读预览：' + k.key + ' = ' + k.value);
+      return;
+    }
+
+    if (item.kind === 'version') {
+      send({ type: 'action', action: 'version', index: item.index });
+      toast('已发送 · 切换版本');
+      return;
+    }
+
+    if (item.kind === 'section') {
+      state.detail = true;
+      state.row = 0;
+      state.rowOffset = 0;
+      render();
+      return;
+    }
+
+    if (item.action === 'rename-version') {
+      const cur = GAMES.list[GAMES.active];
+      if (!cur) { toast('没有可重命名的版本'); return; }
+      pendingRename = { index: GAMES.active };
+      $('dlgTitle').textContent = '重命名版本：' + cur.name;
+      $('inputBox').value = cur.name;
+      $('inputDlg').classList.remove('hidden');
+      kbOpen();
+      setTimeout(() => $('inputBox').focus(), 30);
+      return;
+    }
+
+    if (item.action === 'dashboard') {
+      state.dash = true;
+      render();
+      return;
+    }
+
+    if (item.action === 'help') {
+      send({ type: 'action', action: 'help' });
+      toast('已请求状态');
+      return;
+    }
+
+    toast('已发送 · ' + item.title);
+    send({ type: 'action', action: item.action });
+  }
+
+  function back() {
+    if (state.dash) { state.dash = false; render(); return; }
+    if (state.detail) { state.detail = false; state.dirty = false; render(); return; }
+    if (state.cat !== 0) { state.cat = 0; resetCard(); }
+  }
+
+  function nextCard() {
+    if (state.dash) { state.dash = false; }
+    state.dir = 1;
+    if (state.detail) {
+      const keys = currentCard().section.keys || [];
+      if (state.row < keys.length - 1) { state.row++; render(); }
+      return;
+    }
+    const list = cardsOf(currentCat());
+    state.card = (state.card + 1) % list.length;
+    render();
+  }
+
+  function prevCard() {
+    if (state.dash) { state.dash = false; }
+    state.dir = -1;
+    if (state.detail) {
+      if (state.row > 0) { state.row--; render(); }
+      return;
+    }
+    const list = cardsOf(currentCat());
+    state.card = (state.card + list.length - 1) % list.length;
+    render();
+  }
+
+  function nextCat() { if (state.dash) state.dash = false; state.dir = 1; state.cat = (state.cat + 1) % CATS.length; resetCard(); }
+  function prevCat() { if (state.dash) state.dash = false; state.dir = -1; state.cat = (state.cat + CATS.length - 1) % CATS.length; resetCard(); }
+
+  function onButton(i) {
+    if (!$('inputDlg').classList.contains('hidden')) {
+      if (i === 3) { saveInput(); return; }   // A4 保存
+      if (i === 4) { closeInput(); return; }  // A5 取消
+      return;                                  // 其余不操作底下的界面
+    }
+
+    const b = state.schema && state.schema[i];
+    if (b && b.fn) b.fn();
+  }
+
+  const ZONE_ORDER = [
+    ...Array.from({ length: 8 }, (_, i) => `A${i + 1}`),
+    ...Array.from({ length: 8 }, (_, i) => `B${i + 1}`),
+    'C1', 'C2',
+    ...Array.from({ length: 8 }, (_, i) => `D${i + 1}`),
+    ...Array.from({ length: 8 }, (_, i) => `E${i + 1}`),
+  ];
+  let lastTouchAt = 0;
+
+  let holdZone = -1;
+  let holdTimer = null;
+  let holdDelay = null;
+
+  function stopHold() {
+    if (holdDelay) { clearTimeout(holdDelay); holdDelay = null; }
+    if (holdTimer) { clearInterval(holdTimer); holdTimer = null; }
+    holdZone = -1;
+  }
+
+  function fireZone(z) {
+    if (!$('inputDlg').classList.contains('hidden')) {
+      const name = ZONE_ORDER[z];
+      if (name === 'A4' || name === 'C1' || name === 'C2') { saveInput(); return; }
+      if (name === 'A5' || name === 'B5' || name === 'E8') { closeInput(); return; }
+      return;
+    }
+
+    if (z < 8) {
+      if (!state.detail && currentCat().id === 'home' && (z === 3 || z === 4)) return;
+      press(z);
+      return;
+    }
+
+
+    const name = ZONE_ORDER[z];
+    const zone = ZONES[name];
+    if (!zone) return;
+
+    // 和真机一致：E8/E2 = 分类翻页，E7/E3 = 卡片/选项，中心 = 确认
+    if (name === 'E8') { prevCat(); return; }
+    if (name === 'E2') { nextCat(); return; }
+    // E7/E3 不再承担翻页，只由 E8/E2 负责
+    if (name === 'B5') { adjust(-1); return; }
+    if (name === 'B4') { adjust(1); return; }
+    if (name === 'C1' || name === 'C2') { if (state.detail) ok(); return; }
+
+    const x = zone.cx * 1.8;
+    if (x < -180) { prevCard(); return; }
+    if (x > 180) { nextCard(); return; }
+    if (state.detail) ok(); // 列表页：触摸不进入，只能外键 A4
+  }
+
+  function drawTouchFx(active) {
+    const g = document.getElementById('fx');
+    if (!g) return;
+    g.textContent = '';
+    for (const z of active) {
+      const name = ZONE_ORDER[z];
+      const zone = ZONES[name];
+      if (!zone) continue;
+      const p = document.createElementNS(NS, 'path');
+      p.setAttribute('d', zone.path);
+      p.setAttribute('transform', `scale(${SCALE})`);
+      p.setAttribute('fill', 'rgba(255,60,60,.16)');
+      p.setAttribute('stroke', 'rgba(255,120,120,.35)');
+      p.setAttribute('stroke-width', '2');
+      p.setAttribute('pointer-events', 'none');
+      g.appendChild(p);
+    }
+  }
+
+  function onTouchZones(active) {
+    drawTouchFx(active);
+    if (!active.length) {
+      stopHold();
+      state.prevTouch = new Set();
+      return;
+    }
+
+    // 按住不放：0.45s 后每 0.16s 连续步进，模拟“跟手滑动”
+    if (holdZone < 0) {
+      holdZone = active[0];
+      holdDelay = setTimeout(() => {
+        holdTimer = setInterval(() => {
+          if (holdZone >= 0) fireZone(holdZone);
+        }, 160);
+      }, 450);
+    }
+
+    const fresh = active.filter((z) => !state.prevTouch.has(z));
+    state.prevTouch = new Set(active);
+    if (!fresh.length) return;
+    if (Date.now() - lastTouchAt < 220) return;
+    lastTouchAt = Date.now();
+
+    fireZone(fresh[0]);
+  }
+
+  function adjust(dir) {
+    const item = currentCard();
+    if (!item || item.kind !== 'section' || !state.detail) {
+      toast('先进入一个选项');
+      return;
+    }
+
+    const keys = item.section.keys || [];
+    if (!keys.length) return;
+    const k = keys[Math.min(state.row, keys.length - 1)];
+
+    if (!state.writable) {
+      toast('只读模式：把 AquaMai.Writable 设为 true');
+      return;
+    }
+
+    let value = String(k.value);
+    if (k.type === 'bool') {
+      value = dir > 0 ? 'true' : 'false';
+    } else if (k.type === 'int' || k.type === 'float') {
+      const n = (Number(value) || 0) + dir;
+      value = String(k.type === 'int' ? Math.round(n) : Math.round(n * 10) / 10);
+    } else {
+      toast('该项暂不支持快速调整');
+      return;
+    }
+
+    k.value = value;
+    k.raw = value;
+    state.dirty = true;
+    render();
+  }
+
+  if (location.search.indexOf('dash=1') >= 0) {
+    setTimeout(() => { state.dash = true; render(); }, 400);
+  }
+
+  if (location.hash === '#kb' || location.search.indexOf('kb=1') >= 0) {
+    setTimeout(() => {
+      openInput({ key: 'PreviewText', doc: '键盘预览', value: 'Maimai DX', type: 'string', _section: 'Demo' });
+    }, 300);
+  }
+
+  document.querySelectorAll('.kb-key[data-i]').forEach((el) => {
+    el.onclick = () => { kbPos = Number(el.dataset.i); kbType(); };
+  });
+  const kbDel = document.getElementById('kbDel');
+  if (kbDel) kbDel.onclick = () => kbBackspace();
+  const kbSave = document.getElementById('kbSave');
+  if (kbSave) kbSave.onclick = () => saveInput();
+
+  $('dlgOk').onclick = () => saveInput();
+  $('dlgCancel').onclick = () => closeInput();
+  document.addEventListener('keydown', (e) => {
+    if ($('inputDlg').classList.contains('hidden')) return;
+    if (e.key === 'Enter') saveInput();
+    if (e.key === 'Escape') closeInput();
+  });
+
+  function send(msg) {
+    try { if (window.chrome && window.chrome.webview) window.chrome.webview.postMessage(msg); } catch (e) { /* ignore */ }
+  }
+
+  let toastTimer = null;
+  function toast(text) {
+    toastEl.textContent = text;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1600);
+  }
+
+  /* ---------- 原生输入 ---------- */
+  function applyInput(msg) {
+    if (!msg) return;
+    if (msg.buttons && Array.isArray(msg.buttons.pressed)) {
+      for (const i of msg.buttons.pressed) {
+        if (!state.prevButtons.has(i)) press(i);
+      }
+      state.prevButtons = new Set(msg.buttons.pressed);
+      return;
+    }
+    if (msg.type === 'toast') { toast((msg.title ? msg.title + ' · ' : '') + (msg.desc || '')); return; }
+    if (msg.type === 'aquamai') {
+      if (Array.isArray(msg.groups)) {
+        const groups = msg.groups.map((g) => ({
+          name: g.name ?? g.Name,
+          title: g.title ?? g.Title,
+          sections: (g.sections ?? g.Sections ?? []).map((s) => ({
+            name: s.name ?? s.Name,
+            group: s.group ?? s.Group,
+            title: s.title ?? s.Title,
+            doc: s.doc ?? s.Doc ?? '',
+            enabled: s.enabled ?? s.Enabled ?? false,
+            keys: (s.keys ?? s.Keys ?? []).map((k) => ({
+              key: k.key ?? k.Key,
+              value: k.value ?? k.Value,
+              type: k.type ?? k.Type,
+              doc: k.doc ?? k.Doc ?? '',
+              enabled: k.enabled ?? k.Enabled ?? false,
+              line: k.line ?? k.Line ?? 0,
+            })),
+          })),
+        }));
+        AQUAMAI = { groups };
+        CATS = buildCategories();
+        if (state.cat >= CATS.length) state.cat = 0;
+        state.writable = !!msg.writable;
+        resetCard();
+        toast('已读取 AquaMai 配置 · ' + groups.length + ' 类' + (state.writable ? ' · 可写' : ' · 只读'));
+      }
+      return;
+    }
+    if (msg.type === 'games') {
+      GAMES = {
+        list: (msg.games || []).map((g) => ({ name: g.name, bat: g.bat })),
+        active: msg.active || 0,
+      };
+      CATS = buildCategories();
+      if (state.cat >= CATS.length) state.cat = 0;
+      resetCard();
+      return;
+    }
+    if (msg.type === 'aquamai-saved') {
+      toast((msg.ok ? '已保存 · ' : '未保存 · ') + (msg.message || ''));
+      return;
+    }
+    if (msg.touch && Array.isArray(msg.touch.active)) {
+      onTouchZones(msg.touch.active);
+      return;
+    }
+    if (msg.type === 'status') {
+      state.native = true;
+      state.status = msg;
+      const bits = [
+        'io4 ' + (msg.io4 ? '已连接' : '无数据'),
+        '触摸 ' + (msg.port || 'COM3') + (msg.touch ? ' 已连接' : ' 未连接'),
+        '灯光 ' + (msg.led ? 'COM21 已连接' : '未连接'),
+      ];
+      $('status').textContent = bits.join(' · ');
+      $('status').classList.add('live');
+    }
+  }
+
+  window.chrome?.webview?.addEventListener('message', (e) => applyInput(e.data));
+
+  window.addEventListener('keydown', (evt) => {
+    if (evt.key >= '1' && evt.key <= '8') { press(Number(evt.key) - 1); evt.preventDefault(); }
+    else if (evt.key === 'Escape') { back(); evt.preventDefault(); }
+  });
+
+  function tickClock() {
+    const d = new Date();
+    $('clock').textContent = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  }
+  setInterval(tickClock, 1000);
+  tickClock();
+
+  function fit() {
+    const s = Math.min(window.innerWidth / 1080, window.innerHeight / 1920);
+    const screen = $('screen');
+    screen.style.transform = `scale(${s})`;
+    screen.style.left = `${Math.max(0, (window.innerWidth - 1080 * s) / 2)}px`;
+    screen.style.top = `${Math.max(0, (window.innerHeight - 1920 * s) / 2)}px`;
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  // 方便截图/调试：menu-v2.html#cat=GameSystem&card=0&detail=1&row=2
+  function applyDeepLink() {
+    const m = new URLSearchParams(location.hash.replace(/^#/, ''));
+    if (!m.has('cat')) return;
+    const id = m.get('cat');
+    const idx = CATS.findIndex((c) => c.id === id);
+    if (idx >= 0) state.cat = idx;
+    state.card = Number(m.get('card') || 0);
+    state.detail = m.get('detail') === '1';
+    state.row = Number(m.get('row') || 0);
+  }
+
+  render();
+  applyDeepLink();
+  render();
+
+  try {
+    if (window.chrome && window.chrome.webview) window.chrome.webview.postMessage({ type: 'ready' });
+  } catch (e) { /* ignore */ }
+})();
+</script>
+</body>
+</html>

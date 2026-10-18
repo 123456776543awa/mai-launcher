@@ -1,0 +1,56 @@
+{
+  "Game": {
+    "Name": "maimai DX SDEZ 1.70",
+    "Bat": "D:\\sdez\\maimai DX SDEZ 1.70\\启动.bat",
+    "WorkingDir": "D:\\sdez\\maimai DX SDEZ 1.70",
+    "WaitProcess": "Sinmai"
+  },
+  "Games": [
+    {
+      "Name": "maimai DX SDEZ 1.70",
+      "Bat": "C:\\path\\to\\start.bat",
+      "WorkingDir": "D:\\sdez\\maimai DX SDEZ 1.70",
+      "WaitProcess": "Sinmai"
+    }
+  ],
+  "ActiveGame": 0,
+  "Mcm": {
+    "Enabled": true,
+    "Launch": "mcm.exe",
+    "Aumid": "22369479C5405.MaiChartManager_wm9y4rc078y4p!App",
+    "X": 91,
+    "Y": 1081,
+    "Width": 898,
+    "Height": 599
+  },
+  "MajPlay": {
+    "Enabled": true,
+    "Exe": "",
+    "Args": "",
+    "WaitProcess": "MajdataPlay"
+  },
+  "AquaMai": {
+    "Toml": "C:\\path\\to\\AquaMai.toml",
+    "Writable": true
+  },
+  "Touch": {
+    "Port": "auto",
+    "Baud": 9600
+  },
+  "Io4": {
+    "Vid": "0CA3",
+    "Pid": "0021"
+  },
+  "Screen": {
+    "Target": "portrait",
+    "DeviceName": "",
+    "Width": 1080,
+    "Height": 1920,
+    "TopHeight": 469,
+    "CircleCx": 540,
+    "CircleCy": 1380,
+    "CircleR": 540
+  },
+  "Startup": true,
+  "Ui": "v2"
+}

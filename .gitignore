@@ -1,0 +1,10 @@
+bin/
+obj/
+publish*/
+*.log
+config.json
+tray.log
+*.old.exe
+*.old.dll
+*.bak
+.vs/

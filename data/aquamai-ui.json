@@ -1,0 +1,3868 @@
+{
+ "groups": [
+  {
+   "name": "General",
+   "title": "常规",
+   "sections": [
+    {
+     "name": "General",
+     "group": "General",
+     "title": "General",
+     "doc": "",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Version",
+       "value": "2.6",
+       "raw": "\"2.6\"",
+       "type": "string",
+       "doc": "这是 AquaMai 的 TOML 配置文件\n- 井号 # 开头的行为注释，被注释掉的内容不会生效\n- 为方便使用 VSCode 等编辑器进行编辑，被注释掉的配置内容使用一个井号 #，而注释文本使用两个井号 ##\n- 以方括号包裹的行，如 [OptionalCategory.Section]，为一个栏目\n- 将默认被注释（即默认禁用）的栏目取消注释即可启用\n- 若要禁用一个默认启用的栏目，请在栏目下添加「Disabled = true」配置项，删除它/注释它不会有效\n- 形如「键 = 值」为一个配置项\n- 配置项应用到其上方最近的栏目，请不要在一个栏目被注释掉的情况下开启其配置项（会加到上一个栏目，无效）\n- 当对应栏目启用时，配置项生效，无论是否将其取消注释\n- 注释掉的配置项保留其注释中的默认值，默认值可能会随版本更新而变化\n- 该文件的格式和文字注释是固定的，配置文件将在启动时被重写，无法解析的内容将被删除\n试试使用 MaiChartManager 图形化配置 AquaMai 吧！\nhttps://github.com/MuNET-OSS/MaiChartManager",
+       "enabled": true,
+       "line": 17
+      }
+     ]
+    },
+    {
+     "name": "General",
+     "group": "General",
+     "title": "General",
+     "doc": "AquaMai 的通用设置",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Locale",
+       "value": "zh",
+       "raw": "\"zh\"",
+       "type": "string",
+       "doc": "Mod 界面语言\nMod 界面的语言，支持 en 和 zh\n如果为空，将使用系统语言\n配置文件也将以此语言保存",
+       "enabled": true,
+       "line": 25
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "GameSystem",
+   "title": "游戏系统",
+   "sections": [
+    {
+     "name": "GameSystem.Assets.Fonts",
+     "group": "GameSystem",
+     "title": "Fonts",
+     "doc": "自定义字体\n使用自定义字体作为回退（解决中文字形缺失问题），或完全替换游戏原字体",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 30
+      },
+      {
+       "key": "Paths",
+       "value": "%SYSTEMROOT%/Fonts/msyhbd.ttc",
+       "raw": "\"%SYSTEMROOT%/Fonts/msyhbd.ttc\"",
+       "type": "string",
+       "doc": "字体路径\n使用分号分隔多个路径以构成 Fallback 链\n默认为微软雅黑 Bold",
+       "enabled": false,
+       "line": 34
+      },
+      {
+       "key": "AddAsFallback",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "作为回退字体\n将自定义字体作为游戏原字体的回退，尽可能使用游戏原字体",
+       "enabled": false,
+       "line": 37
+      },
+      {
+       "key": "MaruGothicPaths",
+       "value": "",
+       "raw": "\"\"",
+       "type": "string",
+       "doc": "SEGA_MaruGothicDB（文本用圆体）的单独字体路径\n使用分号分隔多个路径\n留空则使用上方的总设置",
+       "enabled": false,
+       "line": 41
+      },
+      {
+       "key": "NewRodinPaths",
+       "value": "",
+       "raw": "\"\"",
+       "type": "string",
+       "doc": "SEGA_NewRodinN v2-EB_0（标题用粗体）的单独字体路径\n使用分号分隔多个路径\n留空则使用上方的总设置",
+       "enabled": false,
+       "line": 45
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.Assets.IgnoreLoadFailedAssetBundle",
+     "group": "GameSystem",
+     "title": "Ignore Load Failed Asset Bundle",
+     "doc": "忽略加载失败的 .ab 图片资源",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 49
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.Assets.LoadAssetBundleWithoutManifest",
+     "group": "GameSystem",
+     "title": "Load Asset Bundle Without Manifest",
+     "doc": "无视 Manifest\n加载所有存在的 .ab 图片资源（无视 AssetBundleImages.manifest）\n导入了删除曲包之类的话，应该需要开启这个",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 55
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.Assets.LoadLocalImages",
+     "group": "GameSystem",
+     "title": "Load Local Images",
+     "doc": "直读图片\n从指定目录下加载资源图片（自制谱用）",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 60
+      },
+      {
+       "key": "ImageAssetsDir",
+       "value": "LocalAssets",
+       "raw": "\"LocalAssets\"",
+       "type": "string",
+       "doc": "图片路径",
+       "enabled": false,
+       "line": 62
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.Assets.MovieLoader",
+     "group": "GameSystem",
+     "title": "Movie Loader",
+     "doc": "直读 PV\n自定义歌曲游玩界面背景\n优先级: 首先读游戏自带 PV, 然后读本地 mp4 格式 PV, 最后读封面",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 68
+      },
+      {
+       "key": "LoadSourceMovie",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "游戏自带 PV\n加载游戏自带的 PV",
+       "enabled": false,
+       "line": 71
+      },
+      {
+       "key": "LoadMp4Movie",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "本地 MP4\n从 LocalAssets 中加载 MP4 文件作为 PV",
+       "enabled": false,
+       "line": 74
+      },
+      {
+       "key": "MovieAssetsDir",
+       "value": "LocalAssets",
+       "raw": "\"LocalAssets\"",
+       "type": "string",
+       "doc": "MP4 路径\n加载 MP4 文件的路径",
+       "enabled": false,
+       "line": 77
+      },
+      {
+       "key": "JacketAsMovie",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "封面作为背景\n用封面作为背景 PV\n请和 `LoadLocalImages` 一起用",
+       "enabled": false,
+       "line": 81
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.AddPlayCountWhenQuickRetry",
+     "group": "GameSystem",
+     "title": "Add Play Count When Quick Retry",
+     "doc": "重开计次\n在一键重开（无论何种触发方式）时，增加当前谱面的游玩次数",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 86
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.AdxHidInput",
+     "group": "GameSystem",
+     "title": "Adx Hid Input",
+     "doc": "ADX / NPRO HID\n使用 ADX / NPRO 的自定义输入（没有 ADX / NPRO 的话开了也不会加载，也没有坏处）",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "",
+       "enabled": true,
+       "line": 91
+      },
+      {
+       "key": "HotPlugSupport",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "热插拔支持",
+       "enabled": false,
+       "line": 93
+      },
+      {
+       "key": "P1Button1",
+       "value": "Select1P",
+       "raw": "\"Select1P\"",
+       "type": "string",
+       "doc": "1P 按钮 1\n向上的三角键",
+       "enabled": false,
+       "line": 96
+      },
+      {
+       "key": "P1Button2",
+       "value": "Service",
+       "raw": "\"Service\"",
+       "type": "string",
+       "doc": "1P 按钮 2\n三角键中间的圆形按键",
+       "enabled": false,
+       "line": 99
+      },
+      {
+       "key": "P1Button3",
+       "value": "Select2P",
+       "raw": "\"Select2P\"",
+       "type": "string",
+       "doc": "1P 按钮 3\n向下的三角键",
+       "enabled": false,
+       "line": 102
+      },
+      {
+       "key": "P1Button4",
+       "value": "Test",
+       "raw": "\"Test\"",
+       "type": "string",
+       "doc": "1P 按钮 4\n最下方的圆形按键",
+       "enabled": false,
+       "line": 105
+      },
+      {
+       "key": "P1DisableButtons",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "1P 禁用外键输入",
+       "enabled": false,
+       "line": 107
+      },
+      {
+       "key": "P2Button1",
+       "value": "Select1P",
+       "raw": "\"Select1P\"",
+       "type": "string",
+       "doc": "2P 按钮 1\n向上的三角键",
+       "enabled": false,
+       "line": 110
+      },
+      {
+       "key": "P2Button2",
+       "value": "Service",
+       "raw": "\"Service\"",
+       "type": "string",
+       "doc": "2P 按钮 2\n三角键中间的圆形按键",
+       "enabled": false,
+       "line": 113
+      },
+      {
+       "key": "P2Button3",
+       "value": "Select2P",
+       "raw": "\"Select2P\"",
+       "type": "string",
+       "doc": "2P 按钮 3\n向下的三角键",
+       "enabled": false,
+       "line": 116
+      },
+      {
+       "key": "P2Button4",
+       "value": "Test",
+       "raw": "\"Test\"",
+       "type": "string",
+       "doc": "2P 按钮 4\n最下方的圆形按键",
+       "enabled": false,
+       "line": 119
+      },
+      {
+       "key": "P2DisableButtons",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "2P 禁用外键输入",
+       "enabled": false,
+       "line": 121
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.CustomCameraId",
+     "group": "GameSystem",
+     "title": "Custom Camera Id",
+     "doc": "自定义摄像头\n使用自定义的摄像头 ID 而不是默认的\n启用后可以指定游戏使用的摄像头",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "PrintCameraList",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "打印摄像头列表\n启动时打印摄像头列表到日志中，可以作为修改的依据",
+       "enabled": false,
+       "line": 129
+      },
+      {
+       "key": "LeftQrCamera",
+       "value": "0",
+       "raw": "0",
+       "type": "int",
+       "doc": "DX Pass 1P",
+       "enabled": false,
+       "line": 131
+      },
+      {
+       "key": "RightQrCamera",
+       "value": "0",
+       "raw": "0",
+       "type": "int",
+       "doc": "DX Pass 2P",
+       "enabled": false,
+       "line": 133
+      },
+      {
+       "key": "PhotoCamera",
+       "value": "0",
+       "raw": "0",
+       "type": "int",
+       "doc": "玩家摄像头",
+       "enabled": false,
+       "line": 135
+      },
+      {
+       "key": "ChimeCamera",
+       "value": "0",
+       "raw": "0",
+       "type": "int",
+       "doc": "二维码扫描器",
+       "enabled": false,
+       "line": 137
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.DisableTimeout",
+     "group": "GameSystem",
+     "title": "Disable Timeout",
+     "doc": "去除倒计时\n去除并隐藏游戏中的倒计时",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "InContinueProcess",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "移除续关倒计时",
+       "enabled": false,
+       "line": 143
+      },
+      {
+       "key": "InGameStart",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "移除开始倒计时\n也移除刷卡和选择模式界面的倒计时",
+       "enabled": false,
+       "line": 146
+      },
+      {
+       "key": "HideTimer",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "隐藏计时器",
+       "enabled": false,
+       "line": 148
+      },
+      {
+       "key": "ShowInfinity",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "显示无穷符号\n仅在 隐藏计时器 关闭时显示",
+       "enabled": false,
+       "line": 151
+      },
+      {
+       "key": "InstanceSkip",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "快速跳过\n在登录和选择模式界面，按一下跳过按钮就可以立即跳过",
+       "enabled": false,
+       "line": 154
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.EnableFreedomMode",
+     "group": "GameSystem",
+     "title": "Enable Freedom Mode",
+     "doc": "SDGA 启用自由模式\n在 SDGA 上启用自由模式。如果你安装了独立的 FreedomUnlocker，请删除它",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "GameSystem.ExteraMouseInput",
+     "group": "GameSystem",
+     "title": "Extera Mouse Input",
+     "doc": "触屏优化\n启用触摸输入和半径，以获得更真实的触摸屏体验",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 163
+      },
+      {
+       "key": "Radius",
+       "value": "25.0",
+       "raw": "25.0",
+       "type": "float",
+       "doc": "触摸半径\n触摸区域半径大小。请根据手指大小调整，可以去 Test 中测试",
+       "enabled": false,
+       "line": 166
+      },
+      {
+       "key": "AAreaExtraRadius",
+       "value": "0.0",
+       "raw": "0.0",
+       "type": "float",
+       "doc": "A 区额外半径\nA 区（外圈按键）的额外半径，可以为负值来缩小",
+       "enabled": false,
+       "line": 169
+      },
+      {
+       "key": "BAreaExtraRadius",
+       "value": "0.0",
+       "raw": "0.0",
+       "type": "float",
+       "doc": "B 区额外半径\nB 区（中圈传感器）的额外半径，可以为负值来缩小",
+       "enabled": false,
+       "line": 172
+      },
+      {
+       "key": "CAreaExtraRadius",
+       "value": "0.0",
+       "raw": "0.0",
+       "type": "float",
+       "doc": "C 区额外半径\nC 区（中心传感器）的额外半径，可以为负值来缩小",
+       "enabled": false,
+       "line": 175
+      },
+      {
+       "key": "DAreaExtraRadius",
+       "value": "0.0",
+       "raw": "0.0",
+       "type": "float",
+       "doc": "D 区额外半径\nD 区（内圈传感器）的额外半径，可以为负值来缩小",
+       "enabled": false,
+       "line": 178
+      },
+      {
+       "key": "EAreaExtraRadius",
+       "value": "0.0",
+       "raw": "0.0",
+       "type": "float",
+       "doc": "E 区额外半径\nE 区（最内圈传感器）的额外半径，可以为负值来缩小",
+       "enabled": false,
+       "line": 181
+      },
+      {
+       "key": "DisplayArea",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "显示触摸点\n显示触摸点（仅限触屏输入）",
+       "enabled": false,
+       "line": 184
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.HeadphoneVolumeMultiply",
+     "group": "GameSystem",
+     "title": "Headphone Volume Multiply",
+     "doc": "耳机音量倍率\n将 1P/2P 用户设置的耳机音量乘以一个倍率，可以调低或调高，但不能高于原本的 20。",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "P1",
+       "value": "1.0",
+       "raw": "1.0",
+       "type": "float",
+       "doc": "1P",
+       "enabled": false,
+       "line": 190
+      },
+      {
+       "key": "P2",
+       "value": "1.0",
+       "raw": "1.0",
+       "type": "float",
+       "doc": "2P",
+       "enabled": false,
+       "line": 192
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.HeadphoneVolumeOverride",
+     "group": "GameSystem",
+     "title": "Headphone Volume Override",
+     "doc": "耳机音量覆盖\n将 1P/2P 耳机音量强制覆盖为固定值，忽略用户的游戏内设置。设为 -1 则禁用（使用用户设置）。范围：0–20。",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "P1",
+       "value": "-1.0",
+       "raw": "-1.0",
+       "type": "float",
+       "doc": "1P 音量覆盖\n1P 耳机音量覆盖值。-1 = 使用用户设置，0–20 = 固定音量（20 为最大值）。",
+       "enabled": false,
+       "line": 199
+      },
+      {
+       "key": "P2",
+       "value": "-1.0",
+       "raw": "-1.0",
+       "type": "float",
+       "doc": "2P 音量覆盖\n2P 耳机音量覆盖值。-1 = 使用用户设置，0–20 = 固定音量（20 为最大值）。",
+       "enabled": false,
+       "line": 202
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.KeyMap",
+     "group": "GameSystem",
+     "title": "Key Map",
+     "doc": "按键映射\n启用或禁用 IO4 和 DebugInput。配置 DebugInput 的按键映射。\nDebugInput 与 IO4（兼容 IO4 板 / segatools IO4 模拟）独立工作。\n（你应该至少启用一个输入源，除非你使用其他输入方案如 AdxHidInput。）",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 209
+      },
+      {
+       "key": "DisableIO4_1P",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "禁用 IO4（1P）\n禁用 IO4（兼容 IO4 板 / segatools IO4 模拟）输入。\n在禁用 IO4 输入后，你的兼容 IO4 板或 segatools IO4 模拟将被忽略。",
+       "enabled": false,
+       "line": 213
+      },
+      {
+       "key": "DisableIO4_2P",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "禁用 IO4（2P）",
+       "enabled": false,
+       "line": 215
+      },
+      {
+       "key": "DisableIO4System",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "禁用 IO4（系统按键）\n禁用系统按键的 IO4 输入，输入源同上。",
+       "enabled": false,
+       "line": 218
+      },
+      {
+       "key": "DisableDebugInput",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "禁用 DebugInput\n禁用 DebugInput，下列按键映射将不起作用。\n在禁用 DebugInput 后，你需要兼容 IO4 板、segatools IO4 模拟或其他自定义输入方案才能游玩。\n如果使用 IO4 模拟，你可以在 segatools.ini 的 [io4] 和 [button] 部分配置按键映射。",
+       "enabled": true,
+       "line": 223
+      },
+      {
+       "key": "DisableDebugFeatureHotkeys",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "禁用调试快捷键\n禁用 DebugFeature Polyfill 的快捷键，比如说回车暂停，左右键快进快退等。",
+       "enabled": false,
+       "line": 226
+      },
+      {
+       "key": "Test",
+       "value": "M",
+       "raw": "\"M\"",
+       "type": "string",
+       "doc": "",
+       "enabled": true,
+       "line": 227
+      },
+      {
+       "key": "Service",
+       "value": "N",
+       "raw": "\"N\"",
+       "type": "string",
+       "doc": "",
+       "enabled": true,
+       "line": 228
+      },
+      {
+       "key": "Button1_1P",
+       "value": "W",
+       "raw": "\"W\"",
+       "type": "string",
+       "doc": "",
+       "enabled": false,
+       "line": 229
+      },
+      {
+       "key": "Button2_1P",
+       "value": "E",
+       "raw": "\"E\"",
+       "type": "string",
+       "doc": "",
+       "enabled": false,
+       "line": 230
+      },
+      {
+       "key": "Button3_1P",
+       "value": "D",
+       "raw": "\"D\"",
+       "type": "string",
+       "doc": "",
+       "enabled": false,
+       "line": 231
+      },
+      {
+       "key": "Button4_1P",
+       "value": "C",
+       "raw": "\"C\"",
+       "type": "string",
+       "doc": "",
+       "enabled": false,
+       "line": 232
+      },
+      {
+       "key": "Button5_1P",
+       "value": "X",
+       "raw": "\"X\"",
+       "type": "string",
+       "doc": "",
+       "enabled": false,
+       "line": 233
+      },
+      {
+       "key": "Button6_1P",
+       "value": "Z",
+       "raw": "\"Z\"",
+       "type": "string",
+       "doc": "",
+       "enabled": false,
+       "line": 234
+      },
+      {
+       "key": "Button7_1P",
+       "value": "A",
+       "raw": "\"A\"",
+       "type": "string",
+       "doc": "",
+       "enabled": false,
+       "line": 235
+      },
+      {
+       "key": "Button8_1P",
+       "value": "Q",
+       "raw": "\"Q\"",
+       "type": "string",
+       "doc": "",
+       "enabled": false,
+       "line": 236
+      },
+      {
+       "key": "Select_1P",
+       "value": "Alpha3",
+       "raw": "\"Alpha3\"",
+       "type": "string",
+       "doc": "",
+       "enabled": false,
+       "line": 237
+      },
+      {
+       "key": "Button1_2P",
+       "value": "Keypad8",
+       "raw": "\"Keypad8\"",
+       "type": "string",
+       "doc": "",
+       "enabled": false,
+       "line": 238
+      },
+      {
+       "key": "Button2_2P",
+       "value": "Keypad9",
+       "raw": "\"Keypad9\"",
+       "type": "string",
+       "doc": "",
+       "enabled": false,
+       "line": 239
+      },
+      {
+       "key": "Button3_2P",
+       "value": "Keypad6",
+       "raw": "\"Keypad6\"",
+       "type": "string",
+       "doc": "",
+       "enabled": false,
+       "line": 240
+      },
+      {
+       "key": "Button4_2P",
+       "value": "Keypad3",
+       "raw": "\"Keypad3\"",
+       "type": "string",
+       "doc": "",
+       "enabled": false,
+       "line": 241
+      },
+      {
+       "key": "Button5_2P",
+       "value": "Keypad2",
+       "raw": "\"Keypad2\"",
+       "type": "string",
+       "doc": "",
+       "enabled": false,
+       "line": 242
+      },
+      {
+       "key": "Button6_2P",
+       "value": "Keypad1",
+       "raw": "\"Keypad1\"",
+       "type": "string",
+       "doc": "",
+       "enabled": false,
+       "line": 243
+      },
+      {
+       "key": "Button7_2P",
+       "value": "Keypad4",
+       "raw": "\"Keypad4\"",
+       "type": "string",
+       "doc": "",
+       "enabled": false,
+       "line": 244
+      },
+      {
+       "key": "Button8_2P",
+       "value": "Keypad7",
+       "raw": "\"Keypad7\"",
+       "type": "string",
+       "doc": "",
+       "enabled": false,
+       "line": 245
+      },
+      {
+       "key": "Select_2P",
+       "value": "KeypadMultiply",
+       "raw": "\"KeypadMultiply\"",
+       "type": "string",
+       "doc": "",
+       "enabled": false,
+       "line": 246
+      },
+      {
+       "key": "Autoplay",
+       "value": "Home",
+       "raw": "\"Home\"",
+       "type": "string",
+       "doc": "",
+       "enabled": false,
+       "line": 247
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.LightBoardPort",
+     "group": "GameSystem",
+     "title": "Light Board Port",
+     "doc": "灯光串口\n调整灯板串口号，默认值 COM21 COM23\n需要设备管理器配置，如果你不清楚你是否可以使用，请不要使用",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "PortName_1PLED",
+       "value": "COM21",
+       "raw": "\"COM21\"",
+       "type": "string",
+       "doc": "1P灯光串口号",
+       "enabled": false,
+       "line": 254
+      },
+      {
+       "key": "PortName_2PLED",
+       "value": "COM23",
+       "raw": "\"COM23\"",
+       "type": "string",
+       "doc": "2P灯光串口号",
+       "enabled": false,
+       "line": 256
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.MaimollerIO",
+     "group": "GameSystem",
+     "title": "Maimoller I O",
+     "doc": "Maimoller IO V2\n适配 Maimoller 控制器的输入（按钮和触屏）和输出（LED），替代厂商提供的 ADXHIDIOMod.dll。\n如果你没有使用 Maimoller 控制器，请勿启用。\n请删除 ADXHIDIOMod.dll（如果有）并关闭 mai2.ini 中的 DummyTouchpanel。",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "Touch1p",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "启用 1P 触屏\n如果混用 Maimoller 与其他协议，请对不是 Maimoller 的一侧禁用",
+       "enabled": false,
+       "line": 265
+      },
+      {
+       "key": "Button1p",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "启用 1P 按键",
+       "enabled": false,
+       "line": 267
+      },
+      {
+       "key": "Led1p",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "启用 1P 灯光",
+       "enabled": false,
+       "line": 269
+      },
+      {
+       "key": "Touch2p",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "启用 2P 触屏",
+       "enabled": false,
+       "line": 271
+      },
+      {
+       "key": "Button2p",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "启用 2P 按键",
+       "enabled": false,
+       "line": 273
+      },
+      {
+       "key": "Led2p",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "启用 2P 灯光",
+       "enabled": false,
+       "line": 275
+      },
+      {
+       "key": "UseLegacy",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "启用兼容模式\n使用基于厂商 DLL 的旧版实现\n请在 Sinmai_Data/Plugins 文件夹下放置 libadxhid.dll 和 hidapi.dll。但请不要放置 ADXHIDIOMod.dll",
+       "enabled": false,
+       "line": 279
+      },
+      {
+       "key": "Alternative2p",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "兼容性 2P 模式\n当混用 Maimoller 与其他协议并且 Maimoller 在 2P 上，而且 Maimoller 无法正常使用时开启（仅对旧版实现有效）",
+       "enabled": false,
+       "line": 282
+      },
+      {
+       "key": "P1Button1",
+       "value": "Select1P",
+       "raw": "\"Select1P\"",
+       "type": "string",
+       "doc": "1P 按钮 1（三角形）",
+       "enabled": false,
+       "line": 284
+      },
+      {
+       "key": "P1Button2",
+       "value": "Test",
+       "raw": "\"Test\"",
+       "type": "string",
+       "doc": "1P 按钮 2（圆形）",
+       "enabled": false,
+       "line": 286
+      },
+      {
+       "key": "P1Button3",
+       "value": "Service",
+       "raw": "\"Service\"",
+       "type": "string",
+       "doc": "1P 按钮 3（圆形）",
+       "enabled": false,
+       "line": 288
+      },
+      {
+       "key": "P1Button4",
+       "value": "Select2P",
+       "raw": "\"Select2P\"",
+       "type": "string",
+       "doc": "1P 按钮 4（圆形）",
+       "enabled": false,
+       "line": 290
+      },
+      {
+       "key": "P2Button1",
+       "value": "Select1P",
+       "raw": "\"Select1P\"",
+       "type": "string",
+       "doc": "2P 按钮 1（三角形）",
+       "enabled": false,
+       "line": 292
+      },
+      {
+       "key": "P2Button2",
+       "value": "Test",
+       "raw": "\"Test\"",
+       "type": "string",
+       "doc": "2P 按钮 2（圆形）",
+       "enabled": false,
+       "line": 294
+      },
+      {
+       "key": "P2Button3",
+       "value": "Service",
+       "raw": "\"Service\"",
+       "type": "string",
+       "doc": "2P 按钮 3（圆形）",
+       "enabled": false,
+       "line": 296
+      },
+      {
+       "key": "P2Button4",
+       "value": "Select2P",
+       "raw": "\"Select2P\"",
+       "type": "string",
+       "doc": "2P 按钮 4（圆形）",
+       "enabled": false,
+       "line": 298
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.OldCabLightBoardSupport",
+     "group": "GameSystem",
+     "title": "Old Cab Light Board Support",
+     "doc": "旧框灯板支持\n跳过 BoardNo 检查以使用 837-15070-02（旧框灯板），并映射新框顶板 LED 至重低音扬声器 LED、顶板 LED 以及中央 LED",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "GameSystem.OptionLoadFix",
+     "group": "GameSystem",
+     "title": "Option Load Fix",
+     "doc": "Opt 加载修复\n在 StreamingAssets 加载 Opt 时，不仅加载 A 开头的，也加载版本对应字母开头的",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 307
+      },
+      {
+       "key": "OverridePath",
+       "value": "",
+       "raw": "\"\"",
+       "type": "string",
+       "doc": "自定义路径\n自定义 Option 文件夹的路径（没事别填）",
+       "enabled": false,
+       "line": 310
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.PdxTouch",
+     "group": "GameSystem",
+     "title": "Pdx Touch",
+     "doc": "PDX 独占触摸",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "Radius",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "触摸体积半径\n基准是 1440x1440",
+       "enabled": false,
+       "line": 316
+      },
+      {
+       "key": "AAreaExtraRadius",
+       "value": "0.0",
+       "raw": "0.0",
+       "type": "float",
+       "doc": "A 区额外半径\nA 区（外圈按键）的额外半径，可以为负值来缩小",
+       "enabled": false,
+       "line": 319
+      },
+      {
+       "key": "BAreaExtraRadius",
+       "value": "25.0",
+       "raw": "25.0",
+       "type": "float",
+       "doc": "B 区额外半径\nB 区（中圈传感器）的额外半径，可以为负值来缩小",
+       "enabled": false,
+       "line": 322
+      },
+      {
+       "key": "CAreaExtraRadius",
+       "value": "0.0",
+       "raw": "0.0",
+       "type": "float",
+       "doc": "C 区额外半径\nC 区（中心传感器）的额外半径，可以为负值来缩小",
+       "enabled": false,
+       "line": 325
+      },
+      {
+       "key": "DAreaExtraRadius",
+       "value": "0.0",
+       "raw": "0.0",
+       "type": "float",
+       "doc": "D 区额外半径\nD 区（内圈传感器）的额外半径，可以为负值来缩小",
+       "enabled": false,
+       "line": 328
+      },
+      {
+       "key": "EAreaExtraRadius",
+       "value": "30.0",
+       "raw": "30.0",
+       "type": "float",
+       "doc": "E 区额外半径\nE 区（最内圈传感器）的额外半径，可以为负值来缩小",
+       "enabled": false,
+       "line": 331
+      },
+      {
+       "key": "Path1p",
+       "value": "",
+       "raw": "\"\"",
+       "type": "string",
+       "doc": "1P 设备标识\nUSB 序列号或端口路径，例如 2.2。请使用配置工具中显示的标识。留空则使用第一个检测到的设备作为 1P",
+       "enabled": false,
+       "line": 334
+      },
+      {
+       "key": "Path2p",
+       "value": "",
+       "raw": "\"\"",
+       "type": "string",
+       "doc": "2P 设备标识",
+       "enabled": false,
+       "line": 336
+      },
+      {
+       "key": "DiagnosticLog",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "触摸诊断日志\n将触摸报告诊断信息写入 UserData/AquaMaiTouch.log",
+       "enabled": false,
+       "line": 339
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.QuickRetry",
+     "group": "GameSystem",
+     "title": "Quick Retry",
+     "doc": "快速重开\n按住下方四个按钮（3456）快速重开本局游戏（像在 Freedom Mode 中一样，默认仅对非宴谱有效）",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "QuickerRetry",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "更快触发\n将长按时间修改为 0.5 秒",
+       "enabled": true,
+       "line": 346
+      },
+      {
+       "key": "EnableInUtage",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "宴谱启用\n在宴谱中强制启用",
+       "enabled": false,
+       "line": 349
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.RemoveEncryption",
+     "group": "GameSystem",
+     "title": "Remove Encryption",
+     "doc": "移除加密\n如果你在用未经修改的客户端，会默认加密到服务器的连接，而连接私服的时候不应该加密\n开了这个选项之后就不会加密连接了，同时也会移除不同版本的客户端可能会对 API 接口加的后缀\n正常情况下，请保持这个选项开启",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 356
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.SinglePlayer",
+     "group": "GameSystem",
+     "title": "Single Player",
+     "doc": "单人模式\n单人模式，不显示 2P",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "HideSubMonitor",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "隐藏副屏\n只显示主区域，不显示副屏",
+       "enabled": true,
+       "line": 363
+      },
+      {
+       "key": "AutoSkip",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "自动跳过倒计时\n单人模式下刷卡登录直接进入下一个界面，无需跳过倒计时",
+       "enabled": true,
+       "line": 366
+      },
+      {
+       "key": "FixHanabi",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "修复烟花效果\n修复单人模式下的烟花效果（如果启用了 HideHanabi，则会自动禁用）",
+       "enabled": false,
+       "line": 369
+      },
+      {
+       "key": "ShowFreedomModeTimer",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "显示自由模式计时\n使用自由模式时，在副屏显示计时器",
+       "enabled": false,
+       "line": 372
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.SongConstantSort",
+     "group": "GameSystem",
+     "title": "Song Constant Sort",
+     "doc": "定数排序\n按照乐曲实际的细化定数来排序乐曲列表。请在游戏内切换至该排列模式",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "GameSystem.Sound",
+     "group": "GameSystem",
+     "title": "Sound",
+     "doc": "音频输出设置\n音频独占与八声道设置",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "EnableExclusive",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "音频独占",
+       "enabled": false,
+       "line": 382
+      },
+      {
+       "key": "BitsPerSample",
+       "value": "32",
+       "raw": "32",
+       "type": "int",
+       "doc": "如果不知道是什么，请不要修改",
+       "enabled": false,
+       "line": 384
+      },
+      {
+       "key": "ValidBitsPerSample",
+       "value": "24",
+       "raw": "24",
+       "type": "int",
+       "doc": "如果不知道是什么，请不要修改",
+       "enabled": false,
+       "line": 386
+      },
+      {
+       "key": "SamplesPerSec",
+       "value": "48000",
+       "raw": "48000",
+       "type": "int",
+       "doc": "如果不知道是什么，请不要修改",
+       "enabled": false,
+       "line": 388
+      },
+      {
+       "key": "Enable8Channel",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "八声道",
+       "enabled": false,
+       "line": 390
+      },
+      {
+       "key": "MusicVolume",
+       "value": "1.0",
+       "raw": "1.0",
+       "type": "float",
+       "doc": "乐曲音量",
+       "enabled": false,
+       "line": 392
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.SoundRouting",
+     "group": "GameSystem",
+     "title": "Sound Routing",
+     "doc": "8Ch 音频路由重映射\n将 8Ch 的各个声道重新映射到指定的声道\n可进行混合，可使用 \"None\" 以禁用一个声道，音量在源声道应用（> 1.0 不会生效，若要提高音量，请使用 HeadphoneVolumeMultiply）\n（注：对于 2Ch 用户，请将需要的声道路由到 P1SpeakerLeft/Right，其他声道路由到 None）",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "RouteP1SpeakerLeftTo",
+       "value": "P1SpeakerLeft",
+       "raw": "\"P1SpeakerLeft\"",
+       "type": "string",
+       "doc": "1P外放左",
+       "enabled": false,
+       "line": 400
+      },
+      {
+       "key": "RouteP1SpeakerRightTo",
+       "value": "P1SpeakerRight",
+       "raw": "\"P1SpeakerRight\"",
+       "type": "string",
+       "doc": "1P外放右",
+       "enabled": false,
+       "line": 402
+      },
+      {
+       "key": "RouteP1HeadphoneLeftTo",
+       "value": "P1HeadphoneLeft",
+       "raw": "\"P1HeadphoneLeft\"",
+       "type": "string",
+       "doc": "1P耳机左",
+       "enabled": false,
+       "line": 404
+      },
+      {
+       "key": "RouteP1HeadphoneRightTo",
+       "value": "P1HeadphoneRight",
+       "raw": "\"P1HeadphoneRight\"",
+       "type": "string",
+       "doc": "1P耳机右",
+       "enabled": false,
+       "line": 406
+      },
+      {
+       "key": "RouteP2SpeakerLeftTo",
+       "value": "P2SpeakerLeft",
+       "raw": "\"P2SpeakerLeft\"",
+       "type": "string",
+       "doc": "2P外放左",
+       "enabled": false,
+       "line": 408
+      },
+      {
+       "key": "RouteP2SpeakerRightTo",
+       "value": "P2SpeakerRight",
+       "raw": "\"P2SpeakerRight\"",
+       "type": "string",
+       "doc": "2P外放右",
+       "enabled": false,
+       "line": 410
+      },
+      {
+       "key": "RouteP2HeadphoneLeftTo",
+       "value": "P2HeadphoneLeft",
+       "raw": "\"P2HeadphoneLeft\"",
+       "type": "string",
+       "doc": "2P耳机左",
+       "enabled": false,
+       "line": 412
+      },
+      {
+       "key": "RouteP2HeadphoneRightTo",
+       "value": "P2HeadphoneRight",
+       "raw": "\"P2HeadphoneRight\"",
+       "type": "string",
+       "doc": "2P耳机右",
+       "enabled": false,
+       "line": 414
+      },
+      {
+       "key": "VolumeP1Speaker",
+       "value": "1.0",
+       "raw": "1.0",
+       "type": "float",
+       "doc": "1P外放音量",
+       "enabled": false,
+       "line": 416
+      },
+      {
+       "key": "VolumeP1Headphone",
+       "value": "1.0",
+       "raw": "1.0",
+       "type": "float",
+       "doc": "1P耳机音量",
+       "enabled": false,
+       "line": 418
+      },
+      {
+       "key": "VolumeP2Speaker",
+       "value": "1.0",
+       "raw": "1.0",
+       "type": "float",
+       "doc": "2P外放音量",
+       "enabled": false,
+       "line": 420
+      },
+      {
+       "key": "VolumeP2Headphone",
+       "value": "1.0",
+       "raw": "1.0",
+       "type": "float",
+       "doc": "2P耳机音量",
+       "enabled": false,
+       "line": 422
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.StartupDirectToGame",
+     "group": "GameSystem",
+     "title": "Startup Direct To Game",
+     "doc": "启动直达乐曲\n启动流程结束后直接进入通过 --music 传入的歌曲 ID",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 427
+      },
+      {
+       "key": "DefaultDifficulty",
+       "value": "3",
+       "raw": "3",
+       "type": "int",
+       "doc": "缺省难度\n如果没有在命令行中传入难度（--difficulty）的话，默认使用的难度",
+       "enabled": false,
+       "line": 430
+      },
+      {
+       "key": "DefaultNoteSpeed",
+       "value": "6.5",
+       "raw": "\"6.5\"",
+       "type": "string",
+       "doc": "缺省 Note Speed\n如果没有在命令行中传入 Note Speed（--noteSpeed）的话，默认使用的 Note Speed",
+       "enabled": false,
+       "line": 433
+      },
+      {
+       "key": "DefaultTouchSpeed",
+       "value": "6.5",
+       "raw": "\"6.5\"",
+       "type": "string",
+       "doc": "缺省 Touch Speed\n如果没有在命令行中传入 Touch Speed（--touchSpeed）的话，默认使用的 Touch Speed",
+       "enabled": false,
+       "line": 436
+      },
+      {
+       "key": "DefaultSlideSpeed",
+       "value": "normal",
+       "raw": "\"normal\"",
+       "type": "string",
+       "doc": "缺省 Slide Speed\n如果没有在命令行中传入 Slide Speed（--slideSpeed）的话，默认使用的 Slide Speed。例如 normal、-0.5、0.5",
+       "enabled": false,
+       "line": 439
+      },
+      {
+       "key": "DefaultAutoplay",
+       "value": "Critical",
+       "raw": "\"Critical\"",
+       "type": "string",
+       "doc": "缺省 Autoplay 类型\n如果没有在命令行中传入 Autoplay 类型（--autoplay）的话，默认使用的类型。例如 Critical、Perfect、Great、Good、Miss、Random、None",
+       "enabled": false,
+       "line": 442
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.TestProof",
+     "group": "GameSystem",
+     "title": "Test Proof",
+     "doc": "测试键长按\n启用后，测试键必须长按才能进入游戏测试模式\n当测试键被绑定到其它功能时，此选项自动开启",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "TestKey",
+       "value": "Test",
+       "raw": "\"Test\"",
+       "type": "string",
+       "doc": "测试模式按键\n修改为 Test 以外的值来实现长按特定的键进入游戏测试模式，这样 Test 键就可以完全用来实现自定义功能了",
+       "enabled": true,
+       "line": 450
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.TouchPanelBaudRate",
+     "group": "GameSystem",
+     "title": "Touch Panel Baud Rate",
+     "doc": "触摸屏波特率\n调整触摸屏串口波特率，默认值 9600\n需要硬件配合，如果你不清楚你是否可以使用，请不要使用",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "BaudRate",
+       "value": "9600",
+       "raw": "9600",
+       "type": "int",
+       "doc": "波特率",
+       "enabled": false,
+       "line": 457
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.TouchPanelPort",
+     "group": "GameSystem",
+     "title": "Touch Panel Port",
+     "doc": "触摸屏串口\n调整触摸屏串口号，默认值 COM3 COM4\n需要设备管理器配置，如果你不清楚你是否可以使用，请不要使用",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "PortName_1P",
+       "value": "COM3",
+       "raw": "\"COM3\"",
+       "type": "string",
+       "doc": "1P串口号",
+       "enabled": false,
+       "line": 464
+      },
+      {
+       "key": "PortName_2P",
+       "value": "COM4",
+       "raw": "\"COM4\"",
+       "type": "string",
+       "doc": "2P串口号",
+       "enabled": false,
+       "line": 466
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.TouchToButtonInput",
+     "group": "GameSystem",
+     "title": "Touch To Button Input",
+     "doc": "触摸转按键\n映射触摸操作至实体按键",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "GameSystem.Unlock",
+     "group": "GameSystem",
+     "title": "Unlock",
+     "doc": "全解\n解锁原本锁定（包括正常途径无法解锁）的游戏内容\n由本 Mod 解锁的内容（除了被你升级过的角色以外）不会上传到你的账户\n游玩时仍会像未开启解锁一样「获得」那些乐曲/收藏品/段位",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Maps",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "区域\n解锁游戏里所有的区域，包括非当前版本的（并不会帮你跑完）",
+       "enabled": false,
+       "line": 479
+      },
+      {
+       "key": "Songs",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "乐曲\n解锁所有乐曲，并跳过紫/白解锁画面（会正常保存解锁状态）",
+       "enabled": false,
+       "line": 482
+      },
+      {
+       "key": "Tickets",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "跑图券\n解锁游戏里所有可能的跑图券",
+       "enabled": true,
+       "line": 485
+      },
+      {
+       "key": "Courses",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "段位\n解锁所有段位模式的段位（不需要十段就可以打真段位）",
+       "enabled": false,
+       "line": 488
+      },
+      {
+       "key": "Utage",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "宴会场\n不需要万分也可以进宴会场",
+       "enabled": false,
+       "line": 491
+      },
+      {
+       "key": "Titles",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "称号",
+       "enabled": false,
+       "line": 493
+      },
+      {
+       "key": "Icons",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "头像",
+       "enabled": false,
+       "line": 495
+      },
+      {
+       "key": "Plates",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "姓名框",
+       "enabled": false,
+       "line": 497
+      },
+      {
+       "key": "Frames",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "背景",
+       "enabled": false,
+       "line": 499
+      },
+      {
+       "key": "Partners",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "搭档",
+       "enabled": false,
+       "line": 501
+      },
+      {
+       "key": "Events",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "Events",
+       "enabled": false,
+       "line": 503
+      },
+      {
+       "key": "EventBlackList",
+       "value": "0,250926121,251205121,260612121",
+       "raw": "\"0,250926121,251205121,260612121\"",
+       "type": "string",
+       "doc": "Event 黑名单\n不解锁以下 Event。如果你不知道这是什么，请勿修改",
+       "enabled": false,
+       "line": 506
+      },
+      {
+       "key": "Characters",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "旅行伙伴",
+       "enabled": false,
+       "line": 508
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.VirtualCoin",
+     "group": "GameSystem",
+     "title": "Virtual Coin",
+     "doc": "虚拟投币\n基于Mod，在不依赖 SegaTools 的前提下实现的投币功能\n支持通过键盘按键、机台上自定义功能键或 HTTP 接口远程增加点数\n注意:该功能增加的点数游戏重启后不会保存",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "CoinKey",
+       "value": "Equals",
+       "raw": "\"Equals\"",
+       "type": "string",
+       "doc": "投币按键\n绑定使用的投币按键（键盘按键或自定义功能键均可）",
+       "enabled": false,
+       "line": 517
+      },
+      {
+       "key": "LongPress",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "长按\n是否长按上述按键才能触发",
+       "enabled": false,
+       "line": 520
+      },
+      {
+       "key": "IsUseRemote",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "启用远程投币\n通过 HTTP 接口远程增加点数。\n警告：若开启此项，则会在您机器的0.0.0.0上监听一个HTTP服务器（端口号由下面选项指定）。请注意安全性问题，并考虑配合密码验证。",
+       "enabled": false,
+       "line": 524
+      },
+      {
+       "key": "Port",
+       "value": "7654",
+       "raw": "7654",
+       "type": "int",
+       "doc": "监听端口\nHTTP服务监听的端口",
+       "enabled": false,
+       "line": 527
+      },
+      {
+       "key": "Password",
+       "value": "",
+       "raw": "\"\"",
+       "type": "string",
+       "doc": "密码验证\n设置访问密码，留空则不使用密码。如果使用密码，请求时URL后应当追加参数'?password='",
+       "enabled": false,
+       "line": 530
+      },
+      {
+       "key": "IsPlaySound",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "启用音效\n是否播放音效",
+       "enabled": false,
+       "line": 533
+      }
+     ]
+    },
+    {
+     "name": "GameSystem.VolumeSync",
+     "group": "GameSystem",
+     "title": "Volume Sync",
+     "doc": "音量同步\n将1P耳机音量同步给游戏主音量（外放音量）\n注意：若此功能与八声道同时开启，会导致内置耳机声道的音量被缩放两次，推荐在仅使用1P且不开启八声道时使用,",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "GameSystem.Window",
+     "group": "GameSystem",
+     "title": "Window",
+     "doc": "图形设置\n分辨率设置 / 窗口化",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Windowed",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "窗口模式\n窗口化游戏",
+       "enabled": true,
+       "line": 545
+      },
+      {
+       "key": "Borderless",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "无边框",
+       "enabled": false,
+       "line": 547
+      },
+      {
+       "key": "Width",
+       "value": "1080",
+       "raw": "1080",
+       "type": "int",
+       "doc": "宽度\n宽度（和高度）窗口化时为游戏窗口大小，全屏时为渲染分辨率\n如果设为 0，窗口化将记住用户设定的大小，全屏时将使用当前显示器分辨率\n全屏时如果显示大小不正确，请改成屏幕的分辨率（如 2160x3840）",
+       "enabled": true,
+       "line": 552
+      },
+      {
+       "key": "Height",
+       "value": "1920",
+       "raw": "1920",
+       "type": "int",
+       "doc": "高度",
+       "enabled": true,
+       "line": 554
+      },
+      {
+       "key": "ExclusiveFullscreen",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "独占全屏\n使用独占全屏而不是全屏窗口（仅全屏模式）\n跳过桌面合成，显示延迟更低更稳定。游戏失去焦点时会最小化\n需要游戏在驱动该显示器的 GPU 上渲染，并为 Sinmai.exe 禁用 Windows 的“全屏优化”（兼容性设置），\n否则 Windows 会用合成窗口模拟独占全屏，延迟反而比默认更高",
+       "enabled": false,
+       "line": 560
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "GameSettings",
+   "title": "游戏设置",
+   "sections": [
+    {
+     "name": "GameSettings.CreditConfig",
+     "group": "GameSettings",
+     "title": "Credit Config",
+     "doc": "点数设置\n设置游戏为付费游玩（锁定可用点数）或免费游玩",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "IsFreePlay",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "免费游玩\n是否免费游玩（设为 false 时为付费游玩）",
+       "enabled": true,
+       "line": 567
+      },
+      {
+       "key": "AllowTicketInFreePlay",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "免费时购票\n可以在免费游玩时购买付费功能票",
+       "enabled": false,
+       "line": 570
+      },
+      {
+       "key": "LockCredits",
+       "value": "24",
+       "raw": "24",
+       "type": "int",
+       "doc": "锁定点数\n锁定可用点数数量（仅在付费游玩时有效），设为 0 以禁用",
+       "enabled": true,
+       "line": 573
+      }
+     ]
+    },
+    {
+     "name": "GameSettings.ForceAsServer",
+     "group": "GameSettings",
+     "title": "Force As Server",
+     "doc": "强制为服务器\n如果要配置店内招募的话，应该要把这个关闭",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 578
+      }
+     ]
+    },
+    {
+     "name": "GameSettings.JudgeAdjust",
+     "group": "GameSettings",
+     "title": "Judge Adjust",
+     "doc": "判定调整\n全局分玩家调整 A/B 判（单位和游戏里一样）或增加触摸延迟",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "A_1P",
+       "value": "0.0",
+       "raw": "0.0",
+       "type": "float",
+       "doc": "1P A判",
+       "enabled": true,
+       "line": 584
+      },
+      {
+       "key": "A_2P",
+       "value": "0.0",
+       "raw": "0.0",
+       "type": "float",
+       "doc": "2P A判",
+       "enabled": true,
+       "line": 586
+      },
+      {
+       "key": "B_1P",
+       "value": "0.0",
+       "raw": "0.0",
+       "type": "float",
+       "doc": "1P B判",
+       "enabled": true,
+       "line": 588
+      },
+      {
+       "key": "B_2P",
+       "value": "0.0",
+       "raw": "0.0",
+       "type": "float",
+       "doc": "2P B判",
+       "enabled": true,
+       "line": 590
+      },
+      {
+       "key": "TouchDelay",
+       "value": "0",
+       "raw": "0",
+       "type": "int",
+       "doc": "触摸延迟\n增加触摸延迟（不建议使用）",
+       "enabled": true,
+       "line": 593
+      }
+     ]
+    },
+    {
+     "name": "GameSettings.TouchSensitivity",
+     "group": "GameSettings",
+     "title": "Touch Sensitivity",
+     "doc": "触摸灵敏度\n使用自定义触摸灵敏度\n这里启用之后 Test 里的就不再起作用了\n这里禁用之后就还是用 Test 里的调\n在 Test 模式下调整的灵敏度不是线性的\nA 区默认灵敏度 90, 80, 70, 60, 50, 40, 30, 26, 23, 20, 10\n其他区域默认灵敏度 70, 60, 50, 40, 30, 20, 15, 10, 5, 1, 1\nTest 里设置的 0 对应的是 40, 20 这一档，-5 是 90, 70，+5 是 10, 1\nTest 里的数字越大，这里的数字越小，对于官机来说，灵敏度更大\n而 ADX 的灵敏度是反的，所以对于 ADX，这里的数字越大，灵敏度越大",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "A1",
+       "value": "40",
+       "raw": "40",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 607
+      },
+      {
+       "key": "A2",
+       "value": "40",
+       "raw": "40",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 608
+      },
+      {
+       "key": "A3",
+       "value": "40",
+       "raw": "40",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 609
+      },
+      {
+       "key": "A4",
+       "value": "40",
+       "raw": "40",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 610
+      },
+      {
+       "key": "A5",
+       "value": "40",
+       "raw": "40",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 611
+      },
+      {
+       "key": "A6",
+       "value": "40",
+       "raw": "40",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 612
+      },
+      {
+       "key": "A7",
+       "value": "40",
+       "raw": "40",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 613
+      },
+      {
+       "key": "A8",
+       "value": "40",
+       "raw": "40",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 614
+      },
+      {
+       "key": "B1",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 615
+      },
+      {
+       "key": "B2",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 616
+      },
+      {
+       "key": "B3",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 617
+      },
+      {
+       "key": "B4",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 618
+      },
+      {
+       "key": "B5",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 619
+      },
+      {
+       "key": "B6",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 620
+      },
+      {
+       "key": "B7",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 621
+      },
+      {
+       "key": "B8",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 622
+      },
+      {
+       "key": "C1",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 623
+      },
+      {
+       "key": "C2",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 624
+      },
+      {
+       "key": "D1",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 625
+      },
+      {
+       "key": "D2",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 626
+      },
+      {
+       "key": "D3",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 627
+      },
+      {
+       "key": "D4",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 628
+      },
+      {
+       "key": "D5",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 629
+      },
+      {
+       "key": "D6",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 630
+      },
+      {
+       "key": "D7",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 631
+      },
+      {
+       "key": "D8",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 632
+      },
+      {
+       "key": "E1",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 633
+      },
+      {
+       "key": "E2",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 634
+      },
+      {
+       "key": "E3",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 635
+      },
+      {
+       "key": "E4",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 636
+      },
+      {
+       "key": "E5",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 637
+      },
+      {
+       "key": "E6",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 638
+      },
+      {
+       "key": "E7",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 639
+      },
+      {
+       "key": "E8",
+       "value": "20",
+       "raw": "20",
+       "type": "int",
+       "doc": "",
+       "enabled": false,
+       "line": 640
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Tweaks",
+   "title": "优化",
+   "sections": [
+    {
+     "name": "Tweaks.IgnoreAimeServerError",
+     "group": "Tweaks",
+     "title": "Ignore Aime Server Error",
+     "doc": "忽略 Aime 错误\n防止因错误认为 AimeDB 服务器问题引起的灰网，建议开启",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 645
+      }
+     ]
+    },
+    {
+     "name": "Tweaks.LedBrightnessControl",
+     "group": "Tweaks",
+     "title": "Led Brightness Control",
+     "doc": "LED亮度控制\n控制按键和框体灯的亮度",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Button1p",
+       "value": "0.800000011920929",
+       "raw": "0.800000011920929",
+       "type": "float",
+       "doc": "1P按键亮度\n(0.0 - 1.0)",
+       "enabled": true,
+       "line": 652
+      },
+      {
+       "key": "Button2p",
+       "value": "1.0",
+       "raw": "1.0",
+       "type": "float",
+       "doc": "2P按键亮度\n(0.0 - 1.0)",
+       "enabled": false,
+       "line": 655
+      },
+      {
+       "key": "Cabinet1p",
+       "value": "1.0",
+       "raw": "1.0",
+       "type": "float",
+       "doc": "1P框体灯亮度\n(0.0 - 1.0)",
+       "enabled": false,
+       "line": 658
+      },
+      {
+       "key": "Cabinet2p",
+       "value": "1.0",
+       "raw": "1.0",
+       "type": "float",
+       "doc": "2P框体灯亮度\n(0.0 - 1.0)",
+       "enabled": false,
+       "line": 661
+      }
+     ]
+    },
+    {
+     "name": "Tweaks.LockFrameRate",
+     "group": "Tweaks",
+     "title": "Lock Frame Rate",
+     "doc": "锁定帧率\n强制设置帧率上限为 60 帧并关闭垂直同步\n如果你的游戏没有问题，请不要使用。建议直接设置显示器的刷新率",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "TargetFrameRate",
+       "value": "60",
+       "raw": "60",
+       "type": "int",
+       "doc": "目标帧率\n目标帧率，不建议修改。除非你知道你在做什么",
+       "enabled": false,
+       "line": 669
+      }
+     ]
+    },
+    {
+     "name": "Tweaks.ResetTouch",
+     "group": "Tweaks",
+     "title": "Reset Touch",
+     "doc": "重置触摸面板",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "AfterTrack",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "玩完一首歌自动重置",
+       "enabled": false,
+       "line": 674
+      },
+      {
+       "key": "Key",
+       "value": "None",
+       "raw": "\"None\"",
+       "type": "string",
+       "doc": "重置按键",
+       "enabled": false,
+       "line": 676
+      },
+      {
+       "key": "LongPress",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 677
+      }
+     ]
+    },
+    {
+     "name": "Tweaks.SkipUserVersionCheck",
+     "group": "Tweaks",
+     "title": "Skip User Version Check",
+     "doc": "跳过版本检查\n原先如果你的账号版本比当前游戏设定的版本高的话，就会不能登录\n开了这个选项之后就可以登录了，不过你的账号版本还是会被设定为当前游戏的版本",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 683
+      }
+     ]
+    },
+    {
+     "name": "Tweaks.TimeSaving.CheckSkip",
+     "group": "Tweaks",
+     "title": "Check Skip",
+     "doc": "跳过启动检查\n在自检界面，有一些检查需要等待检查完毕后，才会进入下一阶段\n开了以下选项之后会将检查过程丢入后台进行，但可能存在部分副作用",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "SkipStartupCameraCheck",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "跳过摄像头检查\n若在后台检查完毕前过早启动摄像头会导致摄像头临时黑屏",
+       "enabled": false,
+       "line": 691
+      },
+      {
+       "key": "SkipPowerOnNetworkCheck",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "跳过启动网络检查\n若在后台检查完毕前过早进入会进入临时灰网",
+       "enabled": false,
+       "line": 694
+      }
+     ]
+    },
+    {
+     "name": "Tweaks.TimeSaving.EntryToMusicSelection",
+     "group": "Tweaks",
+     "title": "Entry To Music Selection",
+     "doc": "登录后直接选歌\n登录完成后直接进入选歌界面",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "EnableOnlyInGuestMode",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "仅游客模式\n仅在游客模式启用",
+       "enabled": false,
+       "line": 701
+      }
+     ]
+    },
+    {
+     "name": "Tweaks.TimeSaving.ExitToSave",
+     "group": "Tweaks",
+     "title": "Exit To Save",
+     "doc": "游戏结束直接登出\n游戏结束后跳过上传照片和收藏品直接登出",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Tweaks.TimeSaving.IWontTapOrSlideVigorously",
+     "group": "Tweaks",
+     "title": "I Wont Tap Or Slide Vigorously",
+     "doc": "跳过拍打警告\n跳过“不要大力拍打或滑动哦”这个界面，数据一旦加载完就立马进入下一个界面",
+     "enabled": true,
+     "keys": []
+    },
+    {
+     "name": "Tweaks.TimeSaving.SkipEventInfo",
+     "group": "Tweaks",
+     "title": "Skip Event Info",
+     "doc": "跳过活动提示\n跳过登录 / 注册游戏时候可能的 “发现了新的区域哟” “乐曲增加” “有活动哟” 之类的提示",
+     "enabled": true,
+     "keys": []
+    },
+    {
+     "name": "Tweaks.TimeSaving.SkipGoodbyeScreen",
+     "group": "Tweaks",
+     "title": "Skip Goodbye Screen",
+     "doc": "跳过再见界面\n跳过游戏结束的「再见」界面",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Tweaks.TimeSaving.SkipStartupDelays",
+     "group": "Tweaks",
+     "title": "Skip Startup Delays",
+     "doc": "跳过启动延迟\n在自检界面，每个屏幕结束的时候都会等两秒才进入下一个屏幕，很浪费时间\n开了这个选项之后就不会等了",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 723
+      }
+     ]
+    },
+    {
+     "name": "Tweaks.TimeSaving.SkipStartupWarning",
+     "group": "Tweaks",
+     "title": "Skip Startup Warning",
+     "doc": "跳过启动警告\n跳过 SDEZ 启动时的 WARNING 界面",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 728
+      }
+     ]
+    },
+    {
+     "name": "Tweaks.TimeSaving.SkipTrackStart",
+     "group": "Tweaks",
+     "title": "Skip Track Start",
+     "doc": "跳过乐曲开始\n跳过乐曲开始界面",
+     "enabled": false,
+     "keys": []
+    }
+   ]
+  },
+  {
+   "name": "UX",
+   "title": "界面体验",
+   "sections": [
+    {
+     "name": "UX.CustomFnToKeyboard",
+     "group": "UX",
+     "title": "Custom Fn To Keyboard",
+     "doc": "自定义功能键映射\n将控制器上的自定义功能键映射为系统级键盘按键。可以通过把功能键映射为Enter等按键，实现用机台按键回车刷卡等功能。注意：使用前需要在对应的控制器IO设置中，将相应的物理按键功能设置为“自定义功能键”。",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "CustomFn1",
+       "value": "None",
+       "raw": "\"None\"",
+       "type": "string",
+       "doc": "自定义功能键1",
+       "enabled": false,
+       "line": 738
+      },
+      {
+       "key": "CustomFn2",
+       "value": "None",
+       "raw": "\"None\"",
+       "type": "string",
+       "doc": "自定义功能键2",
+       "enabled": false,
+       "line": 740
+      },
+      {
+       "key": "CustomFn3",
+       "value": "None",
+       "raw": "\"None\"",
+       "type": "string",
+       "doc": "自定义功能键3",
+       "enabled": false,
+       "line": 742
+      },
+      {
+       "key": "CustomFn4",
+       "value": "None",
+       "raw": "\"None\"",
+       "type": "string",
+       "doc": "自定义功能键4",
+       "enabled": false,
+       "line": 744
+      }
+     ]
+    },
+    {
+     "name": "UX.DisableLightOutGame",
+     "group": "UX",
+     "title": "Disable Light Out Game",
+     "doc": "闲置时关闭灯光\n在游戏闲置时关闭外键和框体的灯光\n“一闪一闪的 闪的我心发慌”",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "UX.DontRuinMyAccount",
+     "group": "UX",
+     "title": "Dont Ruin My Account",
+     "doc": "AutoPlay 时不保存成绩",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 753
+      },
+      {
+       "key": "ShowNotice",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "AutoPlay 激活后显示提示",
+       "enabled": false,
+       "line": 755
+      },
+      {
+       "key": "ForPracticeMode",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "使用练习模式/DebugFeature相关功能也不保存成绩",
+       "enabled": false,
+       "line": 757
+      }
+     ]
+    },
+    {
+     "name": "UX.FestaControl",
+     "group": "UX",
+     "title": "Festa Control",
+     "doc": "Festa 开关\n控制 “Festa” 模式 UI 的显示。如不开启，则不会更改设置，由 Event 或者服务器控制",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "IsFesta",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "启用 Festa\n是否显示 “Festa” 模式 UI",
+       "enabled": false,
+       "line": 764
+      }
+     ]
+    },
+    {
+     "name": "UX.FixTrackNumDisplay",
+     "group": "UX",
+     "title": "Fix Track Num Display",
+     "doc": "两位数曲目修复\n让右上角的当前曲目数字可以显示两位数（在普通模式中）",
+     "enabled": true,
+     "keys": []
+    },
+    {
+     "name": "UX.GrantFinalGateKey",
+     "group": "UX",
+     "title": "Grant Final Gate Key",
+     "doc": "按 Enter 键获得 KLD 里门的钥匙 (DXPASS)",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 772
+      }
+     ]
+    },
+    {
+     "name": "UX.HardwareAlert",
+     "group": "UX",
+     "title": "Hardware Alert",
+     "doc": "自定义自检警告\n自定义硬件警告，可配置在指定硬件自检失败时阻止游戏启动并显示报错画面，开启下方的错误类型以配置需要关注的错误。",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "UseOriginalGameLanguage",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "原始语言显示\n如果启用，所有硬件警告将会使用游戏原本的语言显示，例如 SDEZ 就会用日文显示报错。如果你安装了任何汉化包，你应该关闭这个选项。",
+       "enabled": false,
+       "line": 779
+      },
+      {
+       "key": "TouchSensor_1P",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "1P 触摸屏",
+       "enabled": false,
+       "line": 781
+      },
+      {
+       "key": "TouchSensor_2P",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "2P 触摸屏",
+       "enabled": false,
+       "line": 783
+      },
+      {
+       "key": "LED_1P",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "1P LED",
+       "enabled": false,
+       "line": 785
+      },
+      {
+       "key": "LED_2P",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "2P LED",
+       "enabled": false,
+       "line": 787
+      },
+      {
+       "key": "PlayerCamera",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "玩家摄像机",
+       "enabled": false,
+       "line": 789
+      },
+      {
+       "key": "CodeReader_1P",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "DX Pass 1P",
+       "enabled": false,
+       "line": 791
+      },
+      {
+       "key": "CodeReader_2P",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "DX Pass 2P",
+       "enabled": false,
+       "line": 793
+      },
+      {
+       "key": "ChimeCamera",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "二维码扫描摄像头",
+       "enabled": false,
+       "line": 795
+      }
+     ]
+    },
+    {
+     "name": "UX.Hide1879",
+     "group": "UX",
+     "title": "Hide1879",
+     "doc": "隐藏乱码曲\n在正常模式中，隐藏乱码曲 Xaleid◆scopiX",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 800
+      }
+     ]
+    },
+    {
+     "name": "UX.HideSelfMadeCharts",
+     "group": "UX",
+     "title": "Hide Self Made Charts",
+     "doc": "自制谱隐藏\n在选曲界面一键隐藏所有自制谱，或对一部分用户进行隐藏",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "DefaultHide",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "默认隐藏\n登录时默认隐藏自制谱",
+       "enabled": false,
+       "line": 807
+      },
+      {
+       "key": "Key",
+       "value": "Test",
+       "raw": "\"Test\"",
+       "type": "string",
+       "doc": "切换自制谱显示的按键",
+       "enabled": false,
+       "line": 809
+      },
+      {
+       "key": "LongPress",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "长按",
+       "enabled": false,
+       "line": 811
+      },
+      {
+       "key": "SelfMadeChartsDenyUsersFile",
+       "value": "LocalAssets/SelfMadeChartsDenyUsers.txt",
+       "raw": "\"LocalAssets/SelfMadeChartsDenyUsers.txt\"",
+       "type": "string",
+       "doc": "黑名单\n该文件中每行一个用户 ID，当这些用户登录时隐藏自制谱",
+       "enabled": false,
+       "line": 814
+      },
+      {
+       "key": "SelfMadeChartsWhiteListUsersFile",
+       "value": "LocalAssets/SelfMadeChartsWhiteListUsers.txt",
+       "raw": "\"LocalAssets/SelfMadeChartsWhiteListUsers.txt\"",
+       "type": "string",
+       "doc": "白名单\n该文件中每行一个用户 ID，只有这些用户登录时才显示自制谱",
+       "enabled": false,
+       "line": 817
+      }
+     ]
+    },
+    {
+     "name": "UX.ImmediateSave",
+     "group": "UX",
+     "title": "Immediate Save",
+     "doc": "打一首存一首\n打完一首歌的时候立即向服务器保存成绩",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 822
+      },
+      {
+       "key": "ShowTip",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "显示保存中提示",
+       "enabled": false,
+       "line": 824
+      }
+     ]
+    },
+    {
+     "name": "UX.JudgeAccuracyInfo",
+     "group": "UX",
+     "title": "Judge Accuracy Info",
+     "doc": "判定详情统计\n在游戏总结的计分板中显示击打误差的详细信息（以帧为单位）",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "SavePath",
+       "value": "JudgeAccuracyInfo",
+       "raw": "\"JudgeAccuracyInfo\"",
+       "type": "string",
+       "doc": "保存路径",
+       "enabled": false,
+       "line": 830
+      }
+     ]
+    },
+    {
+     "name": "UX.JudgeDisplayPro",
+     "group": "UX",
+     "title": "Judge Display Pro",
+     "doc": "高级判定显示\n可自定义所有种类音符显示的判定样式，开启后将替代游戏原本的判定样式预设。需要在游戏设置中更改需要的显示样式",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "UX.NoAmDaemonAlert",
+     "group": "UX",
+     "title": "No Am Daemon Alert",
+     "doc": "因 AmDaemon 未运行而黑屏时显示警告",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 838
+      }
+     ]
+    },
+    {
+     "name": "UX.OneKeyEntryEnd",
+     "group": "UX",
+     "title": "One Key Entry End",
+     "doc": "一键登录与登出\n一键跳过登录过程直接进入选歌界面，或在选歌界面直接结束本局游戏",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Key",
+       "value": "F1",
+       "raw": "\"F1\"",
+       "type": "string",
+       "doc": "按键",
+       "enabled": true,
+       "line": 844
+      },
+      {
+       "key": "LongPress",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "长按",
+       "enabled": true,
+       "line": 846
+      }
+     ]
+    },
+    {
+     "name": "UX.OneKeyRetrySkip",
+     "group": "UX",
+     "title": "One Key Retry Skip",
+     "doc": "一键重开和跳过\n在游戏中途一键重试或跳过当前谱面",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "RetryKey",
+       "value": "Service",
+       "raw": "\"Service\"",
+       "type": "string",
+       "doc": "重开按键",
+       "enabled": false,
+       "line": 852
+      },
+      {
+       "key": "RetryLongPress",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "重开长按",
+       "enabled": false,
+       "line": 854
+      },
+      {
+       "key": "SkipKey",
+       "value": "Service",
+       "raw": "\"Service\"",
+       "type": "string",
+       "doc": "跳关按键",
+       "enabled": false,
+       "line": 856
+      },
+      {
+       "key": "SkipLongPress",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "跳关长按",
+       "enabled": false,
+       "line": 858
+      },
+      {
+       "key": "AllowRetryOnlyInFreedomMode",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "仅自由模式可重开\n仅在自由模式且时间未耗尽时允许一键重试，跳过不受影响",
+       "enabled": false,
+       "line": 861
+      }
+     ]
+    },
+    {
+     "name": "UX.PracticeMode",
+     "group": "UX",
+     "title": "Practice Mode",
+     "doc": "练习模式",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Key",
+       "value": "Service",
+       "raw": "\"Service\"",
+       "type": "string",
+       "doc": "按键\n显示练习模式 UI 的按键",
+       "enabled": true,
+       "line": 867
+      },
+      {
+       "key": "LongPress",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "",
+       "enabled": true,
+       "line": 868
+      },
+      {
+       "key": "OnlyInFreedomMode",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "仅自由模式可用\n仅在自由模式且时间未耗尽时允许使用练习模式",
+       "enabled": false,
+       "line": 871
+      }
+     ]
+    },
+    {
+     "name": "UX.QuickEndPlay",
+     "group": "UX",
+     "title": "Quick End Play",
+     "doc": "歌曲快速结束\n音符结束之后显示像 AstroDX 一样的「跳过」按钮",
+     "enabled": true,
+     "keys": []
+    },
+    {
+     "name": "UX.RemoveCharacterCopyrightRestriction",
+     "group": "UX",
+     "title": "Remove Character Copyright Restriction",
+     "doc": "移除成绩照片的角色限制\n如果旅行伙伴队长是版权角色（通常是非官方的角色）的话，游戏默认是不允许将其作为成绩照片上的立绘角色的。开启此项后，将移除此限制，任何角色都可以出现在成绩照片中。",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "UX.SelectionDetail",
+     "group": "UX",
+     "title": "Selection Detail",
+     "doc": "歌曲详情\n选歌界面显示选择的歌曲的详情",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "ShowBattleAchievement",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "显示友人对战目标分数",
+       "enabled": false,
+       "line": 885
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Utils",
+   "title": "工具",
+   "sections": [
+    {
+     "name": "Utils.AntiLag",
+     "group": "Utils",
+     "title": "Anti Lag",
+     "doc": "狂暴引擎\n可能缓解掉帧，但也可能把狂暴转移到用户身上",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "ActivateWhileBackground",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "后台运行\n游戏未取得焦点时也运行",
+       "enabled": true,
+       "line": 892
+      },
+      {
+       "key": "SetHighPriority",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "高优先级\n将游戏设为高优先级",
+       "enabled": false,
+       "line": 895
+      }
+     ]
+    },
+    {
+     "name": "Utils.DisplayFrameRate",
+     "group": "Utils",
+     "title": "Display Frame Rate",
+     "doc": "显示帧率",
+     "enabled": true,
+     "keys": []
+    },
+    {
+     "name": "Utils.DisplayTouchInGame",
+     "group": "Utils",
+     "title": "Display Touch In Game",
+     "doc": "实时触摸显示\n在游戏过程中显示触摸输入，可用于调试吃和蹭的问题",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "DefaultOn",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "默认显示\n关了的话，可以用按键切换显示",
+       "enabled": false,
+       "line": 905
+      },
+      {
+       "key": "Key",
+       "value": "F11",
+       "raw": "\"F11\"",
+       "type": "string",
+       "doc": "切换显示按键",
+       "enabled": true,
+       "line": 907
+      },
+      {
+       "key": "LongPress",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 908
+      }
+     ]
+    },
+    {
+     "name": "Utils.EarlyContinue",
+     "group": "Utils",
+     "title": "Early Continue",
+     "doc": "更早的续关\n在最后一首歌结束的时候显示续关界面，确认续关后立即增加指定 Track 数",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "AddTrackCount",
+       "value": "0",
+       "raw": "0",
+       "type": "int",
+       "doc": "增加的曲目数\n设为 0 则为 1P 3首，2P 4首",
+       "enabled": false,
+       "line": 915
+      }
+     ]
+    },
+    {
+     "name": "Utils.FreedomTimer",
+     "group": "Utils",
+     "title": "Freedom Timer",
+     "doc": "自由模式时间修改",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "Seconds",
+       "value": "600",
+       "raw": "600",
+       "type": "int",
+       "doc": "秒数",
+       "enabled": false,
+       "line": 920
+      },
+      {
+       "key": "InfinityTime",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "无限时间",
+       "enabled": false,
+       "line": 922
+      },
+      {
+       "key": "AddTimeKey",
+       "value": "None",
+       "raw": "\"None\"",
+       "type": "string",
+       "doc": "追加时间按键\n可通过指定按键，随时为自由模式追加时间。设为 None 则禁用",
+       "enabled": false,
+       "line": 925
+      },
+      {
+       "key": "AddTimeLongPress",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "追加时间长按\n上述“追加时间按键”是否需要长按",
+       "enabled": false,
+       "line": 928
+      },
+      {
+       "key": "AddTimeSeconds",
+       "value": "120",
+       "raw": "120",
+       "type": "int",
+       "doc": "每次追加秒数\n每次按上述“追加时间按键”，所追加的秒数",
+       "enabled": false,
+       "line": 931
+      }
+     ]
+    },
+    {
+     "name": "Utils.InstantQuit",
+     "group": "Utils",
+     "title": "Instant Quit",
+     "doc": "瞬间退出\n让你的游戏更快的退出（按 ESC 或使用系统测试模式时），立即结束进程的那种，不会卡一会儿",
+     "enabled": true,
+     "keys": []
+    },
+    {
+     "name": "Utils.LedOffOnQuit",
+     "group": "Utils",
+     "title": "Led Off On Quit",
+     "doc": "退出时关闭灯光",
+     "enabled": true,
+     "keys": []
+    },
+    {
+     "name": "Utils.LogNetworkRequests",
+     "group": "Utils",
+     "title": "Log Network Requests",
+     "doc": "网络请求日志\n将网络请求输出到 MelonLoader 控制台",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "Url",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "URL",
+       "enabled": false,
+       "line": 944
+      },
+      {
+       "key": "Request",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "请求",
+       "enabled": false,
+       "line": 946
+      },
+      {
+       "key": "RequestOmittedApis",
+       "value": "UploadUserPhotoApi,UploadUserPortraitApi",
+       "raw": "\"UploadUserPhotoApi,UploadUserPortraitApi\"",
+       "type": "string",
+       "doc": "省略以下请求",
+       "enabled": false,
+       "line": 948
+      },
+      {
+       "key": "Response",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "响应",
+       "enabled": false,
+       "line": 950
+      },
+      {
+       "key": "ResponseOmittedApis",
+       "value": "GetGameEventApi",
+       "raw": "\"GetGameEventApi\"",
+       "type": "string",
+       "doc": "省略以下响应",
+       "enabled": false,
+       "line": 952
+      },
+      {
+       "key": "ResponseErrorOnly",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "仅输出错误\n仅输出出错的响应，不输出成功的响应",
+       "enabled": false,
+       "line": 955
+      }
+     ]
+    },
+    {
+     "name": "Utils.LogUserId",
+     "group": "Utils",
+     "title": "Log User Id",
+     "doc": "用户 ID 日志\n登录时将 UserID 输出到日志",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Utils.MoveAnswerSound",
+     "group": "Utils",
+     "title": "Move Answer Sound",
+     "doc": "移动正解音",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "DisplayInGameConfig",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "游戏内设置\n在游戏内添加设置项给用户，使用户能够在游戏内调整正解音偏移量。如果关闭此选项，则就算用户之前设置过，也会忽略。",
+       "enabled": false,
+       "line": 965
+      },
+      {
+       "key": "MoveValue_1P",
+       "value": "0.0",
+       "raw": "0.0",
+       "type": "float",
+       "doc": "1P 偏移量\n正解音偏移量，单位为毫秒，此设定值会与用户游戏内的设置相加。增大这个值将会使正解音出现得更晚，反之则更早。",
+       "enabled": true,
+       "line": 968
+      },
+      {
+       "key": "MoveValue_2P",
+       "value": "0.0",
+       "raw": "0.0",
+       "type": "float",
+       "doc": "2P 偏移量\n与 MoveValue_1P 作用相同。",
+       "enabled": false,
+       "line": 971
+      }
+     ]
+    },
+    {
+     "name": "Utils.ScreenPositionAdjust",
+     "group": "Utils",
+     "title": "Screen Position Adjust",
+     "doc": "屏幕位置调整\n屏幕位置调整。适用于手台对不齐的情况，可以分别调整每个屏幕区域的位置\n在游戏中按键开启调整模式\n此功能会对性能产生一定影响\n必须同时开启 ExteraMouseInput 才能使用鼠标模拟触摸",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "CompactMode",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "上屏紧贴着下屏",
+       "enabled": false,
+       "line": 980
+      },
+      {
+       "key": "AdjustKey",
+       "value": "F10",
+       "raw": "\"F10\"",
+       "type": "string",
+       "doc": "进入调整模式的按键",
+       "enabled": false,
+       "line": 982
+      }
+     ]
+    },
+    {
+     "name": "Utils.ShowErrorLog",
+     "group": "Utils",
+     "title": "Show Error Log",
+     "doc": "崩溃报错\n在游戏中显示错误日志窗口而不是关闭游戏进程",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 987
+      },
+      {
+       "key": "UseNewErrorHandler",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "崩溃窗口\n使用新版错误报告生成器",
+       "enabled": false,
+       "line": 990
+      }
+     ]
+    },
+    {
+     "name": "Utils.ShowNetErrorDetail",
+     "group": "Utils",
+     "title": "Show Net Error Detail",
+     "doc": "灰网时显示原因",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 994
+      }
+     ]
+    },
+    {
+     "name": "Utils.UnstableRate",
+     "group": "Utils",
+     "title": "Unstable Rate",
+     "doc": "稳定度指示器\n在屏幕中心显示每次判定的精确区间",
+     "enabled": true,
+     "keys": []
+    }
+   ]
+  },
+  {
+   "name": "Fancy",
+   "title": "花活",
+   "sections": [
+    {
+     "name": "Fancy.CustomButton",
+     "group": "Fancy",
+     "title": "Custom Button",
+     "doc": "自定义按钮\n从指定目录加载按钮贴图",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "ButtonDir",
+       "value": "LocalAssets/Buttons",
+       "raw": "\"LocalAssets/Buttons\"",
+       "type": "string",
+       "doc": "贴图目录\n按钮贴图的目录",
+       "enabled": false,
+       "line": 1005
+      }
+     ]
+    },
+    {
+     "name": "Fancy.CustomCreditsString",
+     "group": "Fancy",
+     "title": "Custom Credits String",
+     "doc": "自定义点数文本\n自定义中间和右上角的 \"CREDIT(S)\"（可用点数）文本",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "CreditsString",
+       "value": "",
+       "raw": "\"\"",
+       "type": "string",
+       "doc": "点数文本\n用于替换 \"CREDIT(S)\" 的自定义文本，留空则为空白",
+       "enabled": false,
+       "line": 1012
+      },
+      {
+       "key": "HideCreditsNumber",
+       "value": "true",
+       "raw": "true",
+       "type": "bool",
+       "doc": "隐藏点数\n隐藏 \"CREDIT(S)\" 后的可用点数数量",
+       "enabled": false,
+       "line": 1015
+      }
+     ]
+    },
+    {
+     "name": "Fancy.CustomIntroCinematic",
+     "group": "Fancy",
+     "title": "Custom Intro Cinematic",
+     "doc": "开场视频\n播放自定义乐曲开场视频",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "IntroMovieDir",
+       "value": "LocalAssets/IntroMovies",
+       "raw": "\"LocalAssets/IntroMovies\"",
+       "type": "string",
+       "doc": "开场视频文件夹的路径\n该文件夹应包含开场视频文件 (mp4/acb/awb)\n视频文件命名: Enter_xxx.mp4 (左右屏播放同一视频) 或 Enter_xxx_L.mp4 + Enter_xxx_R.mp4 (左右屏播放不同的视频)\n音频文件命名: Enter_xxx.acb + Enter_xxx.awb (可选, 无音频文件时静音播放)\nxxx = 乐曲ID, 文件夹内可以包含多个乐曲的开场视频\n使用 MaiChartManager 中的工具可以快速转换视频\n效果演示: https://www.bilibili.com/video/BV1jTxVzjETG",
+       "enabled": false,
+       "line": 1027
+      },
+      {
+       "key": "OnlyPlayWhenNotPlayed",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "仅在未玩过乐曲时播放\n开启后，仅当 1P 2P 双方均没有玩过这首乐曲时播放开场视频",
+       "enabled": false,
+       "line": 1030
+      }
+     ]
+    },
+    {
+     "name": "Fancy.CustomLogo",
+     "group": "Fancy",
+     "title": "Custom Logo",
+     "doc": "自定义 Logo\n用自定义的图片替换「SEGA」和「ALL.Net」的标志",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "SegaLogoDir",
+       "value": "LocalAssets/SegaLogo",
+       "raw": "\"LocalAssets/SegaLogo\"",
+       "type": "string",
+       "doc": "SEGA Logo 目录\n从此目录中随机选择一张 PNG 图片用于「SEGA」标志",
+       "enabled": false,
+       "line": 1037
+      },
+      {
+       "key": "AllNetLogoDir",
+       "value": "LocalAssets/AllNetLogo",
+       "raw": "\"LocalAssets/AllNetLogo\"",
+       "type": "string",
+       "doc": "ALL.Net Logo 目录\n从此目录中随机选择一张 PNG 图片用于「ALL.Net」标志",
+       "enabled": false,
+       "line": 1040
+      },
+      {
+       "key": "LogoFullScreen",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "Logo 全屏幕\n将标志全屏占满下屏幕",
+       "enabled": false,
+       "line": 1043
+      }
+     ]
+    },
+    {
+     "name": "Fancy.CustomPlaceName",
+     "group": "Fancy",
+     "title": "Custom Place Name",
+     "doc": "自定义店铺名\n自定义拍照的店铺名称\n同时在 SDGA 中会启用店铺名称的显示（但是不会在游戏里有设置）",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "PlaceName",
+       "value": "",
+       "raw": "\"\"",
+       "type": "string",
+       "doc": "店铺名称",
+       "enabled": false,
+       "line": 1050
+      }
+     ]
+    },
+    {
+     "name": "Fancy.CustomSkins",
+     "group": "Fancy",
+     "title": "Custom Skins",
+     "doc": "自定义皮肤\n提供自定义皮肤的能力（高级功能）\n从自定义路径中加载皮肤贴图",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "SkinsDir",
+       "value": "LocalAssets/Skins",
+       "raw": "\"LocalAssets/Skins\"",
+       "type": "string",
+       "doc": "皮肤目录",
+       "enabled": false,
+       "line": 1057
+      }
+     ]
+    },
+    {
+     "name": "Fancy.CustomTrackStartDiff",
+     "group": "Fancy",
+     "title": "Custom Track Start Diff",
+     "doc": "自定义难度显示\n自定义在歌曲开始界面上显示的难度贴图 (并不是真的自定义难度)\n需要启用自定义皮肤功能\n会通过自定义皮肤加载四个图片资源: musicBase, musicTab, musicLvBase, musicLvText",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Fancy.CustomVersionString",
+     "group": "Fancy",
+     "title": "Custom Version String",
+     "doc": "自定义版本文本\n把右上角的版本更改为自定义文本",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "VersionString",
+       "value": "",
+       "raw": "\"\"",
+       "type": "string",
+       "doc": "版本文本",
+       "enabled": false,
+       "line": 1069
+      }
+     ]
+    },
+    {
+     "name": "Fancy.DemoMaster",
+     "group": "Fancy",
+     "title": "Demo Master",
+     "doc": "闲置播放紫谱\n在闲置时的演示画面上播放紫谱而不是绿谱",
+     "enabled": true,
+     "keys": []
+    },
+    {
+     "name": "Fancy.GamePlay.AlignCircleSlideJudgeDisplay",
+     "group": "Fancy",
+     "title": "Align Circle Slide Judge Display",
+     "doc": "圆弧判定对齐\n让圆弧形的 Slide 的判定显示与判定线精确对齐 (原本会有一点歪)\n就像 majdata 里那样",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Fancy.GamePlay.BreakSlideJudgeBlink",
+     "group": "Fancy",
+     "title": "Break Slide Judge Blink",
+     "doc": "Break 星星闪烁\n这个 Patch 让 BreakSlide 的 Critical 判定也可以像 BreakTap 一样闪烁\n推荐与自定义皮肤一起使用 (否则视觉效果可能并不好)",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Fancy.GamePlay.CustomNoteTypes",
+     "group": "Fancy",
+     "title": "Custom Note Types",
+     "doc": "自定义 Note 类型",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Fancy.GamePlay.DisableTrackStartTabs",
+     "group": "Fancy",
+     "title": "Disable Track Start Tabs",
+     "doc": "隐藏曲目信息\n在歌曲开始界面, 把 TRACK X 字样, DX/标准谱面的显示框, 以及画面下方的滴蜡熊隐藏掉\n录制谱面确认用",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Fancy.GamePlay.ExtendNotesPool",
+     "group": "Fancy",
+     "title": "Extend Notes Pool",
+     "doc": "扩展音符池\n增加更多待命的音符贴图，防止奇怪的自制谱用完音符贴图池",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 1096
+      },
+      {
+       "key": "Count",
+       "value": "128",
+       "raw": "128",
+       "type": "int",
+       "doc": "增加数量\n要增加的对象数量",
+       "enabled": false,
+       "line": 1099
+      }
+     ]
+    },
+    {
+     "name": "Fancy.GamePlay.FanJudgeFlip",
+     "group": "Fancy",
+     "title": "Fan Judge Flip",
+     "doc": "WiFi 判定翻转\n这个 Patch 让 WiFi Slide 的判定显示有上下的区别 (原本所有 WiFi 的判定显示都是朝向圆心的), 就像 majdata 里那样\n这个 bug 产生的原因是 SBGA 忘记给 WiFi 的 EndButtonId 赋值了",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Fancy.GamePlay.FixJudgeTouchHoldInNormalArea",
+     "group": "Fancy",
+     "title": "Fix Judge Touch Hold In Normal Area",
+     "doc": "修复非 C 区 Hold\n使游戏可以正常判定非 C 区的 Touch Hold。实验性实现，据反馈不稳定",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Fancy.GamePlay.HideHanabi",
+     "group": "Fancy",
+     "title": "Hide Hanabi",
+     "doc": "隐藏烟花",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Fancy.GamePlay.JudgeDisplay4B",
+     "group": "Fancy",
+     "title": "Judge Display4 B",
+     "doc": "精细判定显示\n更精细的判定表示\n需开启 CustomSkins 并下载资源文件\nhttps://github.com/hykilpikonna/AquaDX/releases/download/nightly/JudgeDisplay4B.7z",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Fancy.GamePlay.RealisticRandomJudge",
+     "group": "Fancy",
+     "title": "Realistic Random Judge",
+     "doc": "真随机判定\n让 AutoPlay 的随机判定模式真的会随机产生所有的判定 (精确到子判定)\n原本的随机判定只会等概率产生 Critical, LateGreat1st, LateGood, Miss(TooLate)\n这里改成三角分布产生从 Miss(TooFast) ~ Critical ~ Miss(TooLate) 的所有 15 种判定结果\n当然, 此处并不会考虑原本那个 Note 是不是真的有对应的判定 (比如 Slide 实际上不应该有小 p 之类的)",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Fancy.GamePlay.ReviveFinaleVSlide",
+     "group": "Fancy",
+     "title": "Revive Finale V Slide",
+     "doc": "允许 1v1 星星\n允许形如 \"1v1\" 的，起点和终点相同的 v 型星星",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Fancy.GamePlay.SlideArrowAnimation",
+     "group": "Fancy",
+     "title": "Slide Arrow Animation",
+     "doc": "星星缩入动画\n使 Slide Track 消失时有类似 AstroDX 一样的向内缩入的动画",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Fancy.GamePlay.SlideFadeInTweak",
+     "group": "Fancy",
+     "title": "Slide Fade In Tweak",
+     "doc": "星星渐入\n让星星在启动拍等待期间从 50% 透明度渐入为 100%，取代原本在击打星星头时就完成渐入",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Fancy.GamePlay.SlideLayerReverse",
+     "group": "Fancy",
+     "title": "Slide Layer Reverse",
+     "doc": "反转星星层级\n反转 Slide 层级, 使新出现的 Slide 像旧框一样显示在上层\n启用以支持通过叠加多个星星达成的变色效果",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Fancy.GamePlay.TapInHoldFix",
+     "group": "Fancy",
+     "title": "Tap In Hold Fix",
+     "doc": "Hold 夹 Tap\n让普通模式也能像宴会场一样，在 Hold 音符期间正常判定其他音符，兼容特殊设计谱面（如飞行志）\n实验性功能，未测试对其他谱面的影响",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Fancy.GamePlay.TrackStartProcessTweak",
+     "group": "Fancy",
+     "title": "Track Start Process Tweak",
+     "doc": "延迟开始动画\n推迟了歌曲开始界面的动画\n录制谱面确认用",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Fancy.HideMask",
+     "group": "Fancy",
+     "title": "Hide Mask",
+     "doc": "移除圆形遮罩",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Fancy.IgnoreCommercialTimeout",
+     "group": "Fancy",
+     "title": "Ignore Commercial Timeout",
+     "doc": "无限闲置视频时长\n忽略闲置时的视频广告画面的5分钟总时长限制",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "Disabled",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "",
+       "enabled": false,
+       "line": 1159
+      }
+     ]
+    },
+    {
+     "name": "Fancy.RandomBgm",
+     "group": "Fancy",
+     "title": "Random Bgm",
+     "doc": "随机 BGM\n在配置的目录下放置了旧版游戏的 Mai2Cue.{acb,awb} 并重命名的话，可以在播放游戏 BGM 的时候随机播放这里面的旧版游戏 BGM\n无法在 2P 模式下工作",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "Mai2CueDir",
+       "value": "LocalAssets/Mai2Cue",
+       "raw": "\"LocalAssets/Mai2Cue\"",
+       "type": "string",
+       "doc": "Mai2Cue 目录",
+       "enabled": false,
+       "line": 1166
+      }
+     ]
+    },
+    {
+     "name": "Fancy.ResourcesOverride",
+     "group": "Fancy",
+     "title": "Resources Override",
+     "doc": "力大砖飞\n【危险功能】适用于便捷魔改的自定义全场景图片。警告：可能对游戏造成未知性能影响，可能与其他模组冲突？",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "SkinsDir",
+       "value": "LocalAssets/ResourcesOverride",
+       "raw": "\"LocalAssets/ResourcesOverride\"",
+       "type": "string",
+       "doc": "资源目录",
+       "enabled": false,
+       "line": 1172
+      }
+     ]
+    },
+    {
+     "name": "Fancy.SetFade",
+     "group": "Fancy",
+     "title": "Set Fade",
+     "doc": "转场动画\n修改转场动画为其他变种",
+     "enabled": true,
+     "keys": [
+      {
+       "key": "FadeType",
+       "value": "0",
+       "raw": "0",
+       "type": "int",
+       "doc": "转场类型\n类型: Non-Plus 0, Plus 1. (SDEZ 1.60 限定可选 Festa 2)",
+       "enabled": false,
+       "line": 1179
+      }
+     ]
+    },
+    {
+     "name": "Fancy.SkipGameResultAnimation",
+     "group": "Fancy",
+     "title": "Skip Game Result Animation",
+     "doc": "跳过结算特效\n在 AutoPlay 模式下跳过结算画面的 AP/FC/FS 等庆祝特效，方便录制谱面确认",
+     "enabled": false,
+     "keys": []
+    },
+    {
+     "name": "Fancy.TrackCamouflage",
+     "group": "Fancy",
+     "title": "Track Camouflage",
+     "doc": "曲目伪装术\n仿 KoP 决赛曲揭晓时的曲目信息隐藏特性，配合自定义乐曲开场视频功能使用效果更佳",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "CamouflageDir",
+       "value": "LocalAssets/Camouflages",
+       "raw": "\"LocalAssets/Camouflages\"",
+       "type": "string",
+       "doc": "曲目伪装信息和封面文件夹的路径\n- 曲目伪装信息的文件名为 <曲目ID>.toml，TOML 文档可填入的字段包括：\n- Name: 伪装后的曲目名\n- Artist: 伪装后的曲师\n- NoteDesigner：伪装后的谱师（可选，如不指定则默认不伪装，显示原本的谱师）\n- 或者：亦可用 HideNoteDesigner = true 来隐藏谱师、显示为和绿黄谱一样的 \"-\"\n- UnlockScore：解除伪装所需要的最低达成率，例如 97.0\n- 可选，默认为0，即只要玩家打过一次、有过成绩，就不再伪装；而通过指定为102的方式，则可以实现永远伪装\n- 伪装封面的文件名为 <曲目ID>_jacket.jpg/png。目前仅支持jpg、png这两种格式，不支持ab。",
+       "enabled": false,
+       "line": 1197
+      },
+      {
+       "key": "AlwaysShowCamouflage",
+       "value": "false",
+       "raw": "false",
+       "type": "bool",
+       "doc": "无视 UnlockScore / 游玩记录检测，始终显示伪装后的曲目信息",
+       "enabled": false,
+       "line": 1199
+      }
+     ]
+    },
+    {
+     "name": "Fancy.Triggers",
+     "group": "Fancy",
+     "title": "Triggers",
+     "doc": "触发器\n在一定时机执行命令的触发器",
+     "enabled": false,
+     "keys": [
+      {
+       "key": "ExecOnIdle",
+       "value": "",
+       "raw": "\"\"",
+       "type": "string",
+       "doc": "闲置时执行\n在游戏闲置的时候执行指定的命令脚本\n比如说可以在游戏闲置时降低显示器的亮度",
+       "enabled": false,
+       "line": 1207
+      },
+      {
+       "key": "ExecOnEntry",
+       "value": "",
+       "raw": "\"\"",
+       "type": "string",
+       "doc": "登录时执行\n在玩家登录的时候执行指定的命令脚本",
+       "enabled": false,
+       "line": 1210
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
